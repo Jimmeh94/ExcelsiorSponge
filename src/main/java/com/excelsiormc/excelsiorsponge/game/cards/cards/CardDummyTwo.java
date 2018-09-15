@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.CardMovementNormal;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class CardDummyTwo extends CardBase {
 
     public CardDummyTwo(UUID owner) {
-        super(owner, 1, "Dummy 2 Card", BlockTypes.STONE, (short)1.0, new CardMovementNormal(1));
+        super(owner, 1, "Dummy 2 Card", ItemTypes.STONE, (short)1.0, new CardMovementNormal(1));
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
 import com.excelsiormc.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
@@ -135,7 +137,7 @@ public abstract class Gamemode {
                 gameStage = Stage.IN_GAME;
                 for(Team team: teams){
                     for(CombatantProfile c: team.getCombatants()){
-                        Hotbars.HOTBAR_WAITING_TURN.setHotbar(Bukkit.getPlayer(c.getUUID()));
+                        Hotbars.HOTBAR_WAITING_TURN.setHotbar(c.getPlayer());
                     }
                 }
             }
