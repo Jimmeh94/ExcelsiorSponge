@@ -13,24 +13,6 @@ import java.util.UUID;
 
 public class ManagerArena extends Manager<Arena> {
 
-    public void tick(){
-        for(Arena a: objects){
-            if(a.isInUse()) {
-                a.tick();
-                for(Team team: a.getGamemode().getTeams()){
-                    for(CombatantProfile c: team.getCombatants()){
-                        if(c.isPlayer()){
-                            CombatantProfilePlayer p = (CombatantProfilePlayer) c;
-                            if(p.isViewingClientArmorstand()){
-                                p.getViewingClientArmorstand().check();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public void updatePlayersAim() {
         for(Arena a: objects){
             if(a.isInUse()) {

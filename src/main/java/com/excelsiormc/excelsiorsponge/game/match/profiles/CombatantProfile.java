@@ -1,5 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.match.profiles;
 
+import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.match.cards.Hand;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

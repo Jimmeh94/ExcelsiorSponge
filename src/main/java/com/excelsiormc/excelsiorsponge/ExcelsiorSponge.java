@@ -2,12 +2,17 @@ package com.excelsiormc.excelsiorsponge;
 
 import com.excelsiormc.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorcore.services.database.ServiceMongoDB;
+import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
+import com.excelsiormc.excelsiorsponge.events.WorldEvents;
+import com.excelsiormc.excelsiorsponge.game.economy.currencies.CurrencyGold;
 import com.excelsiormc.excelsiorsponge.managers.ManagerArena;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
@@ -42,6 +47,27 @@ public class ExcelsiorSponge {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         arenaManager = new ManagerArena();
+
+        registerListeners();
+        registerRunnables();
+        registerCommands();
+
+        CurrencyGold gold = new CurrencyGold();
+        ExcelsiorCore.INSTANCE.getEconomy().addCurrency(gold);
+        ExcelsiorCore.INSTANCE.getEconomy().addDefault(gold, 500);
+    }
+
+    private void registerCommands() {
+
+    }
+
+    private void registerRunnables() {
+
+    }
+
+    private void registerListeners() {
+        Sponge.getEventManager().registerListeners(this, new PlayerEvents());
+        Sponge.getEventManager().registerListeners(this, new WorldEvents());
     }
 
     @Listener
@@ -52,4 +78,6 @@ public class ExcelsiorSponge {
     public ManagerArena getArenaManager() {
         return arenaManager;
     }
+
+    public static Cause getEmptyCause(){return Cause.builder().build(EventContext.empty());}
 }

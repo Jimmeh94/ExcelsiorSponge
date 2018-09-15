@@ -14,14 +14,14 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    implementation 'com.github.Jimmeh94:ExcelsiorCore:0.0.1.1a'
+    implementation 'com.github.Jimmeh94:ExcelsiorCore:0.0.1.1e'
 }
 
 sponge.plugin.id = pluginId
 
 shadowJar {
     dependencies {
-        include dependency("com.github.Jimmeh94:ExcelsiorCore:0.0.1.1a")
+        include dependency("com.github.Jimmeh94:ExcelsiorCore:0.0.1.1e")
     }
     relocate 'com.excelsiormc.excelsiorcore', 'com.excelsiormc.excelsiorsponge.excelsiorcore'
 }

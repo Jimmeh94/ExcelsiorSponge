@@ -1,23 +1,34 @@
 package com.excelsiormc.excelsiorsponge.game.user;
 
+import com.excelsiormc.excelsiorcore.services.chat.ChatColorTemplate;
+import com.excelsiormc.excelsiorcore.services.chat.ChatPlayerProfile;
+import com.excelsiormc.excelsiorcore.services.chat.ChatPlayerTitle;
+import com.excelsiormc.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorcore.services.scoreboard.Scoreboard;
 import com.excelsiormc.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
 import com.excelsiormc.excelsiorcore.services.user.PlayerBase;
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
+import com.excelsiormc.excelsiorsponge.game.cards.Deck;
+import com.excelsiormc.excelsiorsponge.game.cards.decks.DeckDummy;
+import com.excelsiormc.excelsiorsponge.game.user.scoreboard.DefaultPreset;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 public class UserPlayer extends PlayerBase {
+
     private Scoreboard scoreboard;
     private Deck deck;
     private PlayerMode playerMode;
     private Hotbar currentHotbar;
 
     public UserPlayer(Player player){
-        super(player.getUniqueId(), ServiceParticles.ParticleModifier.NORMAL);
+        super(player.getUniqueId(), new ChatPlayerProfile(ChatColorTemplate.GRAY, ChatPlayerTitle.TEST, player.getUniqueId()));
 
         playerMode = PlayerMode.NORMAL;
-        deck = new DeckDummy(getUUID());
+        deck = new DeckDummy(getOwner());
 
-        scoreboard = new Scoreboard(player, new DefaultPreset(player));
+        scoreboard = new Scoreboard(this, new DefaultPreset(this));
     }
 
     public void setCurrentHotbar(Hotbar currentHotbar) {
@@ -29,7 +40,7 @@ public class UserPlayer extends PlayerBase {
     }
 
     public void setPlayerMode(PlayerMode playerMode) {
-        Bukkit.getPluginManager().callEvent(new PlayerModeChangeEvent(CustomEvent.SERVER_CAUSE, this.playerMode, playerMode, getPlayer()));
+        Sponge.getEventManager().post(new PlayerEvents.PlayerModeChangeEvent(ExcelsiorSponge.getEmptyCause(), this.playerMode, playerMode, getPlayer()));
         this.playerMode = playerMode;
     }
 

@@ -1,4 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.match.cards;
+import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;

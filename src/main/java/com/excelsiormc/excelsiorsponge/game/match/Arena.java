@@ -5,8 +5,10 @@ import com.excelsiormc.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.Location;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -75,7 +77,7 @@ public class Arena {
         inUse = true;
         this.gamemode = gamemode;
         this.gamemode.setArena(this);
-        gamemode.start(grid.getStartPos());
+        gamemode.start(new Location(Sponge.getServer().getWorld(world).get(), grid.getStartPos()));
     }
 
     public boolean isPlayerCombatant(Player player) {

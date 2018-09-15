@@ -1,5 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
+import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -190,13 +191,13 @@ public abstract class Grid {
         List<Cell> cells = cardBase.getMovement().getAvailableSpaces();
         cardBase.getMovement().setCurrentlyHighlighed(cells);
         for(Cell cell: cells){
-            cell.drawAvailableSpaceForPlayer(Bukkit.getPlayer(cardBase.getOwner()));
+            cell.drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
         }
     }
 
     public void eraseAvailableCellsToMoveTo(CardBase cardBase){
         for(Cell cell: cells){
-            cell.clearAimForPlayer(Bukkit.getPlayer(cardBase.getOwner()));
+            cell.clearAimForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
         }
     }
 }

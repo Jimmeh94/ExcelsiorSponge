@@ -72,11 +72,11 @@ public class MongoUtils extends ServiceMongoDB {
                 String startPos = "";
                 Vector3d startPosV = arena.getGrid().getStartPos();
 
-                startPos += startPosV.getBlockX();
+                startPos += startPosV.getFloorX();
                 startPos += ",";
-                startPos += startPosV.getBlockY();
+                startPos += startPosV.getFloorY();
                 startPos += ",";
-                startPos += startPosV.getBlockZ();
+                startPos += startPosV.getFloorZ();
 
                 write.add(new Document("id", arena.getID().toString())
                         .append("world", arena.getWorld())

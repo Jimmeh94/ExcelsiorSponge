@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorcore.services.ServiceLocationUtils;
+import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -10,6 +11,7 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.List;
@@ -112,7 +114,7 @@ public class Cell {
     public void placeCard(CardBase card) {
         setAvailable(false);
         occupyingCard = card;
-        occupyingCard.spawn3DRepresentationServer(new Location(Bukkit.getWorld(world), getCenter().getX(),
+        occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), getCenter().getX(),
                 getCenter().getY(), getCenter().getZ()));
         occupyingCard.setCurrentCell(this);
     }
