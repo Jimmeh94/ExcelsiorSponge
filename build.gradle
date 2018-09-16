@@ -22,6 +22,11 @@ sponge.plugin.id = pluginId
 shadowJar {
     dependencies {
         include dependency("com.github.Jimmeh94:ExcelsiorCore:0.0.1.1g")
+        include dependency('org.spongepowered:spongeapi:7.1.0-SNAPSHOT')
+        include dependency('org.mongodb:mongodb-driver:3.8.1')
+        include dependency('org.mongodb.morphia:morphia:1.3.2')
+        include dependency("com.github.SimonFlash.TeslaPowered:TeslaLibs:v1.1.5")
     }
-    relocate 'com.excelsiormc.excelsiorcore', 'com.excelsiormc.excelsiorsponge.excelsiorcore'
 }
+
+build.dependsOn(shadowJar)

@@ -4,8 +4,13 @@ import com.excelsiormc.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorcore.services.database.ServiceMongoDB;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.events.WorldEvents;
+import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelAuction;
+import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
+import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.CurrencyGold;
 import com.excelsiormc.excelsiorsponge.managers.ManagerArena;
+import com.excelsiormc.excelsiorsponge.timers.ArenaTimer;
+import com.excelsiormc.excelsiorsponge.timers.DirectionalAimArenaTimer;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -46,15 +51,19 @@ public class ExcelsiorSponge {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
+        new ExcelsiorCore();
+
         arenaManager = new ManagerArena();
 
         registerListeners();
         registerRunnables();
         registerCommands();
 
-        CurrencyGold gold = new CurrencyGold();
-        ExcelsiorCore.INSTANCE.getEconomy().addCurrency(gold);
-        ExcelsiorCore.INSTANCE.getEconomy().addDefault(gold, 500);
+        ExcelsiorCore.INSTANCE.getEconomy().addCurrency(Currencies.GOLD);
+        ExcelsiorCore.INSTANCE.getEconomy().addDefault(Currencies.GOLD, 500);
+
+        ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelAuction());
+        ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelStaff());
     }
 
     private void registerCommands() {
@@ -62,7 +71,8 @@ public class ExcelsiorSponge {
     }
 
     private void registerRunnables() {
-
+        (new ArenaTimer(20L)).start();
+        (new DirectionalAimArenaTimer(20L)).start();
     }
 
     private void registerListeners() {

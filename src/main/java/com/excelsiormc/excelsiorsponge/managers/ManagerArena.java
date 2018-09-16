@@ -57,4 +57,12 @@ public class ManagerArena extends Manager<Arena> {
         }
         return Optional.empty();
     }
+
+    public void tick() {
+        for(Arena a: objects){
+            if(a.isInUse()){
+                a.tick();
+            }
+        }
+    }
 }
