@@ -78,6 +78,22 @@ public class ArenaCommands implements CommandExecutor {
                 gamemode.addTeam(new Team(new CombatantProfilePlayer(player.getUniqueId(), userPlayer.getDeck())));
                 arena.get().start(gamemode);
             }
+        } else if(mode.equalsIgnoreCase("gen")){
+            try {
+                int gridx = Integer.valueOf(args.<String>getOne("data").get());
+                int gridz = Integer.valueOf(args.<String>getOne("data1").get());
+                int cellx = Integer.valueOf(args.<String>getOne("data2").get());
+                int cellz = Integer.valueOf(args.<String>getOne("data3").get());
+
+                Vector3d start = player.getLocation().getPosition();
+                String world = player.getLocation().getExtent().getName();
+
+                ExcelsiorSponge.INSTANCE.getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, true), world));
+
+            } catch (NullPointerException e){
+                Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);
+            }
+
         }
 
         return CommandResult.success();

@@ -10,16 +10,17 @@ import org.spongepowered.api.block.BlockTypes;
 public class GridNormal extends Grid {
 
     public GridNormal(Vector3d startingPos, String world, int gridX, int gridZ, int cellX, int cellZ, boolean drawGrid) {
-        super(startingPos, world, gridX, gridZ, cellX, cellZ, drawGrid, BlockTypes.OBSIDIAN, BlockTypes.BARRIER);
-
+        super(startingPos, world, gridX, gridZ, cellX, cellZ, drawGrid, BlockTypes.OBSIDIAN, BlockTypes.STONE);
     }
 
     @Override
     protected void GenerateCells(Vector3d startingPos) {
 
         EditableVector use = new EditableVector(startingPos.clone());
-        EditableVector endPosition = new EditableVector(startingPos.clone());
-        EditableVector start = new EditableVector(startingPos.clone());
+        use.setY(use.getY() + 1);
+
+        EditableVector endPosition = use.clone();
+        EditableVector start = use.clone();
         for(int i = 0; i < gridDemX; i++){
             for(int j = 0; j < gridDemZ; j++){
                 cells.add(new Cell(use.toVector3d(), cellDemX, cellDemZ, world, cellMat));
@@ -32,7 +33,7 @@ public class GridNormal extends Grid {
             }
             use.setZ(startingPos.getZ());
 
-            if(i < gridDemX) {
+            if(i < gridDemX - 1) {
                 use.setX(use.getX() + cellDemX + 1);
             } else {
                 endPosition.setX(use.getX() + cellDemX + 1);
@@ -41,10 +42,10 @@ public class GridNormal extends Grid {
 
         start.setX(startingPos.getFloorX() - 1);
         start.setZ(startingPos.getFloorZ() - 1);
-        start.setY(startingPos.getFloorY() - 1);
+        start.setY(start.getY() - 1);
         endPosition.setY(endPosition.getY() - 1);
 
-        use = new EditableVector(startingPos.clone());
+        use = start.clone();
         int sx = startingPos.getFloorX(), ex = (int) endPosition.getX();
         int sz = startingPos.getFloorZ(), ez = (int) endPosition.getZ();
 
@@ -68,7 +69,7 @@ public class GridNormal extends Grid {
                 use.setZ(use.getZ() + 1);
             }
 
-            use.setZ(startingPos.getFloorZ());
+            use.setZ(startingPos.clone().sub(1, 0, 1).getFloorZ());
             use.setX(use.getX() + 1);
         }
 

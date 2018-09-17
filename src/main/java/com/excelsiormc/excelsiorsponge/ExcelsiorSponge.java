@@ -1,5 +1,6 @@
 package com.excelsiormc.excelsiorsponge;
 
+import com.excelsiormc.excelsiorsponge.commands.ArenaCommands;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMongoDB;
@@ -68,7 +69,7 @@ public class ExcelsiorSponge {
     }
 
     private void registerCommands() {
-
+        new ArenaCommands();
     }
 
     private void registerRunnables() {
