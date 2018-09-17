@@ -20,6 +20,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
@@ -48,7 +49,7 @@ public class ExcelsiorSponge {
         INSTANCE = this;
         PLUGIN_CONTAINER = Sponge.getPluginManager().fromInstance(this).get();
 
-        mongoUtils = new MongoUtils("Admin", "admin", "@ds149742.mlab.com:49742/excelsior", "excelsior");
+        mongoUtils = new MongoUtils("Admin", "admin1234", "@ds149742.mlab.com:49742/excelsior", "excelsior");
         mongoUtils.openConnection();
     }
 
@@ -66,6 +67,8 @@ public class ExcelsiorSponge {
 
         ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelAuction());
         ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelStaff());
+
+        mongoUtils.load();
     }
 
     private void registerCommands() {
@@ -94,5 +97,7 @@ public class ExcelsiorSponge {
         return arenaManager;
     }
 
-    public static Cause getEmptyCause(){return Cause.builder().build(EventContext.empty());}
+    public static Cause getServerCause(){
+        EventContext context = EventContext.builder().add(EventContextKeys.PLUGIN, PLUGIN_CONTAINER).build();
+        return Cause.builder().append(PLUGIN_CONTAINER).build(context);}
 }

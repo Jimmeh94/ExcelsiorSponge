@@ -40,7 +40,7 @@ public class UserPlayer extends PlayerBase {
     }
 
     public void setPlayerMode(PlayerMode playerMode) {
-        Sponge.getEventManager().post(new PlayerEvents.PlayerModeChangeEvent(ExcelsiorSponge.getEmptyCause(), this.playerMode, playerMode, getPlayer()));
+        Sponge.getEventManager().post(new PlayerEvents.PlayerModeChangeEvent(ExcelsiorSponge.getServerCause(), this.playerMode, playerMode, getPlayer()));
         this.playerMode = playerMode;
     }
 

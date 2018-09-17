@@ -28,6 +28,10 @@ public class MongoUtils extends ServiceMongoDB {
         super(username, password, ip, databaseName);
     }
 
+    public void load(){
+        readArenas();
+    }
+
     /**
      * Arenas:
      * UUID id
@@ -110,6 +114,7 @@ public class MongoUtils extends ServiceMongoDB {
     @Override
     public void close() {
         //write all data to database
+        writeArenas();
 
         super.close();
     }

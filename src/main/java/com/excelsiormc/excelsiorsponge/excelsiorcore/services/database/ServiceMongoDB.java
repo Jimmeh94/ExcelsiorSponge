@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.database;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
@@ -29,7 +30,7 @@ public class ServiceMongoDB {
             if (database == null) {
                 database = client.getDatabase(databaseName);
             }
-        } catch( Exception e){
+        } catch(Exception e){
             System.out.println(e.toString());
         }
     }

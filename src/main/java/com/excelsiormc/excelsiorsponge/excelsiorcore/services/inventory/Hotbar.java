@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
@@ -48,7 +49,7 @@ public abstract class Hotbar {
         Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(org.spongepowered.api.item.inventory.entity.Hotbar.class));
         hotbar.clear();
 
-        Slot slot;
+        Inventory slot;
         for(int i = 0; i < 9; i++){
             slot = hotbar.next();
             if(items.containsKey(i)){
