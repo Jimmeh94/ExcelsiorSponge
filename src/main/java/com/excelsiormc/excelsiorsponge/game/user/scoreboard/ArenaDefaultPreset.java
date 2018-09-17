@@ -1,8 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.user.scoreboard;
 
-import com.excelsiormc.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
-import com.excelsiormc.excelsiorcore.services.text.AltCodes;
-import com.excelsiormc.excelsiorcore.services.user.PlayerBase;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.AltCodes;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;

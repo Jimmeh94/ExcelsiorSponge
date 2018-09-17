@@ -1,6 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
-import com.excelsiormc.excelsiorcore.services.ServiceLocationUtils;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.ServiceLocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;

@@ -6,6 +6,8 @@ plugins {
 group = pluginGroup
 version = pluginVersion
 
+/*
+ExcelsiorSponge build.gradle
 repositories {
     maven {
         url 'https://jitpack.io'
@@ -14,19 +16,47 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    implementation 'com.github.Jimmeh94:ExcelsiorCore:0.0.1.1g'
+    implementation 'com.github.Jimmeh94:ExcelsiorCore:0.0.1.1n'
 }
 
 sponge.plugin.id = pluginId
 
 shadowJar {
     dependencies {
-        include dependency("com.github.Jimmeh94:ExcelsiorCore:0.0.1.1g")
+        //include dependency("com.github.Jimmeh94:ExcelsiorCore:0.0.1.1n")
+        //include dependency('org.spongepowered:spongeapi:7.1.0-SNAPSHOT')
+        //include dependency('org.mongodb:mongodb-driver:3.8.1')
+        //include dependency('org.mongodb.morphia:morphia:1.3.2')
+        //include dependency("com.github.SimonFlash.TeslaPowered:TeslaLibs:v1.1.5")
+    }
+}
+
+build.dependsOn(shadowJar)*/
+
+//ExcelsiorCore build.gradle
+repositories {
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    compile 'org.mongodb:mongodb-driver:3.8.1'
+    compile 'org.mongodb.morphia:morphia:1.3.2'
+    compile "com.github.SimonFlash.TeslaPowered:TeslaLibs:v1.1.5"
+}
+
+sponge.plugin.id = pluginId
+
+shadowJar {
+    dependencies {
         include dependency('org.spongepowered:spongeapi:7.1.0-SNAPSHOT')
         include dependency('org.mongodb:mongodb-driver:3.8.1')
         include dependency('org.mongodb.morphia:morphia:1.3.2')
         include dependency("com.github.SimonFlash.TeslaPowered:TeslaLibs:v1.1.5")
     }
+    relocate 'com.mcsimonflash.sponge.teslalibs', 'com.excelsiormc.excelsiorsponge.excelsiorcore.teslalibs'
 }
 
 build.dependsOn(shadowJar)

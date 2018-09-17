@@ -1,8 +1,8 @@
 package com.excelsiormc.excelsiorsponge.events;
 
-import com.excelsiormc.excelsiorcore.ExcelsiorCore;
-import com.excelsiormc.excelsiorcore.event.custom.CustomEvent;
-import com.excelsiormc.excelsiorcore.services.chat.ChatChannelManager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatChannelManager;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;

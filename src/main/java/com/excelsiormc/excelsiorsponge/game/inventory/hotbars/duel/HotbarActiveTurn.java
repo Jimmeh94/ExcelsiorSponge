@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
-import com.excelsiormc.excelsiorcore.services.Pair;
-import com.excelsiormc.excelsiorcore.services.inventory.Hotbar;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;

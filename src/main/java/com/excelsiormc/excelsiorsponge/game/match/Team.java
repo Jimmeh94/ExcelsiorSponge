@@ -1,6 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.match;
 
-import com.excelsiormc.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;

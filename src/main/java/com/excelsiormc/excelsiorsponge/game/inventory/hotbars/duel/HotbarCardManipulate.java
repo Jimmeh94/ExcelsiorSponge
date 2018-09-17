@@ -1,9 +1,9 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
-import com.excelsiormc.excelsiorcore.services.Pair;
-import com.excelsiormc.excelsiorcore.services.inventory.Hotbar;
-import com.excelsiormc.excelsiorcore.services.text.Message;
-import com.excelsiormc.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;

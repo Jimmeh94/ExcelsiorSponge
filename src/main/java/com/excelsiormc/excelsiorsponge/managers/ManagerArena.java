@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.managers;
 
 
-import com.excelsiormc.excelsiorcore.services.Manager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Manager;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;

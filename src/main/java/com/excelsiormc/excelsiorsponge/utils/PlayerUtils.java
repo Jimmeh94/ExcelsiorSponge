@@ -1,8 +1,8 @@
 package com.excelsiormc.excelsiorsponge.utils;
 
-import com.excelsiormc.excelsiorcore.ExcelsiorCore;
-import com.excelsiormc.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;

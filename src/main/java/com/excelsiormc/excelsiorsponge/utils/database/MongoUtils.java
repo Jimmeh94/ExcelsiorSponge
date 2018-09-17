@@ -1,6 +1,6 @@
 package com.excelsiormc.excelsiorsponge.utils.database;
 
-import com.excelsiormc.excelsiorcore.services.database.ServiceMongoDB;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMongoDB;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.field.GridNormal;

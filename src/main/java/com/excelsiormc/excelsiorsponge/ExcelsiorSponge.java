@@ -1,7 +1,8 @@
 package com.excelsiormc.excelsiorsponge;
 
-import com.excelsiormc.excelsiorcore.ExcelsiorCore;
-import com.excelsiormc.excelsiorcore.services.database.ServiceMongoDB;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMongoDB;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.events.WorldEvents;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelAuction;
@@ -42,6 +43,7 @@ public class ExcelsiorSponge {
 
     @Listener
     public void onGameInit(GameInitializationEvent event){
+        new ExcelsiorCore();
         INSTANCE = this;
         PLUGIN_CONTAINER = Sponge.getPluginManager().fromInstance(this).get();
 
@@ -51,7 +53,6 @@ public class ExcelsiorSponge {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        new ExcelsiorCore();
 
         arenaManager = new ManagerArena();
 
@@ -76,6 +77,9 @@ public class ExcelsiorSponge {
     }
 
     private void registerListeners() {
+        //Core Listeners
+        Sponge.getEventManager().registerListeners(this, new ChatEvents());
+
         Sponge.getEventManager().registerListeners(this, new PlayerEvents());
         Sponge.getEventManager().registerListeners(this, new WorldEvents());
     }

@@ -1,12 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.user;
 
-import com.excelsiormc.excelsiorcore.services.chat.ChatColorTemplate;
-import com.excelsiormc.excelsiorcore.services.chat.ChatPlayerProfile;
-import com.excelsiormc.excelsiorcore.services.chat.ChatPlayerTitle;
-import com.excelsiormc.excelsiorcore.services.inventory.Hotbar;
-import com.excelsiormc.excelsiorcore.services.scoreboard.Scoreboard;
-import com.excelsiormc.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
-import com.excelsiormc.excelsiorcore.services.user.PlayerBase;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatColorTemplate;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatPlayerProfile;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatPlayerTitle;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.Scoreboard;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;

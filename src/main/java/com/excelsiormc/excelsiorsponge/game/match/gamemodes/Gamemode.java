@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
-import com.excelsiormc.excelsiorcore.services.TimeFormatter;
-import com.excelsiormc.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;

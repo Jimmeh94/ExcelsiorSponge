@@ -1,8 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.user.scoreboard;
 
-import com.excelsiormc.excelsiorcore.ExcelsiorCore;
-import com.excelsiormc.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
-import com.excelsiormc.excelsiorcore.services.user.PlayerBase;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
