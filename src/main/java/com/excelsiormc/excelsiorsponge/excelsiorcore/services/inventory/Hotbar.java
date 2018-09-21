@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
@@ -46,22 +47,28 @@ public abstract class Hotbar {
     }
 
     public void setHotbar(Player player){
-        Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(org.spongepowered.api.item.inventory.entity.Hotbar.class));
+        final Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(org.spongepowered.api.item.inventory.entity.Hotbar.class));
         hotbar.clear();
 
-        Inventory slot;
-        for(int i = 0; i < 9; i++){
-            slot = hotbar.next();
+        int i = 0;
+        Slot slot;
+
+        for (final Inventory temp : hotbar.slots()) {
+            slot = (Slot) temp;
+            //slot.set(ItemStack.empty()); // Clear the existing item.
+
             if(items.containsKey(i)){
                 slot.set(items.get(i).getFirst());
             }
+            i++;
         }
-        //player.updateInventory();
 
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get().setCurrentHotbar(this);
     }
 
-    public void handle(int index, Player player, HandType handClick) {
+    public void handle(Player player, HandType handClick) {
+        int index = InventoryUtils.getHeldItemSlot(player, handClick).get().getValue();
+
         if(items.get(index) != null && items.get(index).getSecond() != null){
             items.get(index).getSecond().action(player, handClick);
         }

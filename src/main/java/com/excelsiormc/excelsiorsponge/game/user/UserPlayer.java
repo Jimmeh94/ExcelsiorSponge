@@ -60,6 +60,11 @@ public class UserPlayer extends PlayerBase {
         scoreboard.updateScoreboard();
     }
 
+    public boolean isInDuel() {
+        return playerMode == PlayerMode.ARENA_DUEL_DEFAULT || playerMode == PlayerMode.ARENA_MOVING_CARD ||
+                playerMode == PlayerMode.ARENA_VIEWING_CARD_INFO;
+    }
+
     /**
      * This just makes it easier for dividing up the interact events
      */

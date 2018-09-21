@@ -15,7 +15,7 @@ import java.util.Optional;
 public class InventoryUtils {
 
     public static Optional<SlotPos> getSlotPos(final ItemStack itemStack, final Player player) {
-        final Slot slot = player.getInventory().<Slot>query(QueryOperationTypes.ITEM_STACK_EXACT.of(itemStack));
+        final Slot slot = player.getInventory().<Slot>query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(itemStack));
         if (!slot.hasChildren()) {
             return Optional.of((new ArrayList<>(slot.getProperties(SlotPos.class)).get(0)));
         }
@@ -24,7 +24,7 @@ public class InventoryUtils {
     }
 
     public static Optional<SlotIndex> getSlotIndex(final ItemStack itemStack, final Player player) {
-        final Slot slot = player.getInventory().<Slot>query(QueryOperationTypes.ITEM_STACK_EXACT.of(itemStack));
+        final Slot slot = player.getInventory().<Slot>query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(itemStack));
         if (!slot.hasChildren()) {
             return Optional.of((new ArrayList<>(slot.getProperties(SlotIndex.class)).get(0)));
         }

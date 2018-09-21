@@ -21,6 +21,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,6 +183,7 @@ public abstract class Gamemode {
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
                 if(p.isPlayer()){
+                    System.out.println("aim 1");
                     UserPlayer.PlayerMode mode = PlayerUtils.getUserPlayer(p.getUUID()).get().getPlayerMode();
                     CombatantProfilePlayer cpp = (CombatantProfilePlayer) p;
                     Player player = p.getPlayer();
@@ -190,17 +192,21 @@ public abstract class Gamemode {
 
                     BlockRay ray = BlockRay.from(player).distanceLimit(100).skipFilter(BlockRay.onlyAirFilter())
                             .stopFilter(BlockRay.allFilter()).build();
+
                     Cell newAim = null;
                     while (ray.hasNext()) {
                         BlockRayHit block = ray.next();
                         if (block.getLocation().getBlockType() != BlockTypes.AIR) {
                             if (grid.isCell(block.getLocation().getPosition())) {
+                                System.out.println("IS CELL");
                                 newAim = grid.getCell(block.getLocation().getPosition()).get();
-                            }
+                            } else
+                                System.out.println("NOT CELL");
                         }
                     }
 
                     if(mode == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT) {
+                        System.out.println("aim 2");
                         //Make sure targeting retcile needs to appear
                         if (cpp.getCurrentAim() != null && cpp.getCurrentAim() == newAim) {
                             continue;
@@ -211,6 +217,7 @@ public abstract class Gamemode {
                         cpp.setCurrentAim(newAim);
 
                         if(cpp.getCurrentAim() != null) {
+                            System.out.println("aim 3");
                             cpp.getCurrentAim().drawAimForPlayer(player);
                         }
 

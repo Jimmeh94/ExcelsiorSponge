@@ -77,7 +77,7 @@ public class ExcelsiorSponge {
 
     private void registerRunnables() {
         (new ArenaTimer(20L)).start();
-        (new DirectionalAimArenaTimer(20L)).start();
+        (new DirectionalAimArenaTimer(3L)).start();
     }
 
     private void registerListeners() {
