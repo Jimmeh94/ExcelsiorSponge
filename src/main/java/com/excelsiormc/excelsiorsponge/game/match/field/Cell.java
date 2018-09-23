@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.ServiceLocationUti
 import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
@@ -50,9 +51,10 @@ public class Cell {
         center = ServiceLocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
     }
 
-    public boolean isWithinCell(Vector3d check){
+    public boolean isWithinCell(Vector3i check){
         for(Vector3d v: locations){
-            if(v.getFloorX() == check.getFloorX() && v.getFloorY() == check.getFloorY() && v.getFloorZ() == check.getFloorZ()){
+            Vector3i temp = v.toInt();
+            if(temp.getX() == check.getX() && (temp.getY() == check.getY() || Math.abs(temp.getY() - check.getY()) <= 1) && temp.getZ() == check.getZ()){
                 return true;
             }
         }
@@ -82,7 +84,7 @@ public class Cell {
 
     public void clearAimForPlayer(Player player){
         for (Vector3d v : getVector3ds()) {
-            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.AIR).build());
+            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(material).build());
         }
     }
 
@@ -115,7 +117,7 @@ public class Cell {
         setAvailable(false);
         occupyingCard = card;
         occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), getCenter().getX(),
-                getCenter().getY(), getCenter().getZ()));
+                getCenter().getY() + 1, getCenter().getZ()));
         occupyingCard.setCurrentCell(this);
     }
 

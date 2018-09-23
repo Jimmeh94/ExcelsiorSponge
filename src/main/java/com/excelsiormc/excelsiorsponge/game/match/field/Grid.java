@@ -145,7 +145,7 @@ public abstract class Grid {
 
     public boolean isCell(Vector3d toVector3d) {
         for(Cell c: cells){
-            if(c.isWithinCell(toVector3d)){
+            if(c.isWithinCell(toVector3d.toInt())){
                 return true;
             }
         }
@@ -154,7 +154,7 @@ public abstract class Grid {
 
     public Optional<Cell> getCell(Vector3d toVector3d) {
         for(Cell c: cells){
-            if(c.isWithinCell(toVector3d)){
+            if(c.isWithinCell(toVector3d.toInt())){
                 return Optional.of(c);
             }
         }

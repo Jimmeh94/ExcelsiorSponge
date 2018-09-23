@@ -17,6 +17,8 @@ import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
@@ -26,6 +28,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.world.World;
 
 @Plugin(
         id = "excelsiorsponge",
@@ -69,6 +72,18 @@ public class ExcelsiorSponge {
         ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelStaff());
 
         mongoUtils.load();
+
+        clearAllEntities();
+    }
+
+    public void clearAllEntities(){
+        for(World w: Sponge.getServer().getWorlds()){
+            for(Entity e: w.getEntities()){
+                if(e instanceof ArmorStand){
+                    e.remove();
+                }
+            }
+        }
     }
 
     private void registerCommands() {

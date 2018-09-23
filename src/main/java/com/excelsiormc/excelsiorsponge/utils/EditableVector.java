@@ -16,6 +16,18 @@ public class EditableVector {
         this.z = z;
     }
 
+    public void subtract(double x, double y, double z){
+        this.x -= x;
+        this.y -= y;
+        this.z -= z;
+    }
+
+    public void add(double x, double y, double z){
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+
     public void setX(double x) {
         this.x = x;
     }

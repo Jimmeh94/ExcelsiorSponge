@@ -17,7 +17,8 @@ public class GridNormal extends Grid {
     protected void GenerateCells(Vector3d startingPos) {
 
         EditableVector use = new EditableVector(startingPos.clone());
-        use.setY(use.getY() + 1);
+        //use.setY(use.getY() + 1);
+        use.subtract(1, 0, 1);
 
         EditableVector endPosition = use.clone();
         EditableVector start = use.clone();
@@ -31,7 +32,7 @@ public class GridNormal extends Grid {
                     endPosition.setZ(endPosition.getZ());
                 }
             }
-            use.setZ(startingPos.getZ());
+            use.setZ(start.getZ());
 
             if(i < gridDemX - 1) {
                 use.setX(use.getX() + cellDemX + 1);
@@ -56,7 +57,7 @@ public class GridNormal extends Grid {
 
                 boolean needToPaint = true;
                 for(Cell cell: cells){
-                    if(needToPaint == true && cell.isWithinCell(temp.toVector3d())){
+                    if(needToPaint == true && cell.isWithinCell(temp.toVector3d().toInt())){
                         needToPaint = false;
                     }
                 }

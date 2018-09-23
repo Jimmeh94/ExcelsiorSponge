@@ -26,6 +26,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 
+import java.nio.file.OpenOption;
+import java.util.Optional;
+
 public class HotbarHand extends Hotbar {
 
     private CombatantProfilePlayer profile;
@@ -68,7 +71,11 @@ public class HotbarHand extends Hotbar {
 
                         if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
                             currentAim.placeCard(profile.getHand().getCard(index));
-                            InventoryUtils.getSlot(index, player).get().clear();
+
+                            Optional<Slot> op = InventoryUtils.getSlot(index, player);
+                            if(op.isPresent()){
+                                op.get().clear();
+                            }
                             setHotbar(player);
                         }
                     } else if(action == HandTypes.OFF_HAND){

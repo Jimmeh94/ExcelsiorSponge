@@ -10,6 +10,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.util.List;
 import java.util.UUID;
@@ -125,8 +126,8 @@ public abstract class CardBase {
         }
     }
 
-    public void moveArmorStand(Vector3d direction){
-        stand.setVelocity(direction.mul(2));
+    public void moveArmorStand(Vector3d destination){
+        stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
     }
 
     public CardMovement getMovement() {
