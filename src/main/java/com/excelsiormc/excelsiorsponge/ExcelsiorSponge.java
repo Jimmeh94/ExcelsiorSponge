@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge;
 
 import com.excelsiormc.excelsiorsponge.commands.ArenaCommands;
+import com.excelsiormc.excelsiorsponge.events.DuelEvents;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMongoDB;
@@ -102,9 +103,11 @@ public class ExcelsiorSponge {
     }
 
     private void registerListeners() {
-        //Core Listeners
+        //Core events
         Sponge.getEventManager().registerListeners(this, new ChatEvents());
 
+        //Excelsior events
+        Sponge.getEventManager().registerListeners(this, new DuelEvents());
         Sponge.getEventManager().registerListeners(this, new PlayerEvents());
         Sponge.getEventManager().registerListeners(this, new WorldEvents());
     }

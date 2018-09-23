@@ -10,6 +10,7 @@ public abstract class CardMovement {
     protected CardBase owner;
     protected int distanceInCells;
     protected List<Cell> currentlyHighlighed;
+    protected boolean canMoveThisTurn = true;
 
     public CardMovement(int distanceInCells) {
         this.distanceInCells = distanceInCells;
@@ -27,6 +28,14 @@ public abstract class CardMovement {
 
     public void setCurrentlyHighlighed(List<Cell> currentlyHighlighed) {
         this.currentlyHighlighed = currentlyHighlighed;
+    }
+
+    public void setCanMoveThisTurn(boolean canMoveThisTurn) {
+        this.canMoveThisTurn = canMoveThisTurn;
+    }
+
+    public boolean canMoveThisTurn(){
+        return canMoveThisTurn;
     }
 
     public void clearCurrentlyHighlighted(){

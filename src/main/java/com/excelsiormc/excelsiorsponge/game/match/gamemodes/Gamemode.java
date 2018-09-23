@@ -1,7 +1,10 @@
 package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
@@ -13,6 +16,7 @@ import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlaye
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -291,12 +295,18 @@ public abstract class Gamemode {
                 currentTurn = teams.get(0);
             } else {
                 int index = teams.indexOf(currentTurn);
+
+                Sponge.getEventManager().post(new DuelEvent.EndTurn(ExcelsiorSponge.getServerCause(), currentTurn));
+
                 if(index == teams.size() - 1){
                     currentTurn = teams.get(0);
                 } else {
                     currentTurn = teams.get(index + 1);
                 }
             }
+
+            Sponge.getEventManager().post(new DuelEvent.BeginTurn(ExcelsiorSponge.getServerCause(), currentTurn));
+
             elapsedTime = 0;
             currentTurn.drawCard();
             currentTurn.broadcastStartTurnMessage();
@@ -308,6 +318,7 @@ public abstract class Gamemode {
                             Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(c.getPlayer());
                         }
                     }
+
                 } else {
                     for(CombatantProfile c: team.getCombatants()){
                         if(c.isPlayer()){

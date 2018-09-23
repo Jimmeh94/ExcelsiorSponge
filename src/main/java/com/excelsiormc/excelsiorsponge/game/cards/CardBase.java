@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.cards;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.flowpowered.math.vector.Vector3d;
@@ -128,7 +129,7 @@ public abstract class CardBase {
         }
     }
 
-    public void moveArmorStand(Vector3d destination){
+    public void moveArmorStand(Vector3d destination, Cell old){
         stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
         ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
@@ -137,6 +138,9 @@ public abstract class CardBase {
                 cardMovement.clearCurrentlyHighlighted();
             }
         });
+        cardMovement.setCanMoveThisTurn(false);
+
+        Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
     }
 
     public CardMovement getMovement() {

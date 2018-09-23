@@ -11,6 +11,7 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Team {
@@ -65,6 +66,15 @@ public class Team {
     public boolean isPlayerCombatant(Player player) {
         for(CombatantProfile p: combatants){
             if(p.isPlayer() && p.getUUID().compareTo(player.getUniqueId()) == 0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isCombatant(UUID uuid){
+        for(CombatantProfile p: combatants){
+            if(p.getUUID().compareTo(uuid) == 0){
                 return true;
             }
         }

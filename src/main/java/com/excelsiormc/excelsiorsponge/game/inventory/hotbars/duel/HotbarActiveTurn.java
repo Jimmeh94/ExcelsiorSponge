@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.game.user.scoreboard.ArenaDefaultPreset;
@@ -56,6 +57,11 @@ public class HotbarActiveTurn extends Hotbar {
                 //Brings up hotbar about that card
                 CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                 if(cpp.getCurrentAim() == null || cpp.getCurrentAim().getOccupyingCard() == null){
+                    return;
+                }
+
+                if(!cpp.getCurrentAim().getOccupyingCard().getMovement().canMoveThisTurn()){
+                    Messager.sendMessage(player, Text.of(TextColors.RED, "That card can't move this turn"), Messager.Prefix.ERROR);
                     return;
                 }
 

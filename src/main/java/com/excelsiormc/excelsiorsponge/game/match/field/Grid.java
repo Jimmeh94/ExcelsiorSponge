@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -199,5 +200,31 @@ public abstract class Grid {
         for(Cell cell: cells){
             cell.clearAimForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
         }
+    }
+
+    public List<CardBase> getActiveCardsOnFieldForTeam(Team team){
+        List<CardBase> give = new ArrayList<>();
+
+        for(Cell cell: cells){
+            if(!cell.isAvailable()){
+                if(team.isCombatant(cell.getOccupyingCard().getOwner())){
+                    give.add(cell.getOccupyingCard());
+                }
+            }
+        }
+
+        return give;
+    }
+
+    public List<CardBase> getActiveCardsOnField(){
+        List<CardBase> give = new ArrayList<>();
+
+        for(Cell cell: cells){
+            if(!cell.isAvailable()){
+                give.add(cell.getOccupyingCard());
+            }
+        }
+
+        return give;
     }
 }
