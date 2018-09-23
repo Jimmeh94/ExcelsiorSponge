@@ -1,6 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.cards;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -128,6 +130,13 @@ public abstract class CardBase {
 
     public void moveArmorStand(Vector3d destination){
         stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
+
+        ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
+            @Override
+            public void doTask() {
+                cardMovement.clearCurrentlyHighlighted();
+            }
+        });
     }
 
     public CardMovement getMovement() {

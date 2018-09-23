@@ -46,6 +46,9 @@ public class ExcelsiorSponge {
     private ManagerArena arenaManager;
     private MongoUtils mongoUtils;
 
+    private ArenaTimer arenaTimer;
+    private DirectionalAimArenaTimer directionalAimArenaTimer;
+
     @Listener
     public void onGameInit(GameInitializationEvent event){
         new ExcelsiorCore();
@@ -91,8 +94,11 @@ public class ExcelsiorSponge {
     }
 
     private void registerRunnables() {
-        (new ArenaTimer(20L)).start();
-        (new DirectionalAimArenaTimer(3L)).start();
+        arenaTimer = new ArenaTimer(20L);
+        arenaTimer.start();
+
+        directionalAimArenaTimer = new DirectionalAimArenaTimer(3L);
+        directionalAimArenaTimer.start();
     }
 
     private void registerListeners() {
@@ -114,5 +120,14 @@ public class ExcelsiorSponge {
 
     public static Cause getServerCause(){
         EventContext context = EventContext.builder().add(EventContextKeys.PLUGIN, PLUGIN_CONTAINER).build();
-        return Cause.builder().append(PLUGIN_CONTAINER).build(context);}
+        return Cause.builder().append(PLUGIN_CONTAINER).build(context);
+    }
+
+    public ArenaTimer getArenaTimer() {
+        return arenaTimer;
+    }
+
+    public DirectionalAimArenaTimer getDirectionalAimArenaTimer() {
+        return directionalAimArenaTimer;
+    }
 }

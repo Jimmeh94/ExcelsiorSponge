@@ -70,7 +70,7 @@ public class HotbarHand extends Hotbar {
                         Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
 
                         if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
-                            currentAim.placeCard(profile.getHand().getCard(index));
+                            currentAim.setOccupyingCard(profile.getHand().getCard(index), true);
 
                             Optional<Slot> op = InventoryUtils.getSlot(index, player);
                             if(op.isPresent()){

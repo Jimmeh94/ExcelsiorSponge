@@ -85,6 +85,7 @@ public class PlayerEvents {
                             Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
                             PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
                             PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
+                            aim.setOccupyingCard(card, false);
                         }
                     }
                 } else {

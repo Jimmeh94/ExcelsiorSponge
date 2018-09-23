@@ -73,7 +73,7 @@ public abstract class Grid {
         ev.setX(start.getX() - (tempDistance * distanceInCells));
         ev.setZ(start.getZ() - (tempDistance * distanceInCells));
 
-        EditableVector use = new EditableVector(start.clone());
+        EditableVector use = ev.clone();
 
         //Now we have bottom right corner of area
         int limit = distanceInCells * 2;
@@ -91,7 +91,7 @@ public abstract class Grid {
                 }
                 use.setX(use.getX() + tempDistance);
             }
-            use.setX(start.getX());
+            use.setX(ev.getX());
             use.setZ(use.getZ() + tempDistance);
         }
 

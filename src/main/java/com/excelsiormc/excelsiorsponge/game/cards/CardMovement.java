@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.cards;
 
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import org.spongepowered.api.Sponge;
 
 import java.util.List;
 
@@ -26,6 +27,12 @@ public abstract class CardMovement {
 
     public void setCurrentlyHighlighed(List<Cell> currentlyHighlighed) {
         this.currentlyHighlighed = currentlyHighlighed;
+    }
+
+    public void clearCurrentlyHighlighted(){
+        for(Cell cell: currentlyHighlighed){
+            cell.clearAimForPlayer(Sponge.getServer().getPlayer(owner.getOwner()).get());
+        }
     }
 
     public boolean isAvailableSpace(Cell aim) {

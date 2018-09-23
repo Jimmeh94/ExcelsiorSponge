@@ -113,11 +113,13 @@ public class Cell {
         return occupyingCard;
     }
 
-    public void placeCard(CardBase card) {
+    public void setOccupyingCard(CardBase card, boolean spawnArmorStand) {
         setAvailable(false);
         occupyingCard = card;
-        occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), getCenter().getX(),
-                getCenter().getY() + 1, getCenter().getZ()));
+        if(spawnArmorStand) {
+            occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), getCenter().getX(),
+                    getCenter().getY() + 1, getCenter().getZ()));
+        }
         occupyingCard.setCurrentCell(this);
     }
 

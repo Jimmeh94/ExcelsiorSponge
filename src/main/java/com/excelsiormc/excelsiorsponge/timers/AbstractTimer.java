@@ -4,11 +4,15 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public abstract class AbstractTimer implements Runnable {
 
     protected Task task;
     private int intervalsPassed = 0, cancelAt = -1;
     private long interval, delay;
+    private List<DelayedTask> delayedTasks;
 
     protected abstract void runTask();
 
@@ -24,6 +28,11 @@ public abstract class AbstractTimer implements Runnable {
         this.interval = interval;
         this.delay = delay;
         this.cancelAt = cancelAt;
+        delayedTasks = new CopyOnWriteArrayList<>();
+    }
+
+    public void addDelayedTask(DelayedTask task){
+        delayedTasks.add(task);
     }
 
     public void start(){
@@ -48,9 +57,35 @@ public abstract class AbstractTimer implements Runnable {
             stop();
         }
         runTask();
+
+        for(DelayedTask task: delayedTasks){
+            if(task.tick()){
+                delayedTasks.remove(task);
+            }
+        }
     }
 
     public Task getTask() {
         return task;
+    }
+
+    public static abstract class DelayedTask{
+
+        protected int delayPeriods;
+
+        public abstract void doTask();
+
+        public DelayedTask(int delayPeriods) {
+            this.delayPeriods = delayPeriods;
+        }
+
+        protected boolean tick(){
+            if(delayPeriods <= 0){
+                doTask();
+                return true;
+            }
+            delayPeriods--;
+            return false;
+        }
     }
 }
