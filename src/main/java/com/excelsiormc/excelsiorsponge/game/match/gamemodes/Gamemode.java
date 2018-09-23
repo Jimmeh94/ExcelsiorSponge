@@ -4,7 +4,7 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
@@ -17,7 +17,6 @@ import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
@@ -273,10 +272,14 @@ public abstract class Gamemode {
         return gameStage;
     }
 
-    public void handlePlayerRightEmptyClick() {
+    public void handlePlayerEmptyClick(Player player) {
         /**
          * Should bring up info about that cell and the occupying card if there
          */
+        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+        if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable() && cpp.getCurrentAim().getOccupyingCard() instanceof CardBaseMonster){
+            ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
+        }
     }
 
 

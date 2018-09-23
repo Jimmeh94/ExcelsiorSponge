@@ -7,6 +7,8 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
@@ -81,14 +83,22 @@ public class HotbarHand extends Hotbar {
                     } else if(action == HandTypes.OFF_HAND){
                         //Display client side in front of player
                         if(profile.getHand().hasCardAt(index)){
-                            Location display = player.getLocation().copy();
+                            /*Location display = player.getLocation().copy();
                             Vector3d direction = display.getPosition();
                             display.add(2 * direction.getX(), 0, 2 * direction.getZ());
-                            profile.getHand().viewCard(index).displayCardDescription(display);
+                            profile.getHand().viewCard(index).displayCardDescription(display);*/
 
-                            UserPlayer userPlayer = (UserPlayer) ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get();
+                            CardBase card = profile.getHand().viewCard(index);
+                            if(card instanceof CardBaseMonster){
+                                CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                                if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable()){
+                                    ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
+                                }
+                            }
+
+                            /*UserPlayer userPlayer = (UserPlayer) ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get();
                             HotbarCardDescription hotbar = new HotbarCardDescription(profile.getHand().viewCard(index), userPlayer.getCurrentHotbar());
-                            hotbar.setHotbar(player);
+                            hotbar.setHotbar(player);*/
                         }
                     }
                 }

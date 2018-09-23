@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.events.custom;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import org.spongepowered.api.event.cause.Cause;

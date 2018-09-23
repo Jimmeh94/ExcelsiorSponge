@@ -124,7 +124,7 @@ public class Arena {
         return false;
     }
 
-    public void handlePlayerRightEmptyClick() {
-        gamemode.handlePlayerRightEmptyClick();
+    public void handlePlayerEmptyClick(Player player) {
+        gamemode.handlePlayerEmptyClick(player);
     }
 }

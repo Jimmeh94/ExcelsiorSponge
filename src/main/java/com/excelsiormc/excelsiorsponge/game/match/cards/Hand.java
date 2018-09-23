@@ -1,5 +1,5 @@
 package com.excelsiormc.excelsiorsponge.game.match.cards;
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 
 import java.util.List;
 import java.util.UUID;

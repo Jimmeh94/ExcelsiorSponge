@@ -1,5 +1,6 @@
-package com.excelsiormc.excelsiorsponge.game.cards;
+package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import org.spongepowered.api.Sponge;
 

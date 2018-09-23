@@ -5,13 +5,12 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatChannelManager;
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
-import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
@@ -21,7 +20,6 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.item.ItemTypes;
 
 public class PlayerEvents {
 
@@ -55,16 +53,17 @@ public class PlayerEvents {
 
             if(event instanceof InteractBlockEvent.Primary){
                 hand = ((InteractBlockEvent.Primary)event).getHandType();
+
+                //Should show cell and occupying card info
+                if(InventoryUtils.isHandEmpty(player, hand)){
+                    if(userPlayer.isInDuel() && userPlayer.getPlayerMode() != UserPlayer.PlayerMode.ARENA_MOVING_CARD){
+                        ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get().handlePlayerEmptyClick(player);
+                        return;
+                    }
+                }
+
             } else {
                 hand = ((InteractBlockEvent.Secondary)event).getHandType();
-            }
-
-            //Should show cell and occupying card info
-            if(InventoryUtils.isHandEmpty(player, hand)){
-                if(userPlayer.getPlayerMode() != UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                    ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get().handlePlayerRightEmptyClick();
-                    return;
-                }
             }
 
             //should move card if appropriate

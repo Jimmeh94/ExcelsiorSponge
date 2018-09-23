@@ -2,7 +2,7 @@ package com.excelsiormc.excelsiorsponge.events;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import org.spongepowered.api.event.Listener;
 

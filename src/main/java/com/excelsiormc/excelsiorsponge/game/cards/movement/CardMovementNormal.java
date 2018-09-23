@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.game.cards;
+package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;

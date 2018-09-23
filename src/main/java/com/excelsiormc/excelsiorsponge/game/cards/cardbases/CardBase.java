@@ -1,7 +1,9 @@
-package com.excelsiormc.excelsiorsponge.game.cards;
+package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.flowpowered.math.vector.Vector3d;
@@ -12,6 +14,7 @@ import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -21,7 +24,8 @@ import java.util.UUID;
 public abstract class CardBase {
 
     private double level;
-    private String name;
+    private Text name;
+    private List<Text> lore;
     private UUID owner;
     private ArmorStand stand;
     private ItemType material;
@@ -30,7 +34,7 @@ public abstract class CardBase {
     private Cell currentCell;
     private CardMovement cardMovement;
 
-    public CardBase(UUID owner, double level, String name, ItemType material, int materialDamageValue, CardMovement cardMovement) {
+    public CardBase(UUID owner, double level, Text name, ItemType material, int materialDamageValue, CardMovement cardMovement) {
         this.owner = owner;
         this.level = level;
         this.name = name;
@@ -40,6 +44,14 @@ public abstract class CardBase {
         this.cardMovement.setOwner(this);
 
         generateItemStack();
+    }
+
+    protected Message getLoreAsMessage(){
+        Message.Builder builder = Message.builder();
+        for(Text text: lore){
+            builder.addAsChild(text, TextColors.GOLD);
+        }
+        return builder.build();
     }
 
     protected abstract List<Text> generateLore();
@@ -55,7 +67,10 @@ public abstract class CardBase {
     public void generateItemStack(){
         mesh = ItemStack.builder().itemType(material).build();
         mesh.offer(Keys.ITEM_DURABILITY, materialDamageValue);
-        mesh.offer(Keys.ITEM_LORE, generateLore());
+
+        lore = generateLore();
+        mesh.offer(Keys.ITEM_LORE, lore);
+
         mesh.offer(Keys.DISPLAY_NAME, Text.of(name));
     }
 
@@ -75,41 +90,8 @@ public abstract class CardBase {
         return level;
     }
 
-    public String getName() {
+    public Text getName() {
         return name;
-    }
-
-    /**
-     * This will display the 3D view in front of the card owner with a book/chat with details of the description
-     * @param location
-     */
-    public void displayCardDescription(Location location){
-        /*Player player = Bukkit.getPlayer(owner);
-        if(player == null){
-            return;
-        }
-
-        if(clientArmorStand != null && clientArmorStand.getFirst() != null){
-            PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(clientArmorStand.getFirst().getId());
-            NMSUtils.getPlayerConnection(player).sendPacket(packet);
-        }
-
-        description = new EntityArmorStand(((CraftWorld)location.getWorld()).getHandle(), location.getX(), location.getY(), location.getZ());
-        description.setInvisible(true);
-        description.setBasePlate(false);
-        //description.setCustomName(name);
-        description.setCustomNameVisible(true);
-
-        clientArmorStand = new Pair<>(description, Arrays.asList(owner));
-
-        PacketPlayOutSpawnEntityLiving packet = new PacketPlayOutSpawnEntityLiving(clientArmorStand.getFirst());
-        PacketPlayOutEntityEquipment equipment = new PacketPlayOutEntityEquipment(clientArmorStand.getFirst().getId(), EnumItemSlot.HEAD, NMSUtils.getNMSCopy(mesh));
-
-        PlayerConnection connection = NMSUtils.getPlayerConnection(player);
-        connection.sendPacket(packet);
-        connection.sendPacket(equipment);
-
-        PlayerUtils.getCombatProfilePlayer(owner).get().setViewingClientArmorstand(new CombatantProfilePlayer.ViewingClientArmorstand(clientArmorStand.getFirst(), owner));*/
     }
 
     public void spawn3DRepresentationServer(Location center) {

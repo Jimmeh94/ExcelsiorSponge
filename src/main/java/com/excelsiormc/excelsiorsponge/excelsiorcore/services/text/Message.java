@@ -1,10 +1,15 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.text;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.Stats;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +19,19 @@ import java.util.List;
 public class Message {
 
     public static Builder builder(){return new Builder();}
+
+    public static Message from(Stats stats, Text statOwner, Player displayTo){
+        Builder builder = builder();
+        builder.addReceiver(displayTo);
+        builder.addAsChild(Text.builder().append(Text.of(TextColors.GRAY, statOwner.toPlain()), Text.of(TextColors.GRAY, "'s Stats")).build(), TextColors.GOLD);
+
+        for(StatBase statBase: ((Collection<StatBase>)stats.getStats())){
+            builder.addAsChild(Text.builder().append(statBase.getDisplayName(),
+                    Text.of(TextColors.GRAY, ": " + String.valueOf(statBase.getCurrent()) + "/" + String.valueOf(statBase.getMax()))).build(),
+                    TextColors.GOLD);
+        }
+        return builder.build();
+    }
 
     private Entry[] messages;
     private Player[] sendTo;
@@ -58,6 +76,17 @@ public class Message {
 
         public Message build(){
             return new Message(sendTo.toArray(new Player[sendTo.size()]), messages.toArray(new Entry[messages.size()]));
+        }
+
+        public Builder append(Message message){
+            for(Player player: message.sendTo){
+                if(!this.sendTo.contains(player)){
+                    this.sendTo.add(player);
+                }
+            }
+
+            this.messages.addAll(Arrays.asList(message.messages));
+            return this;
         }
 
     }

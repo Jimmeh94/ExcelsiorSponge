@@ -1,9 +1,10 @@
 package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
-import com.excelsiormc.excelsiorsponge.game.cards.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.CardMovementNormal;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
+import com.excelsiormc.excelsiorsponge.game.StatIDs;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementNormal;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -13,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CardDummyTwo extends CardBase {
+public class CardDummyTwo extends CardBaseMonster {
 
     public CardDummyTwo(UUID owner) {
-        super(owner, 1, "Dummy 2 Card", ItemTypes.STONE, (short)1.0, new CardMovementNormal(1));
+        super(owner, 1, Text.of("Dummy 2 Card"), ItemTypes.STONE, (short)1.0, new CardMovementNormal(1));
     }
 
     @Override
@@ -27,5 +28,12 @@ public class CardDummyTwo extends CardBase {
         give.add(Text.of(" "));
         give.add(Text.of(TextColors.GRAY, TextStyles.ITALIC, "This card is a place holder for testing purposes"));
         return give;
+    }
+
+    @Override
+    protected void generateStats() {
+        stats.addStat(StatIDs.HEALTH, new StatBase(150, 150, Text.of(TextColors.RED, "Health")));
+        stats.addStat(StatIDs.ATTACK, new StatBase(25, 25, Text.of(TextColors.RED, "Attack Damage")));
+        stats.addStat(StatIDs.CAST_COST, new StatBase(2, 2, Text.of(TextColors.RED, "Cast Cost")));
     }
 }

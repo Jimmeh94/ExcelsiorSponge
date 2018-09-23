@@ -9,10 +9,12 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class Hotbar {
 
@@ -67,7 +69,13 @@ public abstract class Hotbar {
     }
 
     public void handle(Player player, HandType handClick) {
-        int index = InventoryUtils.getHeldItemSlot(player, handClick).get().getValue();
+        Optional<SlotIndex> slotIndex = InventoryUtils.getHeldItemSlot(player, handClick);
+
+        if(!slotIndex.isPresent()){
+            return;
+        }
+
+        int index = slotIndex.get().getValue();
 
         if(items.get(index) != null && items.get(index).getSecond() != null){
             items.get(index).getSecond().action(player, handClick);
