@@ -1,13 +1,20 @@
 package com.excelsiormc.excelsiorsponge.game.match.matchmaking;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.GamemodeDuel;
+import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemodes;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.managers.ManagerArena;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+
+import java.util.Optional;
 
 public class MatchMaker {
 
@@ -28,18 +35,26 @@ public class MatchMaker {
     }
 
     public void playerLeaveQueue(Player player){
-        UserPlayer userPlayer = PlayerUtils.getUserPlayer(player.getUniqueId()).get();
-        for(Queues queues: Queues.values()){
-            queues.getQueue().removePlayer(userPlayer);
+        Optional<UserPlayer> op = PlayerUtils.getUserPlayer(player.getUniqueId());
+        if(op.isPresent()){
+            UserPlayer userPlayer = op.get();
+            for(Queues queues: Queues.values()){
+                queues.getQueue().removePlayer(userPlayer);
+                Messager.sendMessage(userPlayer.getPlayer(), queues.getLeaveMessage(), Messager.Prefix.ERROR);
+            }
         }
+
     }
 
     public void playerJoinQueue(Player player, Queues queue){
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(player.getUniqueId()).get();
         queue.getQueue().addPlayer(userPlayer);
 
+        Messager.sendMessage(player, queue.getJoinMessage(), Messager.Prefix.SUCCESS);
+
         if(queue.getQueue().canStart()){
             startGame(queue.getQueue());
+            Messager.sendMessage(player, Text.of(TextColors.GREEN, "Match found!"), Messager.Prefix.SUCCESS);
         }
     }
 
@@ -50,9 +65,22 @@ public class MatchMaker {
          * create gamemode
          * arena.get.start
          */
-        UserPlayer userPlayer = PlayerUtils.getUserPlayer(player.getUniqueId()).get();
-        Gamemode gamemode = new GamemodeDuel(arena.get().getWorld());
-        gamemode.addTeam(new Team(new CombatantProfilePlayer(player.getUniqueId(), userPlayer.getDeck())));
-        arena.get().start(gamemode);
+
+        Arena arena = arenaManager.getAvailableArena().get();
+        Gamemode gamemode = null;
+
+        if(queue.getGamemode() == Gamemodes.DUEL){
+
+            Team one = new Team(), two = new Team();
+            queue.assignTeams(one, two);
+
+            gamemode = new GamemodeDuel(arena.getWorld());
+            gamemode.addTeam(one);
+            gamemode.addTeam(two);
+        }
+
+        arena.start(gamemode);
+
+        queue.clear();
     }
 }

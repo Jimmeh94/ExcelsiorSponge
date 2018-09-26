@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.GridNormal;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.GamemodeDuel;
+import com.excelsiormc.excelsiorsponge.game.match.matchmaking.Queues;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
@@ -94,6 +95,8 @@ public class ArenaCommands implements CommandExecutor {
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);
             }
 
+        } else if(mode.equalsIgnoreCase("join")){
+            ExcelsiorSponge.INSTANCE.getMatchMaker().playerJoinQueue(player, Queues.DUEL);
         }
 
         return CommandResult.success();

@@ -50,9 +50,10 @@ public class PlayerEvents {
         event.setCancelled(true);
 
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
-        if(userPlayer.isInDuel()){
+        //if(userPlayer.isInDuel()){
             HandType hand;
             /**
+             * For duels:
              * Left clicks will be for actions
              * Right clicks will be for contextual things
              */
@@ -64,7 +65,7 @@ public class PlayerEvents {
                 hand = ((InteractBlockEvent.Secondary.MainHand)event).getHandType();
                 userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.RIGHT);
             }
-        }
+        //}
     }
 
     @Listener
