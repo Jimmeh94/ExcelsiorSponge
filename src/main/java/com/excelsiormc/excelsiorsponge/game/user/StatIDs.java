@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.game;
+package com.excelsiormc.excelsiorsponge.game.user;
 
 public class StatIDs {
 

@@ -17,6 +17,7 @@ import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.action.InteractEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
@@ -50,23 +51,35 @@ public class PlayerEvents {
         event.setCancelled(true);
 
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
-        //if(userPlayer.isInDuel()){
-            HandType hand;
-            /**
-             * For duels:
-             * Left clicks will be for actions
-             * Right clicks will be for contextual things
-             */
-            if(event instanceof InteractBlockEvent.Primary.MainHand){
-                hand = ((InteractBlockEvent.Primary.MainHand)event).getHandType();
-                userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.LEFT);
+        HandType hand;
+        /**
+         * For duels:
+         * Left clicks will be for actions
+         * Right clicks will be for contextual things
+         */
 
-            } else if(event instanceof InteractBlockEvent.Secondary.MainHand){
-                hand = ((InteractBlockEvent.Secondary.MainHand)event).getHandType();
-                userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.RIGHT);
-            }
-        //}
+        if(event instanceof InteractBlockEvent.Primary.MainHand){
+            hand = ((InteractBlockEvent.Primary.MainHand)event).getHandType();
+            userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.LEFT);
+
+        } else if(event instanceof InteractBlockEvent.Secondary.MainHand){
+            hand = ((InteractBlockEvent.Secondary.MainHand)event).getHandType();
+            userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.RIGHT);
+        }
+
     }
+
+    /*@Listener
+    public void onInteractEmpty(InteractEvent event, @Root Player player){
+        event.setCancelled(true);
+        System.out.println(event.getClass().getCanonicalName());
+        System.out.println("====================");
+
+        UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
+
+        //This is an empty right hand
+        userPlayer.getCurrentHotbar().handle(player, HandTypes.MAIN_HAND, ClickTypes.RIGHT);
+    }*/
 
     @Listener
     public void onBreak(ChangeBlockEvent.Break event, @Root Player player){
@@ -80,7 +93,7 @@ public class PlayerEvents {
         if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()){
             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(event.getPlayer().getUniqueId()).get();
 
-            if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_VIEWING_CARD_INFO || event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
+            if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
                 if(cpp.getCurrentAim() != null){
                     cpp.getCurrentAim().clearAimForPlayer(event.getPlayer());
                 }

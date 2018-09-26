@@ -205,11 +205,11 @@ public abstract class Gamemode {
                         }
                     }
 
+                    if (cpp.getCurrentAim() != null && cpp.getCurrentAim() == newAim) {
+                        continue;
+                    }
+
                     if(mode == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT) {
-                        //Make sure targeting retcile needs to appear
-                        if (cpp.getCurrentAim() != null && cpp.getCurrentAim() == newAim) {
-                            continue;
-                        }
                         if (cpp.getCurrentAim() != null) {
                             cpp.getCurrentAim().clearAimForPlayer(player);
                         }
@@ -220,15 +220,11 @@ public abstract class Gamemode {
                         }
 
                     } else if(mode == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                        //We only want to highlight a cell that the card can move to
-
-                        cpp.setCurrentAim(newAim);
-
-                    } else if(mode == UserPlayer.PlayerMode.ARENA_VIEWING_CARD_INFO){
-
                         cpp.setCurrentAim(newAim);
 
                     }
+
+                    Sponge.getEventManager().post(new DuelEvent.AimUpdated(ExcelsiorSponge.getServerCause(), cpp));
                 }
             }
         }

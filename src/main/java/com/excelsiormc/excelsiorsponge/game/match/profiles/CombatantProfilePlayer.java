@@ -3,6 +3,8 @@ package com.excelsiormc.excelsiorsponge.game.match.profiles;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 
 import java.util.UUID;
 
@@ -30,5 +32,7 @@ public class CombatantProfilePlayer extends CombatantProfile {
     public void setCurrentlyMovingCard(CardBase currentlyMovingCard) {
         this.currentlyMovingCard = currentlyMovingCard;
     }
+
+    public UserPlayer getUserPlayer(){return PlayerUtils.getUserPlayer(getUUID()).get();}
 
 }

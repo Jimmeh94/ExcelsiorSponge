@@ -61,8 +61,7 @@ public class UserPlayer extends PlayerBase {
     }
 
     public boolean isInDuel() {
-        return playerMode == PlayerMode.ARENA_DUEL_DEFAULT || playerMode == PlayerMode.ARENA_MOVING_CARD ||
-                playerMode == PlayerMode.ARENA_VIEWING_CARD_INFO;
+        return playerMode == PlayerMode.ARENA_DUEL_DEFAULT || playerMode == PlayerMode.ARENA_MOVING_CARD;
     }
 
     /**
@@ -71,7 +70,6 @@ public class UserPlayer extends PlayerBase {
     public enum PlayerMode{
         ARENA_ADD,
         ARENA_DUEL_DEFAULT,
-        ARENA_VIEWING_CARD_INFO,
         ARENA_MOVING_CARD,
 
         NORMAL;

@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
-import com.excelsiormc.excelsiorsponge.game.StatIDs;
+import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementNormal;
 import org.spongepowered.api.item.ItemTypes;

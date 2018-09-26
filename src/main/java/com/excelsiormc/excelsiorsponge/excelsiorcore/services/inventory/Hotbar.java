@@ -72,6 +72,11 @@ public abstract class Hotbar {
         Optional<SlotIndex> slotIndex = InventoryUtils.getHeldItemSlot(player, handClick);
 
         if(!slotIndex.isPresent()){
+            if (clickType == ClickTypes.LEFT) {
+                handleEmptyLeftClick(player);
+            } else {
+                handleEmptyRightClick(player);
+            }
             return;
         }
 
@@ -79,12 +84,6 @@ public abstract class Hotbar {
 
         if(items.get(index) != null && items.get(index).getSecond() != null){
             items.get(index).getSecond().performAction(clickType, player, handClick);
-        } else {
-            if (clickType == ClickTypes.LEFT) {
-                handleEmptyLeftClick(player);
-            } else {
-                handleEmptyRightClick(player);
-            }
         }
     }
 

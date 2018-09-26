@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.event.cause.Cause;
 
 public class DuelEvent extends CustomEvent {
@@ -90,6 +91,21 @@ public class DuelEvent extends CustomEvent {
 
         public Cell getCurrent() {
             return current;
+        }
+    }
+
+    public static class AimUpdated extends DuelEvent {
+
+        private CombatantProfilePlayer cpp;
+
+        public AimUpdated(Cause cause, CombatantProfilePlayer cpp) {
+            super(cause);
+
+            this.cpp = cpp;
+        }
+
+        public CombatantProfilePlayer getCombatPlayerProfile() {
+            return cpp;
         }
     }
 }

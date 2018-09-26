@@ -29,6 +29,7 @@ public class Cell {
     private boolean isAvailable = true;
     private CardBase occupyingCard;
     private Vector3d center;
+    private CellTypes cellType;
 
     public Cell(Vector3d startingPos, int xDem, int zDem, String world, BlockType material) {
         this.world = world;
@@ -49,6 +50,8 @@ public class Cell {
         }
 
         center = ServiceLocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
+
+        cellType = CellTypes.getRandomType();
     }
 
     public boolean isWithinCell(Vector3i check){
@@ -132,5 +135,9 @@ public class Cell {
 
     public String getWorld() {
         return world;
+    }
+
+    public CellTypes getCellType() {
+        return cellType;
     }
 }

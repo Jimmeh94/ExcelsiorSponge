@@ -28,6 +28,7 @@ public abstract class CardBaseMonster extends CardBase {
         return stats;
     }
 
+    @Override
     public void displayStats(Player displayTo){
         Message.Builder builder = Message.builder();
 

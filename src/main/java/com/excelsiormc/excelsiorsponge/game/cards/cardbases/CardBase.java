@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.ArmorStand;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -46,6 +47,9 @@ public abstract class CardBase {
         generateItemStack();
     }
 
+    protected abstract List<Text> generateLore();
+    public abstract void displayStats(Player displayTo);
+
     protected Message getLoreAsMessage(){
         Message.Builder builder = Message.builder();
         for(Text text: lore){
@@ -53,8 +57,6 @@ public abstract class CardBase {
         }
         return builder.build();
     }
-
-    protected abstract List<Text> generateLore();
 
     public void setCurrentCell(Cell currentCell) {
         this.currentCell = currentCell;
