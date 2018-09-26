@@ -6,7 +6,10 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
+import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
@@ -38,8 +41,13 @@ public class HotbarCardManipulate extends Hotbar {
 
         card = new Pair<>(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
                 //Activate card passive ability
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+
             }
         });
         addPair(1, card);
@@ -48,7 +56,16 @@ public class HotbarCardManipulate extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Card Description"));
         card = new Pair<>(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                displayDescription(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                displayDescription(player);
+            }
+
+            private void displayDescription(Player player){
                 Message.Builder builder = Message.builder();
                 builder.addReceiver(player);
                 builder.addMessage(Text.of(" "));
@@ -70,12 +87,47 @@ public class HotbarCardManipulate extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Return to Duel Menu"));
         card = new Pair<>(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                loadMenu(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                loadMenu(player);
+            }
+
+            private void loadMenu(Player player){
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
                 PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
                 PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
             }
         });
         addPair(8, card);
+    }
+
+    @Override
+    public void handleEmptyRightClick(Player player) {
+        DuelUtils.displayCellInfo(player);
+    }
+
+    @Override
+    public void handleEmptyLeftClick(Player player) {
+        //If aiming at appropriate cell for the card to move to, move card
+        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+        Cell aim = cpp.getCurrentAim();
+        CardBase card = cpp.getCurrentlyMovingCard();
+
+        if(aim != null){
+            if(card != null && card.getMovement().isAvailableSpace(aim)){
+                Cell old = card.getCurrentCell();
+                old.setAvailable(true);
+                aim.setOccupyingCard(card, false);
+                card.moveArmorStand(aim.getCenter(), old);
+
+                Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
+                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
+                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
+            }
+        }
     }
 }

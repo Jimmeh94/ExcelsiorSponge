@@ -24,7 +24,7 @@ public class PlayerUtils {
     }
 
     public static Optional<CombatantProfilePlayer> getCombatProfilePlayer(UUID uuid){
-        Optional<CombatantProfile> c = ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithCombatant(uuid).get().getCombatantProfile(uuid);
+        Optional<CombatantProfile> c = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(uuid).get().getCombatantProfile(uuid);
 
         return c.isPresent() && c.get().isPlayer() ? Optional.of((CombatantProfilePlayer)c.get()) : Optional.empty();
     }

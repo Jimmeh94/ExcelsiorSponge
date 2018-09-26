@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.game.user.scoreboard.ArenaDefaultPreset;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
@@ -23,7 +24,7 @@ public class HotbarActiveTurn extends Hotbar {
         super.setHotbar(player);
 
         UserPlayer user = PlayerUtils.getUserPlayer(player).get();
-        user.changeScoreboardPreset(new ArenaDefaultPreset(user, ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get()));
+        user.changeScoreboardPreset(new ArenaDefaultPreset(user, ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get()));
     }
 
     @Override
@@ -42,7 +43,16 @@ public class HotbarActiveTurn extends Hotbar {
 
         action = new Pair<>(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType hand) {
+                displayAbilityBar();
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                displayAbilityBar();
+            }
+
+            private void displayAbilityBar(){
                 //bring up ability hotbar
             }
         });
@@ -52,7 +62,7 @@ public class HotbarActiveTurn extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Move a Card"));
         action = new Pair<>(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
                 //Needs to be aiming at a cell with a card owned by this player
                 //Brings up hotbar about that card
                 CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
@@ -69,6 +79,11 @@ public class HotbarActiveTurn extends Hotbar {
                 PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
                 cpp.setCurrentlyMovingCard(cpp.getCurrentAim().getOccupyingCard());
             }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+
+            }
         });
         addPair(2, action);
 
@@ -76,8 +91,16 @@ public class HotbarActiveTurn extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Hand"));
         action = new Pair(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                displayhand(player);
+            }
 
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                displayhand(player);
+            }
+
+            private void displayhand(Player player){
                 CombatantProfilePlayer temp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                 UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
                 userPlayer.setCurrentHotbar(new HotbarHand(temp));
@@ -90,7 +113,16 @@ public class HotbarActiveTurn extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Discard Pile"));
         action = new Pair(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                displayDiscardPile(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                displayDiscardPile(player);
+            }
+
+            private void displayDiscardPile(Player player){
                 //TODO load dyanmic inventory
             }
         });
@@ -100,10 +132,29 @@ public class HotbarActiveTurn extends Hotbar {
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Options Menu"));
         action = new Pair(item, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                loadOptions(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                loadOptions(player);
+            }
+
+            private void loadOptions(Player player){
                 //TODO load options hotbar
             }
         });
         addPair(8, action);
+    }
+
+    @Override
+    public void handleEmptyRightClick(Player player) {
+        DuelUtils.displayCellInfo(player);
+    }
+
+    @Override
+    public void handleEmptyLeftClick(Player player) {
+        DuelUtils.displayCellInfo(player);
     }
 }

@@ -14,7 +14,7 @@ public class DuelEvents {
     public void onNewTurn(DuelEvent.BeginTurn event){
         Team team = event.getTeam();
 
-        List<CardBase> cards = ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithCombatant(team.getCombatants().get(0).getUUID()).get()
+        List<CardBase> cards = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(team.getCombatants().get(0).getUUID()).get()
                 .getGrid().getActiveCardsOnFieldForTeam(team);
         for(CardBase c: cards){
             c.getMovement().setCanMoveThisTurn(true);

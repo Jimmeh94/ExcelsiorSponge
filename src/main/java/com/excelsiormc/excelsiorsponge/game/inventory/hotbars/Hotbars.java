@@ -10,7 +10,7 @@ public class Hotbars {
     public static final HotbarDefault HOTBAR_DEFAULT = new HotbarDefault();
 
     public static boolean isArenaDuelHotbar(Hotbar hotbar){
-        return hotbar instanceof HotbarActiveTurn || hotbar instanceof HotbarCardDescription || hotbar instanceof HotbarCardManipulate
+        return hotbar instanceof HotbarActiveTurn || hotbar instanceof HotbarCardManipulate
                 || hotbar instanceof HotbarHand || hotbar instanceof HotbarWaitingTurn;
     }
 

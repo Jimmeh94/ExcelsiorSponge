@@ -10,6 +10,6 @@ public class ArenaTimer extends AbstractTimer {
 
     @Override
     protected void runTask() {
-        ExcelsiorSponge.INSTANCE.getArenaManager().tick();
+        ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().tick();
     }
 }

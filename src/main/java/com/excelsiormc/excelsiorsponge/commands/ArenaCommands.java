@@ -62,14 +62,14 @@ public class ArenaCommands implements CommandExecutor {
                 Vector3d start = player.getLocation().getPosition();
                 String world = player.getLocation().getExtent().getName();
 
-                ExcelsiorSponge.INSTANCE.getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, false), world));
+                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, false), world));
 
             } catch (NullPointerException e){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);
             }
 
         } else if(mode.equalsIgnoreCase("start")){
-            Optional<Arena> arena = ExcelsiorSponge.INSTANCE.getArenaManager().getAvailableArena();
+            Optional<Arena> arena = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().getAvailableArena();
             if(!arena.isPresent()){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "No arena is available. Tell staff"), Messager.Prefix.ERROR);
             } else {
@@ -88,7 +88,7 @@ public class ArenaCommands implements CommandExecutor {
                 Vector3d start = player.getLocation().getPosition();
                 String world = player.getLocation().getExtent().getName();
 
-                ExcelsiorSponge.INSTANCE.getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, true), world));
+                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, true), world));
 
             } catch (NullPointerException e){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);

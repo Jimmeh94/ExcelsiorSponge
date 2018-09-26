@@ -55,7 +55,7 @@ public class MongoUtils extends ServiceMongoDB {
                     Vector3d v = new Vector3d(Double.valueOf(temp[0]) + 1, Double.valueOf(temp[1]) + 1, Double.valueOf(temp[2]) + 1);
                     int gx = gridDoc.getInteger("gridX"), gz = gridDoc.getInteger("gridZ");
                     int cx = gridDoc.getInteger("cellX"), cz = gridDoc.getInteger("cellZ");
-                    ExcelsiorSponge.INSTANCE.getArenaManager().add(new Arena(new GridNormal(v, world, gx, gz, cx, cz, false), world, id));
+                    ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(v, world, gx, gz, cx, cz, false), world, id));
                 }
             });
         }
@@ -68,7 +68,7 @@ public class MongoUtils extends ServiceMongoDB {
             MongoDatabase database = getDatabase();
             MongoCollection<Document> arenas = database.getCollection(COLLECTION_ARENAS);
 
-            for(Arena arena: ExcelsiorSponge.INSTANCE.getArenaManager().getObjects()){
+            for(Arena arena: ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().getObjects()){
                 if(arenas.find(eq("id", arena.getID().toString())).first() != null){
                     continue;
                 }

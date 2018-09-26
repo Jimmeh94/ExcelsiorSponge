@@ -10,6 +10,6 @@ public class DirectionalAimArenaTimer extends AbstractTimer {
 
     @Override
     protected void runTask() {
-        ExcelsiorSponge.INSTANCE.getArenaManager().updatePlayersAim();
+        ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().updatePlayersAim();
     }
 }

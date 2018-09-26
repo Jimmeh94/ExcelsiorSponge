@@ -22,7 +22,7 @@ public class CardMovementNormal extends CardMovement {
     public List<Cell> getAvailableSpaces() {
         List<Cell> cells = new ArrayList<>();
 
-        Grid grid = ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
+        Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
         Cell current = owner.getCurrentCell();
 
         if(current != null){

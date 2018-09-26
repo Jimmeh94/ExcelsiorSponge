@@ -10,8 +10,10 @@ import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.ClickTypes;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.type.HandType;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
@@ -30,17 +32,17 @@ public class PlayerEvents {
         UserPlayer userPlayer = new UserPlayer(event.getTargetEntity());
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().add(userPlayer);
         ChatChannelManager.GLOBAL.addMember(userPlayer);
-        //TODO set default hotbar
+        Hotbars.HOTBAR_DEFAULT.setHotbar(userPlayer.getPlayer());
     }
 
     @Listener
     public void onLeave(ClientConnectionEvent.Disconnect event){
         event.setMessageCancelled(true);
 
-        ExcelsiorSponge.INSTANCE.getArenaManager().checkPlayer(event.getTargetEntity());
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(event.getTargetEntity()).get();
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().remove(userPlayer);
         ExcelsiorCore.INSTANCE.getChannelManager().removePlayerFromAllChannels(userPlayer);
+        ExcelsiorSponge.INSTANCE.getMatchMaker().playerLeave(event.getTargetEntity());
     }
 
     @Listener
@@ -50,55 +52,19 @@ public class PlayerEvents {
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
         if(userPlayer.isInDuel()){
             HandType hand;
+            /**
+             * Left clicks will be for actions
+             * Right clicks will be for contextual things
+             */
+            if(event instanceof InteractBlockEvent.Primary.MainHand){
+                hand = ((InteractBlockEvent.Primary.MainHand)event).getHandType();
+                userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.LEFT);
 
-            if(event instanceof InteractBlockEvent.Primary){
-                hand = ((InteractBlockEvent.Primary)event).getHandType();
-
-                //Should show cell and occupying card info
-                if(InventoryUtils.isHandEmpty(player, hand)){
-                    if(userPlayer.isInDuel() && userPlayer.getPlayerMode() != UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                        ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get().handlePlayerEmptyClick(player);
-                        return;
-                    }
-                }
-
-            } else {
-                hand = ((InteractBlockEvent.Secondary)event).getHandType();
-            }
-
-            //should move card if appropriate
-            if(userPlayer.getPlayerMode() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-
-                if(InventoryUtils.isHandEmpty(player, hand)){
-                    //If aiming at appropriate cell for the card to move to, move card
-                    CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                    Cell aim = cpp.getCurrentAim();
-                    CardBase card = cpp.getCurrentlyMovingCard();
-
-                    if(aim != null){
-                        if(card != null && card.getMovement().isAvailableSpace(aim)){
-                            Cell old = card.getCurrentCell();
-                            old.setAvailable(true);
-                            aim.setOccupyingCard(card, false);
-                            card.moveArmorStand(aim.getCenter(), old);
-
-                            Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                            PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
-                            PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
-                        }
-                    }
-                } else {
-                    //else let the hotbar handle the action
-                    userPlayer.getCurrentHotbar().handle(player, hand);
-                }
-
-            } else if(ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).isPresent() && Hotbars.isArenaDuelHotbar(userPlayer.getCurrentHotbar())){
-                userPlayer.getCurrentHotbar().handle(player, hand);
+            } else if(event instanceof InteractBlockEvent.Secondary.MainHand){
+                hand = ((InteractBlockEvent.Secondary.MainHand)event).getHandType();
+                userPlayer.getCurrentHotbar().handle(player, hand, ClickTypes.RIGHT);
             }
         }
-
-
-
     }
 
     @Listener
@@ -110,7 +76,7 @@ public class PlayerEvents {
 
     @Listener
     public void onModeChange(PlayerModeChangeEvent event){
-        if(ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()){
+        if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()){
             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(event.getPlayer().getUniqueId()).get();
 
             if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_VIEWING_CARD_INFO || event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
@@ -121,7 +87,7 @@ public class PlayerEvents {
                 if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
                     //highlight all available cells to move to as green
                     if(cpp.getCurrentAim() != null){
-                        ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithCombatant(event.getPlayer().getUniqueId()).get()
+                        ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(event.getPlayer().getUniqueId()).get()
                                 .getGrid().displayAvailableCellsToMoveTo(cpp.getCurrentAim().getOccupyingCard());
                     }
                 }
@@ -130,9 +96,9 @@ public class PlayerEvents {
                     cpp.getCurrentAim().drawAimForPlayer(event.getPlayer());
                 }
                 if(event.getChangeFrom() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                    for(Cell cell: ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(event.getPlayer()).get().getGrid().getCells()){
+                    for(Cell cell: ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).get().getGrid().getCells()){
                         if(!cell.isAvailable() && cell.getOccupyingCard().isOwner(event.getPlayer().getUniqueId())){
-                            ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(event.getPlayer()).get()
+                            ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).get()
                                     .getGrid().eraseAvailableCellsToMoveTo(cell.getOccupyingCard());
                         }
                     }

@@ -4,14 +4,12 @@ import com.excelsiormc.excelsiorsponge.commands.ArenaCommands;
 import com.excelsiormc.excelsiorsponge.events.DuelEvents;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMongoDB;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.events.WorldEvents;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelAuction;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
-import com.excelsiormc.excelsiorsponge.game.economy.currencies.CurrencyGold;
-import com.excelsiormc.excelsiorsponge.managers.ManagerArena;
+import com.excelsiormc.excelsiorsponge.game.match.matchmaking.MatchMaker;
 import com.excelsiormc.excelsiorsponge.timers.ArenaTimer;
 import com.excelsiormc.excelsiorsponge.timers.DirectionalAimArenaTimer;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
@@ -44,7 +42,7 @@ public class ExcelsiorSponge {
     public static ExcelsiorSponge INSTANCE;
     public static PluginContainer PLUGIN_CONTAINER;
 
-    private ManagerArena arenaManager;
+    private MatchMaker matchMaker;
     private MongoUtils mongoUtils;
 
     private ArenaTimer arenaTimer;
@@ -63,7 +61,7 @@ public class ExcelsiorSponge {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
-        arenaManager = new ManagerArena();
+        matchMaker = new MatchMaker();
 
         registerListeners();
         registerRunnables();
@@ -117,8 +115,8 @@ public class ExcelsiorSponge {
         mongoUtils.close();
     }
 
-    public ManagerArena getArenaManager() {
-        return arenaManager;
+    public MatchMaker getMatchMaker() {
+        return matchMaker;
     }
 
     public static Cause getServerCause(){

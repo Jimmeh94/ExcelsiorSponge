@@ -3,7 +3,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
-import org.spongepowered.api.data.key.Keys;
+import com.excelsiormc.excelsiorsponge.utils.ClickTypes;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
@@ -31,6 +31,8 @@ public abstract class Hotbar {
     }
 
     protected abstract void setupItems();
+    public abstract void handleEmptyRightClick(Player player);
+    public abstract void handleEmptyLeftClick(Player player);
 
     protected void addItem(int index, ItemStack item){
         items.put(index, new Pair<>(item, null));
@@ -57,8 +59,6 @@ public abstract class Hotbar {
 
         for (final Inventory temp : hotbar.slots()) {
             slot = (Slot) temp;
-            //slot.set(ItemStack.empty()); // Clear the existing item.
-
             if(items.containsKey(i)){
                 slot.set(items.get(i).getFirst());
             }
@@ -68,7 +68,7 @@ public abstract class Hotbar {
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get().setCurrentHotbar(this);
     }
 
-    public void handle(Player player, HandType handClick) {
+    public void handle(Player player, HandType handClick, ClickTypes clickType) {
         Optional<SlotIndex> slotIndex = InventoryUtils.getHeldItemSlot(player, handClick);
 
         if(!slotIndex.isPresent()){
@@ -78,13 +78,29 @@ public abstract class Hotbar {
         int index = slotIndex.get().getValue();
 
         if(items.get(index) != null && items.get(index).getSecond() != null){
-            items.get(index).getSecond().action(player, handClick);
+            items.get(index).getSecond().performAction(clickType, player, handClick);
+        } else {
+            if (clickType == ClickTypes.LEFT) {
+                handleEmptyLeftClick(player);
+            } else {
+                handleEmptyRightClick(player);
+            }
         }
     }
 
-    public interface Callback{
+    public abstract class Callback{
 
-        void action(Player player, HandType action);
+        public void performAction(ClickTypes clickType, Player player, HandType handType){
+
+            if(clickType ==  ClickTypes.LEFT){
+                actionLeftClick(player, handType);
+            } else if(clickType == ClickTypes.RIGHT){
+                actionRightClick(player, handType);
+            }
+        }
+
+        protected abstract void actionLeftClick(Player player, HandType hand);
+        protected abstract void actionRightClick(Player player, HandType hand);
     }
 
 }

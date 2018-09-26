@@ -14,6 +14,7 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.data.key.Keys;
@@ -59,46 +60,39 @@ public class HotbarHand extends Hotbar {
         for(int i = 0; i < profile.getHand().getSize(); i++){
             card = new Pair<ItemStack, Callback>(profile.getHand().viewCard(i).getMesh(), new Callback() {
                 @Override
-                public void action(Player player, HandType action) {
-                    if(ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get().getGamemode().getStage()
+                public void actionLeftClick(Player player, HandType action) {
+                    if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().getGamemode().getStage()
                             != Gamemode.Stage.IN_GAME){
                         return;
                     }
 
                     int index = InventoryUtils.getHeldItemSlot(player, action).get().getValue();
+                    //Lay card on field
+                    Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
 
-                    if(action == HandTypes.MAIN_HAND) {
-                        //Lay card on field
-                        Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
+                    if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
+                        currentAim.setOccupyingCard(profile.getHand().getCard(index), true);
 
-                        if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
-                            currentAim.setOccupyingCard(profile.getHand().getCard(index), true);
-
-                            Optional<Slot> op = InventoryUtils.getSlot(index, player);
-                            if(op.isPresent()){
-                                op.get().clear();
-                            }
-                            setHotbar(player);
+                        Optional<Slot> op = InventoryUtils.getSlot(index, player);
+                        if(op.isPresent()){
+                            op.get().clear();
                         }
-                    } else if(action == HandTypes.OFF_HAND){
-                        //Display client side in front of player
-                        if(profile.getHand().hasCardAt(index)){
-                            /*Location display = player.getLocation().copy();
-                            Vector3d direction = display.getPosition();
-                            display.add(2 * direction.getX(), 0, 2 * direction.getZ());
-                            profile.getHand().viewCard(index).displayCardDescription(display);*/
+                        setHotbar(player);
+                    }
+                }
 
-                            CardBase card = profile.getHand().viewCard(index);
-                            if(card instanceof CardBaseMonster){
-                                CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                                if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable()){
-                                    ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
-                                }
+                @Override
+                public void actionRightClick(Player player, HandType hand){
+                    //Display card info
+                    int index = InventoryUtils.getHeldItemSlot(player, hand).get().getValue();
+                    if(profile.getHand().hasCardAt(index)){
+
+                        CardBase card = profile.getHand().viewCard(index);
+                        if(card instanceof CardBaseMonster){
+                            CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                            if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable()){
+                                ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
                             }
-
-                            /*UserPlayer userPlayer = (UserPlayer) ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get();
-                            HotbarCardDescription hotbar = new HotbarCardDescription(profile.getHand().viewCard(index), userPlayer.getCurrentHotbar());
-                            hotbar.setHotbar(player);*/
                         }
                     }
                 }
@@ -111,7 +105,16 @@ public class HotbarHand extends Hotbar {
 
         card = new Pair<ItemStack, Callback>(temp, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
+            public void actionLeftClick(Player player, HandType action) {
+                print(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                print(player);
+            }
+
+            private void print(Player player){
                 Message.Builder builder = Message.builder();
                 builder.addReceiver(player);
                 builder.addMessage(Text.of(" "));
@@ -132,8 +135,17 @@ public class HotbarHand extends Hotbar {
         temp.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Game Menu"));
         card = new Pair<>(temp, new Callback() {
             @Override
-            public void action(Player player, HandType action) {
-                if(ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithPlayer(player).get().isPlayersTurn(player)){
+            public void actionLeftClick(Player player, HandType action) {
+                action(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                action(player);
+            }
+
+            private void action(Player player){
+                if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().isPlayersTurn(player)){
                     Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
                 } else {
                     Hotbars.HOTBAR_WAITING_TURN.setHotbar(player);
@@ -141,5 +153,15 @@ public class HotbarHand extends Hotbar {
             }
         });
         addPair(8, card);
+    }
+
+    @Override
+    public void handleEmptyRightClick(Player player) {
+        DuelUtils.displayCellInfo(player);
+    }
+
+    @Override
+    public void handleEmptyLeftClick(Player player) {
+        DuelUtils.displayCellInfo(player);
     }
 }

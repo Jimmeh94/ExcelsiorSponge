@@ -16,7 +16,7 @@ public class CardMovementDiagonal extends CardMovementNormal {
     @Override
     public List<Cell> getAvailableSpaces() {
         Vector3d start = owner.getCurrentCell().getCenter();
-        Grid grid = ExcelsiorSponge.INSTANCE.getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
+        Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
         return grid.getSquareGroupofCells(start, distanceInCells);
     }
 }
