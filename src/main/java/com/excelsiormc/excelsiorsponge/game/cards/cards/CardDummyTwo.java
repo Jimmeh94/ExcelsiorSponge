@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementBigCross;
 import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementNormal;
@@ -16,17 +17,12 @@ import java.util.UUID;
 public class CardDummyTwo extends CardBaseMonster {
 
     public CardDummyTwo(UUID owner) {
-        super(owner, 1, Text.of("Dummy 2 Card"), ItemTypes.STONE, (short)1.0, new CardMovementNormal(1));
+        super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, ItemTypes.STONE, (short)1.0, new CardMovementBigCross());
     }
 
     @Override
-    protected List<Text> generateLore() {
-        List<Text> give = new ArrayList<>();
-        give.add(Text.of(TextColors.GRAY, "Rarity: Rare"));
-        give.add(Text.of(TextColors.GRAY, "Level: 2"));
-        give.add(Text.of(" "));
-        give.add(Text.of(TextColors.GRAY, TextStyles.ITALIC, "This card is a place holder for testing purposes"));
-        return give;
+    protected Text getCardDescription() {
+        return Text.of(TextColors.GRAY, TextStyles.ITALIC, "This card is a place holder for testing purposes.");
     }
 
     @Override

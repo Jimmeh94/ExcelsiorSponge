@@ -3,6 +3,9 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.Stats;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
@@ -15,10 +18,13 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,21 +40,60 @@ public abstract class CardBase {
     private ItemStack mesh;
     private Cell currentCell;
     private CardMovement cardMovement;
+    protected Stats<CardBase> stats;
+    protected CardRarity rarity;
 
-    public CardBase(UUID owner, double level, Text name, ItemType material, int materialDamageValue, CardMovement cardMovement) {
+    public CardBase(UUID owner, double level, String name, CardRarity rarity, ItemType material, int materialDamageValue, CardMovement cardMovement) {
         this.owner = owner;
         this.level = level;
-        this.name = name;
+        this.name = Text.of(rarity.getColor(), name);
+        this.rarity = rarity;
         this.material = material;
         this.materialDamageValue = materialDamageValue;
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
 
+        stats = new Stats<>(this);
+
+        generateStats();
         generateItemStack();
     }
 
-    protected abstract List<Text> generateLore();
-    public abstract void displayStats(Player displayTo);
+    protected abstract void generateStats();
+    protected abstract Text getCardDescription();
+
+    protected List<Text> generateLore() {
+        List<Text> give = new ArrayList<>();
+        give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), rarity.getText()).build());
+        give.add(Text.of(TextColors.GRAY, "Level: 1"));
+        give.add(Text.of( " "));
+        give.add(getCardDescription());
+        return give;
+    }
+
+    public void displayAvailableSpotsToMoveTo(){
+        cardMovement.displayAvailableSpotsToMoveTo();
+    }
+
+    public CardRarity getRarity() {
+        return rarity;
+    }
+
+    public void displayStats(Player displayTo){
+        Message.Builder builder = Message.builder();
+
+        builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
+        builder.addMessage(getName());
+        builder.append(getLoreAsMessage());
+        builder.addMessage(Text.of(" "));
+        builder.append(Message.from(stats, getName(), displayTo));
+        builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
+        Messager.sendMessage(builder.build());
+    }
+
+    public Stats<CardBase> getStats() {
+        return stats;
+    }
 
     protected Message getLoreAsMessage(){
         Message.Builder builder = Message.builder();
@@ -107,7 +152,7 @@ public abstract class CardBase {
         center.getExtent().spawnEntity(stand);
     }
 
-    public void removeArmorStand(){
+    private void removeArmorStand(){
         if(stand != null){
             stand.remove();
         }
@@ -133,5 +178,33 @@ public abstract class CardBase {
 
     public boolean isOwner(UUID uniqueId) {
         return uniqueId.compareTo(owner) == 0;
+    }
+
+    public void cardEliminated(){
+        removeArmorStand();
+        currentCell.setAvailable(true);
+        Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
+    }
+
+    public enum CardRarity {
+        LEGENDARY(TextColors.GOLD),
+        RARE(TextColors.LIGHT_PURPLE),
+        UNCOMMON(TextColors.AQUA),
+        ENHANCED(TextColors.GREEN),
+        COMMON(TextColors.GRAY);
+
+        private TextColor color;
+
+        CardRarity(TextColor color) {
+            this.color = color;
+        }
+
+        public Text getText(){
+            return Text.of(color, StringUtils.capitalizeFirstLetter(this.toString()));
+        }
+
+        public TextColor getColor() {
+            return color;
+        }
     }
 }

@@ -16,17 +16,12 @@ import java.util.UUID;
 public class CardDummyThree extends CardBaseMonster {
 
     public CardDummyThree(UUID owner) {
-        super(owner, 1, Text.of("Dummy 3 Card"), ItemTypes.DIAMOND_HELMET, (short)1.0, new CardMovementDiagonal(2));
+        super(owner, 1, "Dummy 3 Card", CardRarity.LEGENDARY, ItemTypes.DIAMOND_HELMET, (short)1.0, new CardMovementDiagonal(2));
     }
 
     @Override
-    protected List<Text> generateLore() {
-        List<Text> give = new ArrayList<>();
-        give.add(Text.of(TextColors.GRAY, "Rarity: Legendary"));
-        give.add(Text.of(TextColors.GRAY, "Level: 3"));
-        give.add(Text.of(" "));
-        give.add(Text.of(TextColors.GRAY, TextStyles.ITALIC.toString() + "This card is a place holder for testing purposes."));
-        return give;
+    protected Text getCardDescription() {
+        return Text.of(TextColors.GRAY, TextStyles.ITALIC, "This card is a place holder for testing purposes.");
     }
 
     @Override

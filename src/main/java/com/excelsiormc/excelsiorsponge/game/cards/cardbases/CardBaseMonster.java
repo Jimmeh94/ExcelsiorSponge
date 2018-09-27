@@ -13,31 +13,7 @@ import java.util.UUID;
 
 public abstract class CardBaseMonster extends CardBase {
 
-    protected Stats<CardBase> stats;
-
-    public CardBaseMonster(UUID owner, double level, Text name, ItemType material, int materialDamageValue, CardMovement cardMovement) {
-        super(owner, level, name, material, materialDamageValue, cardMovement);
-
-        stats = new Stats<>(this);
-        generateStats();
-    }
-
-    protected abstract void generateStats();
-
-    public Stats<CardBase> getStats() {
-        return stats;
-    }
-
-    @Override
-    public void displayStats(Player displayTo){
-        Message.Builder builder = Message.builder();
-
-        builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
-        builder.addMessage(getName());
-        builder.append(getLoreAsMessage());
-        builder.addMessage(Text.of(" "));
-        builder.append(Message.from(stats, getName(), displayTo));
-        builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
-        Messager.sendMessage(builder.build());
+    public CardBaseMonster(UUID owner, double level, String name, CardRarity rarity, ItemType material, int materialDamageValue, CardMovement cardMovement) {
+        super(owner, level, name, rarity, material, materialDamageValue, cardMovement);
     }
 }

@@ -123,12 +123,12 @@ public class HotbarCardManipulate extends Hotbar {
             if(card != null){
                 CardMovement.MovementEntry entry = card.getMovement().getEntry(aim);
 
+                if(entry == null){
+                    return;
+                }
+
                 if(entry.getType() == CardMovement.MovementEntry.MovementEntryType.EMPTY){
                     DuelUtils.moveCardToCell(player);
-                    /*Cell old = card.getCurrentCell();
-                    old.setAvailable(true);
-                    aim.setOccupyingCard(card, false);
-                    card.moveArmorStand(aim.getCenter(), old);*/
                 } else {
                     //have the cards battle
                     ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()

@@ -2,8 +2,10 @@ package com.excelsiormc.excelsiorsponge.game.match;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
+import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
+import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -17,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Team {
 
     private List<CombatantProfile> combatants;
+    private Vector3d spawn;
 
     public Team() {
         combatants = new CopyOnWriteArrayList<>();
@@ -40,6 +43,9 @@ public class Team {
         }
     }
 
+    public Vector3d getSpawn() {
+        return spawn;
+    }
 
     public void broadcastEndTurnMessage(Text s) {
         for(CombatantProfile c: combatants){
@@ -98,5 +104,13 @@ public class Team {
                 }
             }
         }
+    }
+
+    public void setSpawn(Cell spawn) {
+        setSpawn(spawn.getCenter().clone().add(0, 10, 0));
+    }
+
+    public void setSpawn(Vector3d spawn){
+        this.spawn = spawn;
     }
 }

@@ -76,8 +76,8 @@ public class HotbarActiveTurn extends Hotbar {
                 }
 
                 (new HotbarCardManipulate(cpp.getCurrentAim().get().getOccupyingCard())).setHotbar(player);
-                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
                 cpp.setCurrentlyMovingCard(cpp.getCurrentAim().get().getOccupyingCard());
+                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
             }
 
             @Override

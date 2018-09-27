@@ -3,9 +3,7 @@ package com.excelsiormc.excelsiorsponge.events;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatChannelManager;
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
@@ -13,11 +11,9 @@ import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.ClickTypes;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.type.HandType;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.action.InteractEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
@@ -87,10 +83,9 @@ public class PlayerEvents {
                 }
 
                 if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                    //highlight all available cells to move to as green
+                    //highlight all available cells to move to
                     if(cpp.getCurrentAim().isPresent()){
-                        ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(event.getPlayer().getUniqueId()).get()
-                                .getGrid().displayAvailableCellsToMoveTo(cpp.getCurrentAim().get().getOccupyingCard());
+                        cpp.getCurrentlyMovingCard().displayAvailableSpotsToMoveTo();
                     }
                 }
             } else if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT){
@@ -98,12 +93,7 @@ public class PlayerEvents {
                     cpp.getCurrentAim().get().drawAimForPlayer(event.getPlayer());
                 }
                 if(event.getChangeFrom() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                    for(Cell cell: ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).get().getGrid().getCells()){
-                        if(!cell.isAvailable() && cell.getOccupyingCard().isOwner(event.getPlayer().getUniqueId())){
-                            ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).get()
-                                    .getGrid().eraseAvailableCellsToMoveTo(cell.getOccupyingCard());
-                        }
-                    }
+                    cpp.getCurrentlyMovingCard().getMovement().clearCurrentlyHighlighted();
                 }
             }
         }

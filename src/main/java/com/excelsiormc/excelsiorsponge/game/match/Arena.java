@@ -77,7 +77,7 @@ public class Arena {
         inUse = true;
         this.gamemode = gamemode;
         this.gamemode.setArena(this);
-        gamemode.start(new Location(Sponge.getServer().getWorld(world).get(), grid.getStartPos()));
+        gamemode.start();
     }
 
     public boolean isPlayerCombatant(Player player) {

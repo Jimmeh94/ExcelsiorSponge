@@ -1,9 +1,10 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
-import com.excelsiormc.excelsiorsponge.utils.EditableVector;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
@@ -19,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class Grid {
 
-    protected List<Cell> cells;
+    protected List<Row> rows;
     protected List<Vector3d> border;
     protected String world;
     protected int gridDemX, gridDemZ, cellDemX, cellDemZ;
@@ -37,7 +38,7 @@ public abstract class Grid {
         this.cellDemZ = cellDemZ;
         this.gridBorder = gridBorder;
         this.cellMat = cellMat;
-        cells = new CopyOnWriteArrayList<>();
+        rows = new CopyOnWriteArrayList<>();
         border = new CopyOnWriteArrayList<>();
 
         GenerateCells(startingPos);
@@ -47,15 +48,12 @@ public abstract class Grid {
         }
     }
 
-    public Optional<Cell> getCellInDirection(Cell current, Vector3d direction){
-        double xDistance = cellDemX * direction.getX();
-        xDistance += 1 * direction.getX();
+    public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells){
+        double xDistance = cellDemX * distanceInCells.getX();
+        xDistance += 1 * distanceInCells.getX();
 
-        double zDistance = cellDemZ * direction.getZ();
-        zDistance += 1 * direction.getZ();
-
-        //direction.setX(direction.getX() * ((cellDemX * direction.getX()) + (1 * direction.getX())));
-        //direction.setZ(direction.getZ() * ((cellDemZ * direction.getZ()) + (1 * direction.getZ())));
+        double zDistance = cellDemZ * distanceInCells.getZ();
+        zDistance += 1 * distanceInCells.getZ();
 
         Vector3d target = current.getCenter().clone().add(new Vector3d(xDistance, 0, zDistance));
         if(isCell(target)){
@@ -65,6 +63,16 @@ public abstract class Grid {
             }
         }
         return Optional.empty();
+    }
+
+    public void drawGrid(){
+        for(Row row: rows){
+            row.drawCells();
+        }
+        World world = Sponge.getServer().getWorld(getWorld()).get();
+        for(Vector3d v: border){
+            world.getLocation(v).setBlockType(gridBorder);
+        }
     }
 
     public List<Cell> getSquareGroupofCells(Vector3d start, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner) {
@@ -102,17 +110,66 @@ public abstract class Grid {
         return cells;
     }
 
-    public void drawGrid(){
-        for(Cell cell: cells){
-            cell.drawCell();
+    public List<Cell> getAvailableCellsCross(Cell current, int plusXDistanceInCells, int minusXDistanceInCells, int plusZDistanceInCels,
+                                             int minusZDistanceInCells, boolean includeEnemyOccupiedCells, Team owner){
+        Vector3d center = current.getCenter();
+        List<Cell> give = new ArrayList<>();
+
+        //get cell in +x, -x, +z, -z
+        EditableVector start = new EditableVector(center.clone());
+        EditableVector use = start.clone();
+
+        //+ x
+        for(int i = 1; i <= plusXDistanceInCells; i++){
+            use.setX(use.getX() + (cellDemX) + 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
         }
-        World world = Sponge.getServer().getWorld(getWorld()).get();
-        for(Vector3d v: border){
-            world.getLocation(v).setBlockType(gridBorder);
+
+        //- x
+        use = start.clone();
+        for(int i = 1; i <= minusXDistanceInCells; i++){
+            use.setX(use.getX() - (cellDemX) - 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
         }
+
+        //+ z
+        use = start.clone();
+        for(int i = 1; i <= plusZDistanceInCels; i++){
+            use.setZ(use.getZ() + (cellDemZ) + 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
+        }
+
+        //- z
+        use = start.clone();
+        for(int i = 1; i <= minusZDistanceInCells; i++){
+            use.setZ(use.getZ() - (cellDemZ) - 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
+        }
+
+        return give;
     }
 
-    public List<Cell> getAdjacentAvailableCells(Cell current, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner){
+    public List<Cell> getAvailableCellsEqualLengthCross(Cell current, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner){
         Vector3d center = current.getCenter();
         List<Cell> give = new ArrayList<>();
 
@@ -160,6 +217,22 @@ public abstract class Grid {
         return give;
     }
 
+    public Row getRowFirst(){
+        return rows.get(0);
+    }
+
+    public Row getRowLast(){
+        return rows.get(rows.size() - 1);
+    }
+    public Optional<Row> getRowX(Cell cell){
+        for(Row row: rows){
+            if(row.containsCell(cell)){
+                return Optional.of(row);
+            }
+        }
+        return Optional.empty();
+    }
+
     public BlockType getGridBorder() {
         return gridBorder;
     }
@@ -174,13 +247,13 @@ public abstract class Grid {
 
     protected abstract void GenerateCells(Vector3d startingPos);
 
-    public List<Cell> getCells() {
-        return cells;
+    public List<Row> getRows() {
+        return rows;
     }
 
     public boolean isCell(Vector3d toVector3d) {
-        for(Cell c: cells){
-            if(c.isWithinCell(toVector3d.toInt())){
+        for(Row row: rows){
+            if(row.isWithinCell(toVector3d.toInt())){
                 return true;
             }
         }
@@ -188,9 +261,9 @@ public abstract class Grid {
     }
 
     public Optional<Cell> getCell(Vector3d toVector3d) {
-        for(Cell c: cells){
-            if(c.isWithinCell(toVector3d.toInt())){
-                return Optional.of(c);
+        for(Row row: rows){
+            if(row.isWithinCell(toVector3d.toInt())){
+                return row.getCell(toVector3d.toInt());
             }
         }
         return Optional.empty();
@@ -217,32 +290,20 @@ public abstract class Grid {
     }
 
     public void resetCells() {
-        for(Cell cell: cells){
-            cell.setAvailable(true);
-        }
-    }
-
-    public void displayAvailableCellsToMoveTo(CardBase cardBase) {
-        List<CardMovement.MovementEntry> cells = cardBase.getMovement().getAvailableSpaces();
-        cardBase.getMovement().setCurrentlyHighlighted(cells);
-        for(CardMovement.MovementEntry entry: cells){
-            entry.getCell().drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
-        }
-    }
-
-    public void eraseAvailableCellsToMoveTo(CardBase cardBase){
-        for(Cell cell: cells){
-            cell.clearAimForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
+        for(Row row: rows){
+            row.resetCells();
         }
     }
 
     public List<CardBase> getActiveCardsOnFieldForTeam(Team team){
         List<CardBase> give = new ArrayList<>();
 
-        for(Cell cell: cells){
-            if(!cell.isAvailable()){
-                if(team.isCombatant(cell.getOccupyingCard().getOwner())){
-                    give.add(cell.getOccupyingCard());
+        for(Row row: rows){
+            for(Cell cell: row.getCells()){
+                if(!cell.isAvailable()){
+                    if(team.isCombatant(cell.getOccupyingCard().getOwner())){
+                        give.add(cell.getOccupyingCard());
+                    }
                 }
             }
         }
@@ -253,9 +314,11 @@ public abstract class Grid {
     public List<CardBase> getActiveCardsOnField(){
         List<CardBase> give = new ArrayList<>();
 
-        for(Cell cell: cells){
-            if(!cell.isAvailable()){
-                give.add(cell.getOccupyingCard());
+        for(Row row: rows) {
+            for (Cell cell : row.getCells()) {
+                if (!cell.isAvailable()) {
+                    give.add(cell.getOccupyingCard());
+                }
             }
         }
 

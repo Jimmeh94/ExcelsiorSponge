@@ -1,11 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
-import com.excelsiormc.excelsiorsponge.utils.EditableVector;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.block.BlockTypes;
 
 /**
  * A GridNormal contains a playing field of 11 x 11 cells, each cell separated by a 1 block wide divider
+ * Generates rows starting from z -> z + distance
  */
 public class GridNormal extends Grid {
 
@@ -23,8 +24,9 @@ public class GridNormal extends Grid {
         EditableVector endPosition = use.clone();
         EditableVector start = use.clone();
         for(int i = 0; i < gridDemX; i++){
+            Row row = new Row();
             for(int j = 0; j < gridDemZ; j++){
-                cells.add(new Cell(use.toVector3d(), cellDemX, cellDemZ, world, cellMat));
+                row.addCell(new Cell(use.toVector3d(), cellDemX, cellDemZ, world, cellMat));
                 use.setZ(use.getZ() + cellDemZ + 1);
                 //Plus 4 with 3 wide cells will leave a 1 block open area between each cell
                 if(j == 10){
@@ -39,6 +41,8 @@ public class GridNormal extends Grid {
             } else {
                 endPosition.setX(use.getX() + cellDemX + 1);
             }
+
+            rows.add(row);
         }
 
         start.setX(startingPos.getFloorX() - 1);
@@ -56,9 +60,11 @@ public class GridNormal extends Grid {
                 temp.setY(temp.getY() + 1);
 
                 boolean needToPaint = true;
-                for(Cell cell: cells){
-                    if(needToPaint == true && cell.isWithinCell(temp.toVector3d().toInt())){
-                        needToPaint = false;
+                for(Row row: rows){
+                    for(Cell cell: row.getCells()){
+                        if(needToPaint == true && cell.isWithinCell(temp.toVector3d().toInt())){
+                            needToPaint = false;
+                        }
                     }
                 }
                 if(needToPaint){

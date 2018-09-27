@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.utils;
+package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 
 import com.flowpowered.math.vector.Vector3d;
 

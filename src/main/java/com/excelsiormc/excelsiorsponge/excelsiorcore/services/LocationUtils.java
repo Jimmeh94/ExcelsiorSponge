@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ServiceLocationUtils {
+public class LocationUtils {
 
     public static Location getMiddleLocation(Location firstCorner, Location secondCorner){
         Vector3d temp = getMiddleLocation(firstCorner.getPosition(), secondCorner.getPosition());
@@ -25,17 +26,42 @@ public class ServiceLocationUtils {
         return new Vector3d(firstCorner.getX() + x + 0.5, firstCorner.getY() + y + 0.5, firstCorner.getZ() + z + 0.5);
     }
 
-    public static boolean isWithinTwoLocations(Location first, Location second, Location check){
-        return isWithinTwoLocations(first.getPosition(), second.getPosition(), check.getPosition());
+    public static boolean areCoordsEqual(Vector3d first, Vector3d second, boolean xNeedToMatch, boolean yNeedToMatch, boolean zNeedToMatch){
+        boolean give = false;
+        Vector3i one = first.toInt(), two = second.toInt();
+        if(xNeedToMatch){
+            if(one.getX() == two.getX()) {
+                give = true;
+            } else give = false;
+        }
+
+        if(yNeedToMatch){
+            if(one.getY() == two.getY()){
+                give = true;
+            } else give = false;
+        }
+
+        if(zNeedToMatch){
+            if(one.getZ() == two.getZ()){
+                give = true;
+            } else give = false;
+        }
+
+        return give;
     }
 
-    public static boolean isWithinTwoLocations(Vector3d first, Vector3d second, Vector3d check){
+    public static boolean isBetween(Vector3d first, Vector3d second, Vector3d check, boolean ignoreY){
         double fx = first.getX(), fy = first.getY(), fz = first.getZ();
         double sx = second.getX(), sy = second.getY(), sz = second.getZ();
 
-        return Math.min(fx, sx) <= check.getX() && check.getX() <= Math.max(fx, sx) &&
-                Math.min(fy, sy) <= check.getY() && check.getY() <= Math.max(fx, sx) &&
-                Math.min(fz, sz) <= check.getZ() && check.getZ() <= Math.max(fz, sz);
+        if(ignoreY){
+            return Math.min(fx, sx) <= check.getX() && check.getX() <= Math.max(fx, sx) &&
+                    Math.min(fz, sz) <= check.getZ() && check.getZ() <= Math.max(fz, sz);
+        } else {
+            return Math.min(fx, sx) <= check.getX() && check.getX() <= Math.max(fx, sx) &&
+                    Math.min(fy, sy) <= check.getY() && check.getY() <= Math.max(fy, sy) &&
+                    Math.min(fz, sz) <= check.getZ() && check.getZ() <= Math.max(fz, sz);
+        }
     }
 
     public static String locationToString(Location location){

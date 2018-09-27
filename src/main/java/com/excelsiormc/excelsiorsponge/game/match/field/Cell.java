@@ -1,8 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.ServiceLocationUtils;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.utils.EditableVector;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
@@ -49,7 +49,7 @@ public class Cell {
             z = startingPos.getFloorZ();
         }
 
-        center = ServiceLocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
+        center = LocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
 
         cellType = CellTypes.getRandomType();
     }

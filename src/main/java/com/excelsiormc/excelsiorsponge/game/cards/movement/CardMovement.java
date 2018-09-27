@@ -43,6 +43,7 @@ public abstract class CardMovement {
         for(MovementEntry entry: currentlyHighlighted){
             entry.cell.clearAimForPlayer(Sponge.getServer().getPlayer(owner.getOwner()).get());
         }
+        currentlyHighlighted.clear();
     }
 
     public boolean isAvailableSpace(Cell aim) {
@@ -56,6 +57,14 @@ public abstract class CardMovement {
             }
         }
         return null;
+    }
+
+    public void displayAvailableSpotsToMoveTo() {
+        List<CardMovement.MovementEntry> cells = getAvailableSpaces();
+        setCurrentlyHighlighted(cells);
+        for(CardMovement.MovementEntry entry: cells){
+            entry.getCell().drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(owner.getOwner()).get());
+        }
     }
 
     public static class MovementEntry {

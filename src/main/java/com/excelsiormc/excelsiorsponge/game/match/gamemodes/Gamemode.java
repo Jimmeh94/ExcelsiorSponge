@@ -53,6 +53,7 @@ public abstract class Gamemode {
     protected abstract void tick();
     protected abstract void endingGame();
     protected abstract void startingGame();
+    protected abstract void generateSpawnPoints();
     public abstract void battle(Cell one, Cell two);
     public abstract String getName();
 
@@ -64,12 +65,14 @@ public abstract class Gamemode {
      */
     public abstract int getID();
 
-    public void start(Location start){
+    public void start(){
+        generateSpawnPoints();
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
                 if(p.isPlayer()){
                     PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
-                    p.getPlayer().setLocation(start);
+                    Player player = p.getPlayer();
+                    player.setLocation(new Location<World>(player.getWorld(), team.getSpawn()));
                 }
             }
         }
@@ -86,7 +89,6 @@ public abstract class Gamemode {
                 if(p.isPlayer()){
                     PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.NORMAL);
                     //Teleport out
-                    //Bukkit.getPlayer(p.getUUID()).teleport(new Location(Bukkit.getWorld(world), start.getX(), start.getY(), start.getZ()));
                 }
             }
         }
