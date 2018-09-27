@@ -13,6 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class PlayerUtils {
 
     public static void sendCardToChat(CardBase card, Player displayTo){
         Text message = Text.builder("[" + card.getName().toPlain() + "]").color(TextColors.GOLD)
-                .onClick(new ClickAction.ExecuteCallback(new Consumer<CommandSource>() {
+                .onClick(TextActions.executeCallback(new Consumer<CommandSource>() {
                     @Override
                     public void accept(CommandSource commandSource) {
                         card.displayStats(displayTo);

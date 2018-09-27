@@ -37,9 +37,9 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
         strings.add(Text.of(TextColors.RED, "Turn Time Left: " + arena.getGamemode().getTimeLeftInCurrentTurnFormatted()));
 
         CombatantProfilePlayer cpp = (CombatantProfilePlayer) arena.getCombatantProfile(getOwner().getOwner()).get();
-        if(cpp.getCurrentAim() != null){
+        if(cpp.getCurrentAim().isPresent()){
             strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
-            strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + cpp.getCurrentAim().getCellType().toString()));
+            strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + cpp.getCurrentAim().get().getCellType().toString()));
         }
 
         setScores(strings);

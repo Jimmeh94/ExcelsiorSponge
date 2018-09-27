@@ -68,7 +68,7 @@ public class HotbarHand extends Hotbar {
 
                     int index = InventoryUtils.getHeldItemSlot(player, action).get().getValue();
                     //Lay card on field
-                    Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
+                    Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim().get();
 
                     if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
                         currentAim.setOccupyingCard(profile.getHand().getCard(index), true);
@@ -90,8 +90,8 @@ public class HotbarHand extends Hotbar {
                         CardBase card = profile.getHand().viewCard(index);
                         if(card instanceof CardBaseMonster){
                             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                            if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable()){
-                                ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
+                            if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().get().isAvailable()){
+                                ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
                             }
                         }
                     }

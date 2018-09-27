@@ -114,7 +114,7 @@ public class HotbarCardManipulate extends Hotbar {
     public void handleEmptyLeftClick(Player player) {
         //If aiming at appropriate cell for the card to move to, move card
         CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-        Cell aim = cpp.getCurrentAim();
+        Cell aim = cpp.getCurrentAim().get();
         CardBase card = cpp.getCurrentlyMovingCard();
 
         if(aim != null){

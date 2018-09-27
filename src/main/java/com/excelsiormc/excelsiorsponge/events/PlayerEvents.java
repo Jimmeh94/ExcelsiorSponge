@@ -94,20 +94,20 @@ public class PlayerEvents {
             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(event.getPlayer().getUniqueId()).get();
 
             if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                if(cpp.getCurrentAim() != null){
-                    cpp.getCurrentAim().clearAimForPlayer(event.getPlayer());
+                if(cpp.getCurrentAim().isPresent()){
+                    cpp.getCurrentAim().get().clearAimForPlayer(event.getPlayer());
                 }
 
                 if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
                     //highlight all available cells to move to as green
-                    if(cpp.getCurrentAim() != null){
+                    if(cpp.getCurrentAim().isPresent()){
                         ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(event.getPlayer().getUniqueId()).get()
-                                .getGrid().displayAvailableCellsToMoveTo(cpp.getCurrentAim().getOccupyingCard());
+                                .getGrid().displayAvailableCellsToMoveTo(cpp.getCurrentAim().get().getOccupyingCard());
                     }
                 }
             } else if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT){
-                if(cpp.getCurrentAim() != null){
-                    cpp.getCurrentAim().drawAimForPlayer(event.getPlayer());
+                if(cpp.getCurrentAim().isPresent()){
+                    cpp.getCurrentAim().get().drawAimForPlayer(event.getPlayer());
                 }
                 if(event.getChangeFrom() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
                     for(Cell cell: ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).get().getGrid().getCells()){

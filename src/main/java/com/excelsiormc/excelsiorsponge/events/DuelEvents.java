@@ -37,8 +37,8 @@ public class DuelEvents {
         cpp.getUserPlayer().updateScoreboard();
 
         //If occupied cell, send json chat link that when clicked shows details of card
-        if(!cpp.getCurrentAim().isAvailable()){
-            PlayerUtils.sendCardToChat(cpp.getCurrentAim().getOccupyingCard(), cpp.getPlayer());
+        if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable()){
+            PlayerUtils.sendCardToChat(cpp.getCurrentAim().get().getOccupyingCard(), cpp.getPlayer());
         }
 
     }

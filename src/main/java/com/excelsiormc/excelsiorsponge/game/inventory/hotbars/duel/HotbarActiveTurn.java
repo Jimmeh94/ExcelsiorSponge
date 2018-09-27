@@ -66,18 +66,18 @@ public class HotbarActiveTurn extends Hotbar {
                 //Needs to be aiming at a cell with a card owned by this player
                 //Brings up hotbar about that card
                 CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                if(cpp.getCurrentAim() == null || cpp.getCurrentAim().getOccupyingCard() == null){
+                if(cpp.getCurrentAim().isPresent() || cpp.getCurrentAim().get().getOccupyingCard() == null){
                     return;
                 }
 
-                if(!cpp.getCurrentAim().getOccupyingCard().getMovement().canMoveThisTurn()){
+                if(!cpp.getCurrentAim().get().getOccupyingCard().getMovement().canMoveThisTurn()){
                     Messager.sendMessage(player, Text.of(TextColors.RED, "That card can't move this turn"), Messager.Prefix.ERROR);
                     return;
                 }
 
-                (new HotbarCardManipulate(cpp.getCurrentAim().getOccupyingCard())).setHotbar(player);
+                (new HotbarCardManipulate(cpp.getCurrentAim().get().getOccupyingCard())).setHotbar(player);
                 PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
-                cpp.setCurrentlyMovingCard(cpp.getCurrentAim().getOccupyingCard());
+                cpp.setCurrentlyMovingCard(cpp.getCurrentAim().get().getOccupyingCard());
             }
 
             @Override

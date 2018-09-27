@@ -6,23 +6,28 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class CombatantProfilePlayer extends CombatantProfile {
 
-    private Cell currentAim;
+    private Optional<Cell> currentAim = Optional.empty();
     private CardBase currentlyMovingCard;
 
     public CombatantProfilePlayer(UUID owner, Deck deck) {
         super(owner, deck);
     }
 
-    public Cell getCurrentAim() {
+    public Optional<Cell> getCurrentAim() {
         return currentAim;
     }
 
     public void setCurrentAim(Cell currentAim) {
-        this.currentAim = currentAim;
+        if(currentAim == null){
+            this.currentAim = Optional.empty();
+        } else {
+            this.currentAim = Optional.of(currentAim);
+        }
     }
 
     public CardBase getCurrentlyMovingCard() {

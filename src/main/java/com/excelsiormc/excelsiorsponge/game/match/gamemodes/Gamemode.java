@@ -205,18 +205,18 @@ public abstract class Gamemode {
                         }
                     }
 
-                    if (cpp.getCurrentAim() != null && cpp.getCurrentAim() == newAim) {
+                    if (cpp.getCurrentAim().isPresent() && cpp.getCurrentAim().get() == newAim) {
                         continue;
                     }
 
                     if(mode == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT) {
-                        if (cpp.getCurrentAim() != null) {
-                            cpp.getCurrentAim().clearAimForPlayer(player);
+                        if (cpp.getCurrentAim().isPresent()) {
+                            cpp.getCurrentAim().get().clearAimForPlayer(player);
                         }
                         cpp.setCurrentAim(newAim);
 
-                        if(cpp.getCurrentAim() != null) {
-                            cpp.getCurrentAim().drawAimForPlayer(player);
+                        if(cpp.getCurrentAim().isPresent()) {
+                            cpp.getCurrentAim().get().drawAimForPlayer(player);
                         }
 
                     } else if(mode == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
@@ -273,8 +273,8 @@ public abstract class Gamemode {
          * Should bring up info about that cell and the occupying card if there
          */
         CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-        if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().isAvailable() && cpp.getCurrentAim().getOccupyingCard() instanceof CardBaseMonster){
-            ((CardBaseMonster)cpp.getCurrentAim().getOccupyingCard()).displayStats(player);
+        if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable() && cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseMonster){
+            ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
         }
     }
 
