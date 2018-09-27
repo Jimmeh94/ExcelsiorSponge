@@ -140,4 +140,23 @@ public class LocationUtils {
         return give;
     }
 
+    public static List<Location> getAllLocationsBetween(Location start, Location finish){
+        Vector3d difference = getOffsetBetween(start, finish);
+        List<Location> give = new ArrayList<>();
+        EditableVector temp = new EditableVector(start.getPosition());
+
+        int xCoefficient = start.getBlockX() > finish.getBlockX() ? -1 : 1;
+        int zCoefficient = start.getBlockZ() > finish.getBlockZ() ? -1 : 1;
+
+        for(int x = 0; x < difference.getFloorX(); x++){
+            for(int z = 0; z < difference.getFloorZ(); z++){
+                give.add(new Location(start.getExtent(), temp.toVector3d()));
+                temp.add(0, 0, zCoefficient);
+            }
+            temp.setZ(start.getBlockZ());
+            temp.add(xCoefficient, 0, 0);
+        }
+        return give;
+    }
+
 }

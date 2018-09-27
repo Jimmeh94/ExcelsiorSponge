@@ -39,8 +39,7 @@ public class ArenaCommands implements CommandExecutor {
                 .arguments(GenericArguments.string(Text.of("mode")),
                         GenericArguments.optional(GenericArguments.string(Text.of("data"))),
                         GenericArguments.optional(GenericArguments.string(Text.of("data1"))),
-                        GenericArguments.optional(GenericArguments.string(Text.of("data2"))),
-                        GenericArguments.optional(GenericArguments.string(Text.of("data3")))
+                        GenericArguments.optional(GenericArguments.string(Text.of("data2")))
                 )
                 .build();
 
@@ -55,15 +54,14 @@ public class ArenaCommands implements CommandExecutor {
         String mode = args.<String>getOne("mode").get();
         if(mode.equalsIgnoreCase("add")){
             try {
-                int gridx = Integer.valueOf(args.<String>getOne("data").get());
-                int gridz = Integer.valueOf(args.<String>getOne("data1").get());
-                int cellx = Integer.valueOf(args.<String>getOne("data2").get());
-                int cellz = Integer.valueOf(args.<String>getOne("data3").get());
+                int rowCount = Integer.valueOf(args.<String>getOne("data").get());
+                int rowLength = Integer.valueOf(args.<String>getOne("data1").get());
+                int cellDem = Integer.valueOf(args.<String>getOne("data2").get());
 
                 Vector3d start = player.getLocation().getPosition();
                 String world = player.getLocation().getExtent().getName();
 
-                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, false), world));
+                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, rowCount, rowLength, cellDem, false), world));
 
             } catch (NullPointerException e){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);
@@ -81,15 +79,14 @@ public class ArenaCommands implements CommandExecutor {
             }
         } else if(mode.equalsIgnoreCase("gen")){
             try {
-                int gridx = Integer.valueOf(args.<String>getOne("data").get());
-                int gridz = Integer.valueOf(args.<String>getOne("data1").get());
-                int cellx = Integer.valueOf(args.<String>getOne("data2").get());
-                int cellz = Integer.valueOf(args.<String>getOne("data3").get());
+                int rowCount = Integer.valueOf(args.<String>getOne("data").get());
+                int rowLength = Integer.valueOf(args.<String>getOne("data1").get());
+                int cellDem = Integer.valueOf(args.<String>getOne("data2").get());
 
                 Vector3d start = player.getLocation().getPosition();
                 String world = player.getLocation().getExtent().getName();
 
-                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, gridx, gridz, cellx, cellz, true), world));
+                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, rowCount, rowLength, cellDem, true), world));
 
             } catch (NullPointerException e){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);

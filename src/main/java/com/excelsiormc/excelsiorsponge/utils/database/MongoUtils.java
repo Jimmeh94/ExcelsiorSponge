@@ -53,9 +53,10 @@ public class MongoUtils extends ServiceMongoDB {
                     Document gridDoc = (Document) document.get("grid");
                     String[] temp = gridDoc.getString("startPos").split(",");
                     Vector3d v = new Vector3d(Double.valueOf(temp[0]) + 1, Double.valueOf(temp[1]) + 1, Double.valueOf(temp[2]) + 1);
-                    int gx = gridDoc.getInteger("gridX"), gz = gridDoc.getInteger("gridZ");
-                    int cx = gridDoc.getInteger("cellX"), cz = gridDoc.getInteger("cellZ");
-                    ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(v, world, gx, gz, cx, cz, false), world, id));
+                    int rowCount = gridDoc.getInteger("rowCount"), rowLength = gridDoc.getInteger("rowLength");
+                    int cellDem = gridDoc.getInteger("cellDem");
+                    ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()
+                            .add(new Arena(new GridNormal(v, world, rowCount, rowLength, cellDem, false), world, id));
                 }
             });
         }
@@ -85,10 +86,9 @@ public class MongoUtils extends ServiceMongoDB {
                 write.add(new Document("id", arena.getID().toString())
                         .append("world", arena.getWorld())
                         .append("grid", new Document("startPos", startPos)
-                                    .append("gridX", arena.getGrid().getGridX())
-                                    .append("gridZ", arena.getGrid().getGridZ())
-                                    .append("cellX", arena.getGrid().getCellX())
-                                    .append("cellZ", arena.getGrid().getCellZ())
+                                    .append("rowCount", arena.getGrid().getRowCount())
+                                    .append("rowLength", arena.getGrid().getRowLength())
+                                    .append("cellDem", arena.getGrid().getCellDeminsion())
                         )
                 );
             }

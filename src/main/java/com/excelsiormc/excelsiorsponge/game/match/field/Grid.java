@@ -23,19 +23,18 @@ public abstract class Grid {
     protected List<Row> rows;
     protected List<Vector3d> border;
     protected String world;
-    protected int gridDemX, gridDemZ, cellDemX, cellDemZ;
+    protected int rowCount, rowLength, cellDem;
     protected Vector3d startPos;
     protected BlockType gridBorder, cellMat;
 
 
-    public Grid(Vector3d startingPos, String world, int gridDemX, int gridDemZ, int cellDemX, int cellDemZ, boolean drawGrid,
+    public Grid(Vector3d startingPos, String world, int rowCount, int rowLength, int cellDem, boolean drawGrid,
                 BlockType gridBorder, BlockType cellMat){
         this.startPos = startingPos;
         this.world = world;
-        this.gridDemX = gridDemX;
-        this.gridDemZ = gridDemZ;
-        this.cellDemX = cellDemX;
-        this.cellDemZ = cellDemZ;
+        this.rowCount = rowCount;
+        this.rowLength = rowLength;
+        this.cellDem = cellDem;
         this.gridBorder = gridBorder;
         this.cellMat = cellMat;
         rows = new CopyOnWriteArrayList<>();
@@ -49,10 +48,10 @@ public abstract class Grid {
     }
 
     public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells){
-        double xDistance = cellDemX * distanceInCells.getX();
+        double xDistance = cellDem * distanceInCells.getX();
         xDistance += 1 * distanceInCells.getX();
 
-        double zDistance = cellDemZ * distanceInCells.getZ();
+        double zDistance = cellDem * distanceInCells.getZ();
         zDistance += 1 * distanceInCells.getZ();
 
         Vector3d target = current.getCenter().clone().add(new Vector3d(xDistance, 0, zDistance));
@@ -79,7 +78,7 @@ public abstract class Grid {
         List<Cell> cells = new ArrayList<>();
 
         EditableVector ev = new EditableVector(start);
-        double tempDistance = cellDemX + 1;
+        double tempDistance = cellDem + 1;
         ev.setX(start.getX() - (tempDistance * distanceInCells));
         ev.setZ(start.getZ() - (tempDistance * distanceInCells));
 
@@ -121,7 +120,7 @@ public abstract class Grid {
 
         //+ x
         for(int i = 1; i <= plusXDistanceInCells; i++){
-            use.setX(use.getX() + (cellDemX) + 1);
+            use.setX(use.getX() + (cellDem) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -133,7 +132,7 @@ public abstract class Grid {
         //- x
         use = start.clone();
         for(int i = 1; i <= minusXDistanceInCells; i++){
-            use.setX(use.getX() - (cellDemX) - 1);
+            use.setX(use.getX() - (cellDem) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -145,7 +144,7 @@ public abstract class Grid {
         //+ z
         use = start.clone();
         for(int i = 1; i <= plusZDistanceInCels; i++){
-            use.setZ(use.getZ() + (cellDemZ) + 1);
+            use.setZ(use.getZ() + (cellDem) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -157,7 +156,7 @@ public abstract class Grid {
         //- z
         use = start.clone();
         for(int i = 1; i <= minusZDistanceInCells; i++){
-            use.setZ(use.getZ() - (cellDemZ) - 1);
+            use.setZ(use.getZ() - (cellDem) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -178,7 +177,7 @@ public abstract class Grid {
         EditableVector use = start.clone();
 
         for(int i = 1; i <= distanceInCells; i++){
-            use.setX(use.getX() + (cellDemX * i) + 1);
+            use.setX(use.getX() + (cellDem * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -187,7 +186,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setX(use.getX() - (cellDemX* i) - 1);
+            use.setX(use.getX() - (cellDem* i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -196,7 +195,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setZ(use.getZ() - (cellDemZ * i) - 1);
+            use.setZ(use.getZ() - (cellDem * i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -205,7 +204,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setZ(use.getZ() + (cellDemZ * i) + 1);
+            use.setZ(use.getZ() + (cellDem * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -273,20 +272,16 @@ public abstract class Grid {
         return startPos;
     }
 
-    public int getGridX() {
-        return gridDemX;
+    public int getRowCount() {
+        return rowCount;
     }
 
-    public int getGridZ(){
-        return gridDemZ;
+    public int getRowLength(){
+        return rowLength;
     }
 
-    public int getCellX(){
-        return cellDemX;
-    }
-
-    public int getCellZ(){
-        return cellDemZ;
+    public int getCellDeminsion(){
+        return cellDem;
     }
 
     public void resetCells() {

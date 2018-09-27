@@ -18,7 +18,7 @@ public class CardMovementBigCross extends CardMovement {
     @Override
     public List<MovementEntry> getAvailableSpaces() {
         Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
-        List<Cell> temp = grid.getAvailableCellsCross(owner.getCurrentCell(), grid.getGridX(), 2, grid.getGridZ(),
+        List<Cell> temp = grid.getAvailableCellsCross(owner.getCurrentCell(), grid.getRowCount(), 2, grid.getRowLength(),
                 2, true, PlayerUtils.getTeam(owner.getOwner()));
         List<MovementEntry> give = new ArrayList<>();
         for(Cell cell: temp){

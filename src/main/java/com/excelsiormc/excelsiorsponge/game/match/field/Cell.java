@@ -31,7 +31,7 @@ public class Cell {
     private Vector3d center;
     private CellTypes cellType;
 
-    public Cell(Vector3d startingPos, int xDem, int zDem, String world, BlockType material) {
+    public Cell(Vector3d startingPos, int dem, String world, BlockType material) {
         this.world = world;
         this.material = material;
 
@@ -40,9 +40,9 @@ public class Cell {
         EditableVector use = new EditableVector(startingPos.clone());
         int x = startingPos.getFloorX();
         int z = startingPos.getFloorZ();
-        for(int i = 0; i < xDem; i++, x++){
+        for(int i = 0; i < dem; i++, x++){
             use.setX(startingPos.getFloorX() + i);
-            for(int j = 0; j < zDem; j++, z++){
+            for(int j = 0; j < dem; j++, z++){
                 use.setZ(z);
                 locations.add(use.toVector3d());
             }

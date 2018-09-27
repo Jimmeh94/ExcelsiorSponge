@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public class Row {
 
-    List<Cell> cells;
+    private List<Cell> cells;
 
     public Row(){
         cells = new ArrayList<>();
