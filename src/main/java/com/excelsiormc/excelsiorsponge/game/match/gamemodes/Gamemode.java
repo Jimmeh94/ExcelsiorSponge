@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
@@ -29,6 +30,7 @@ import org.spongepowered.api.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public abstract class Gamemode {
 
@@ -51,6 +53,7 @@ public abstract class Gamemode {
     protected abstract void tick();
     protected abstract void endingGame();
     protected abstract void startingGame();
+    public abstract void battle(Cell one, Cell two);
     public abstract String getName();
 
     /**
@@ -276,6 +279,15 @@ public abstract class Gamemode {
         if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable() && cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseMonster){
             ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
         }
+    }
+
+    public Team getTeamWithCombatant(UUID combatant) {
+        for(Team team: teams){
+            if(team.isCombatant(combatant)){
+                return team;
+            }
+        }
+        return null;
     }
 
 

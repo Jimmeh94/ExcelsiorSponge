@@ -5,6 +5,8 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.match.Arena;
+import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
@@ -47,6 +49,10 @@ public class PlayerUtils {
                     }
                 })).build();
         Messager.sendMessage(displayTo, message);
+    }
+
+    public static Team getTeam(UUID combatant){
+        return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(combatant).get().getGamemode().getTeamWithCombatant(combatant);
     }
 
 }

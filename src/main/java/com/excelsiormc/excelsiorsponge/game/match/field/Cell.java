@@ -126,10 +126,19 @@ public class Cell {
         occupyingCard.setCurrentCell(this);
     }
 
+    /**
+     * This will highlight the spaces where a card can move
+     * @param player
+     */
     public void drawAvailableSpaceForPlayer(Player player) {
         for(Vector3d v: getVector3ds()){
             BlockState state = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
-            player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.BLUE).get());
+            if(!isAvailable){
+                //We can assume that this is an enemy occupied cell
+                player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.YELLOW).get());
+            } else {
+                player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.BLUE).get());
+            }
         }
     }
 

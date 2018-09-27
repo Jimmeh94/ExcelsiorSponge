@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.movement;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 
 import java.util.ArrayList;
@@ -19,38 +20,21 @@ public class CardMovementNormal extends CardMovement {
     }
 
     @Override
-    public List<Cell> getAvailableSpaces() {
-        List<Cell> cells = new ArrayList<>();
+    public List<MovementEntry> getAvailableSpaces() {
+        List<MovementEntry> cells = new ArrayList<>();
 
         Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
         Cell current = owner.getCurrentCell();
 
         if(current != null){
-            Optional<Cell> target;
-
-            for(int i = 1; i <= distanceInCells; i++){
-                target = grid.getCellInDirection(current, new Vector3d(i, 0, 0));
-                if(target.isPresent()){
-                    cells.add(target.get());
-                }
-
-                target = grid.getCellInDirection(current, new Vector3d(-i, 0, 0));
-                if(target.isPresent()){
-                    cells.add(target.get());
-                }
-
-                target = grid.getCellInDirection(current, new Vector3d(0, 0, i));
-                if(target.isPresent()){
-                    cells.add(target.get());
-                }
-
-                target = grid.getCellInDirection(current, new Vector3d(0, 0, -i));
-                if(target.isPresent()){
-                    cells.add(target.get());
+            List<Cell> temp = grid.getAdjacentAvailableCells(current, distanceInCells, true, PlayerUtils.getTeam(owner.getOwner()));
+            for(Cell cell: temp){
+                if(cell.isAvailable()){
+                    cells.add(new MovementEntry(cell, MovementEntry.MovementEntryType.EMPTY));
+                } else {
+                    cells.add(new MovementEntry(cell, MovementEntry.MovementEntryType.ENEMY_OCCUPIED));
                 }
             }
-
-
         }
 
         return cells;

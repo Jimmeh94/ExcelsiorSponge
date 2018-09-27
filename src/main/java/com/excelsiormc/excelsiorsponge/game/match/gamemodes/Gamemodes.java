@@ -6,7 +6,7 @@ import org.spongepowered.api.text.format.TextStyles;
 
 public enum Gamemodes {
 
-    DUEL(new GamemodeDescription(1, Text.of(TextColors.GRAY, TextStyles.ITALIC, "A 1v1 Gamemode")));
+    DUEL(new GamemodeDescription(2, Text.of(TextColors.GRAY, TextStyles.ITALIC, "A 1v1 Gamemode")));
 
     private GamemodeDescription description;
 

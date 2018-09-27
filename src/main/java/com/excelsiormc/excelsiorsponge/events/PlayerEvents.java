@@ -69,18 +69,6 @@ public class PlayerEvents {
 
     }
 
-    /*@Listener
-    public void onInteractEmpty(InteractEvent event, @Root Player player){
-        event.setCancelled(true);
-        System.out.println(event.getClass().getCanonicalName());
-        System.out.println("====================");
-
-        UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
-
-        //This is an empty right hand
-        userPlayer.getCurrentHotbar().handle(player, HandTypes.MAIN_HAND, ClickTypes.RIGHT);
-    }*/
-
     @Listener
     public void onBreak(ChangeBlockEvent.Break event, @Root Player player){
         if(player.gameMode().get() != GameModes.CREATIVE){

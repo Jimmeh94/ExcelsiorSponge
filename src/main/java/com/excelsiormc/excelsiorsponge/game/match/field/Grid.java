@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.utils.EditableVector;
 import com.flowpowered.math.vector.Vector3d;
@@ -66,7 +67,7 @@ public abstract class Grid {
         return Optional.empty();
     }
 
-    public List<Cell> getSquareGroupofCells(Vector3d start, int distanceInCells) {
+    public List<Cell> getSquareGroupofCells(Vector3d start, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner) {
         List<Cell> cells = new ArrayList<>();
 
         EditableVector ev = new EditableVector(start);
@@ -87,6 +88,8 @@ public abstract class Grid {
                 if(isCell(use.toVector3d())){
                     Cell cell = getCell(use.toVector3d()).get();
                     if(cell.isAvailable()){
+                        cells.add(cell);
+                    } else if(includeEnemyOccupiedCells && !owner.isCombatant(cell.getOccupyingCard().getOwner())){
                         cells.add(cell);
                     }
                 }
@@ -109,17 +112,48 @@ public abstract class Grid {
         }
     }
 
-    public List<Cell> getAdjacentAvailableCells(Cell current){
+    public List<Cell> getAdjacentAvailableCells(Cell current, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner){
         Vector3d center = current.getCenter();
         List<Cell> give = new ArrayList<>();
 
         //get cell in +x, -x, +z, -z
-        EditableVector use = new EditableVector(center.clone());
-        use.setX(use.getX() + cellDemX + 1);
-        if(isCell(use.toVector3d())){
-            Cell target = getCell(use.toVector3d()).get();
-            if(target.isAvailable()){
-                give.add(target);
+        EditableVector start = new EditableVector(center.clone());
+        EditableVector use = start.clone();
+
+        for(int i = 1; i <= distanceInCells; i++){
+            use.setX(use.getX() + (cellDemX * i) + 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
+
+            use = start.clone();
+            use.setX(use.getX() - (cellDemX* i) - 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
+
+            use = start.clone();
+            use.setZ(use.getZ() - (cellDemZ * i) - 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
+            }
+
+            use = start.clone();
+            use.setZ(use.getZ() + (cellDemZ * i) + 1);
+            if(isCell(use.toVector3d())){
+                Cell target = getCell(use.toVector3d()).get();
+                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
+                    give.add(target);
+                }
             }
         }
 
@@ -189,10 +223,10 @@ public abstract class Grid {
     }
 
     public void displayAvailableCellsToMoveTo(CardBase cardBase) {
-        List<Cell> cells = cardBase.getMovement().getAvailableSpaces();
-        cardBase.getMovement().setCurrentlyHighlighed(cells);
-        for(Cell cell: cells){
-            cell.drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
+        List<CardMovement.MovementEntry> cells = cardBase.getMovement().getAvailableSpaces();
+        cardBase.getMovement().setCurrentlyHighlighted(cells);
+        for(CardMovement.MovementEntry entry: cells){
+            entry.getCell().drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(cardBase.getOwner()).get());
         }
     }
 

@@ -1,10 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
@@ -118,11 +120,20 @@ public class HotbarCardManipulate extends Hotbar {
         CardBase card = cpp.getCurrentlyMovingCard();
 
         if(aim != null){
-            if(card != null && card.getMovement().isAvailableSpace(aim)){
-                Cell old = card.getCurrentCell();
-                old.setAvailable(true);
-                aim.setOccupyingCard(card, false);
-                card.moveArmorStand(aim.getCenter(), old);
+            if(card != null){
+                CardMovement.MovementEntry entry = card.getMovement().getEntry(aim);
+
+                if(entry.getType() == CardMovement.MovementEntry.MovementEntryType.EMPTY){
+                    DuelUtils.moveCardToCell(player);
+                    /*Cell old = card.getCurrentCell();
+                    old.setAvailable(true);
+                    aim.setOccupyingCard(card, false);
+                    card.moveArmorStand(aim.getCenter(), old);*/
+                } else {
+                    //have the cards battle
+                    ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()
+                            .findArenaWithCombatant(player.getUniqueId()).get().getGamemode().battle(card.getCurrentCell(), aim);
+                }
 
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
                 PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);

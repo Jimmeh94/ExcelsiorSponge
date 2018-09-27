@@ -66,7 +66,7 @@ public class HotbarActiveTurn extends Hotbar {
                 //Needs to be aiming at a cell with a card owned by this player
                 //Brings up hotbar about that card
                 CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                if(cpp.getCurrentAim().isPresent() || cpp.getCurrentAim().get().getOccupyingCard() == null){
+                if(!cpp.getCurrentAim().isPresent() || cpp.getCurrentAim().get().getOccupyingCard() == null){
                     return;
                 }
 
