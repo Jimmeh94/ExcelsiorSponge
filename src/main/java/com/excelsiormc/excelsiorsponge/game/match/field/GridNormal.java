@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
@@ -24,7 +25,7 @@ public class GridNormal extends Grid {
     protected void GenerateCells(Vector3d startingPos) {
 
         EditableVector use = new EditableVector(startingPos.clone());
-        use.subtract(1, 0, 1);
+        //use.subtract(1, 0, 1);
 
         EditableVector start = use.clone();
         for(int i = 0; i < rowCount; i++){
@@ -41,10 +42,10 @@ public class GridNormal extends Grid {
 
         Row row = rows.get(rows.size() - 1);
         EditableVector end = new EditableVector(row.getCells().get(row.getCells().size() - 1).getCenter());
-        end.add(cellDem + 1, -1, (cellDem + 1));
+        end.add(cellDem, -1, cellDem);
 
-        use = new EditableVector(startingPos.clone());
-        use.subtract(2, 1, 2);
+        use = new EditableVector(startingPos.toInt().clone());
+        use.subtract(1, 1, 1);
 
         World world = Sponge.getServer().getWorld(getWorld()).get();
         List<Location> temp = LocationUtils.getAllLocationsBetween(new Location(world, use.toVector3d()), new Location(world, end.toVector3d()));

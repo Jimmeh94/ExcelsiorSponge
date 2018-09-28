@@ -1,10 +1,11 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
@@ -13,6 +14,7 @@ import org.spongepowered.api.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,9 +26,9 @@ public abstract class Grid {
     protected List<Vector3d> border;
     protected String world;
     protected int rowCount, rowLength, cellDem;
-    protected Vector3d startPos;
+    protected final Vector3d startPos;
     protected BlockType gridBorder, cellMat;
-
+    protected TerrainTemplate terrainTemplate;
 
     public Grid(Vector3d startingPos, String world, int rowCount, int rowLength, int cellDem, boolean drawGrid,
                 BlockType gridBorder, BlockType cellMat){
@@ -45,6 +47,11 @@ public abstract class Grid {
         if(drawGrid){
             drawGrid();
         }
+    }
+
+    public void generateTerrain(){
+        terrainTemplate = TerrainTypes.getNewTemplate(this);
+        terrainTemplate.generateTerrain();
     }
 
     public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells){
@@ -230,6 +237,41 @@ public abstract class Grid {
             }
         }
         return Optional.empty();
+    }
+
+    public Row getVerticalRow(Cell cell){
+        Row row = new Row();
+
+        int index = -1;
+        for(Row r: rows){
+            if(r.containsCell(cell)){
+                index = r.getCells().indexOf(cell);
+            }
+        }
+
+        if(index > -1){
+            for(Row r: rows){
+                row.addCell(r.getCells().get(index));
+            }
+        }
+
+        return row;
+    }
+
+    public boolean doAllCellsHaveTerrain(){
+        for(Row row: rows){
+            for(Cell cell: row.getCells()){
+                if(cell.getCellType() == null){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public Cell getRandomCell(){
+        Random random = new Random();
+        return rows.get(random.nextInt(rows.size())).getCells().get(random.nextInt(rowLength));
     }
 
     public BlockType getGridBorder() {

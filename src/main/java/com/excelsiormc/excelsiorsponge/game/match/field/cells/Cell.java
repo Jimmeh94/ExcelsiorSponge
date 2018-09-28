@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.game.match.field;
+package com.excelsiormc.excelsiorsponge.game.match.field.cells;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
@@ -29,7 +29,7 @@ public class Cell {
     private boolean isAvailable = true;
     private CardBase occupyingCard;
     private Vector3d center;
-    private CellTypes cellType;
+    private CellTerrain cellType;
 
     public Cell(Vector3d startingPos, int dem, String world, BlockType material) {
         this.world = world;
@@ -50,8 +50,10 @@ public class Cell {
         }
 
         center = LocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
+    }
 
-        cellType = CellTypes.getRandomType();
+    public void setCellType(CellTerrain cellType) {
+        this.cellType = cellType;
     }
 
     public boolean isWithinCell(Vector3i check){
@@ -146,7 +148,7 @@ public class Cell {
         return world;
     }
 
-    public CellTypes getCellType() {
+    public CellTerrain getCellType() {
         return cellType;
     }
 }

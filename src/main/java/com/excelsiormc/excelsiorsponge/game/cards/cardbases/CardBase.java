@@ -7,7 +7,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.Stats;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
-import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -20,7 +20,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 

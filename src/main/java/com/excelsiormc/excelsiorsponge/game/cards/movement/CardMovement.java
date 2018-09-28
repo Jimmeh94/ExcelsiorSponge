@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import org.spongepowered.api.Sponge;
 
 import java.util.List;

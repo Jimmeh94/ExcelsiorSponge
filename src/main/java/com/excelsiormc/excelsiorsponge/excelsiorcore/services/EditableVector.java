@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 
 public class EditableVector {
 
@@ -8,6 +9,10 @@ public class EditableVector {
 
     public EditableVector(Vector3d vector3d){
         this(vector3d.getX(), vector3d.getY(), vector3d.getZ());
+    }
+
+    public EditableVector(Vector3i v){
+        this(v.getX(), v.getY(), v.getZ());
     }
 
     public EditableVector(double x, double y, double z) {

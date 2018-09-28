@@ -52,7 +52,9 @@ public class MongoUtils extends ServiceMongoDB {
 
                     Document gridDoc = (Document) document.get("grid");
                     String[] temp = gridDoc.getString("startPos").split(",");
+
                     Vector3d v = new Vector3d(Double.valueOf(temp[0]) + 1, Double.valueOf(temp[1]) + 1, Double.valueOf(temp[2]) + 1);
+
                     int rowCount = gridDoc.getInteger("rowCount"), rowLength = gridDoc.getInteger("rowLength");
                     int cellDem = gridDoc.getInteger("cellDem");
                     ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()

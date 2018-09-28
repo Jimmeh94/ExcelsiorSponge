@@ -77,6 +77,7 @@ public class Arena {
         inUse = true;
         this.gamemode = gamemode;
         this.gamemode.setArena(this);
+        grid.generateTerrain();
         gamemode.start();
     }
 

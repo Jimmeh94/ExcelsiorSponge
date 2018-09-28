@@ -1,10 +1,9 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
-import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
-import com.flowpowered.math.vector.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;

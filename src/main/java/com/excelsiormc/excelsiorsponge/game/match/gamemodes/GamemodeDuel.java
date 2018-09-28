@@ -2,7 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.match.field.Cell;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 
