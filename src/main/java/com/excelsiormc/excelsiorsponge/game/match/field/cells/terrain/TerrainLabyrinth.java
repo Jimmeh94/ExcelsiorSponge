@@ -20,11 +20,10 @@ public class TerrainLabyrinth extends CellTerrain {
     @Override
     public void generateTerrain(Grid grid) {
         Cell start = grid.getRandomCell();
-
-        while(start.getCellType() != null){
+        /*while(start.getCellType() != null){
             start = grid.getRandomCell();
         }
-
+        */
         Random random = new Random();
         Row row = null;
         switch (random.nextInt(2)){

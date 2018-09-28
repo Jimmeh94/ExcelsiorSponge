@@ -18,9 +18,9 @@ public class TerrainDesert extends CellTerrain {
     public void generateTerrain(Grid grid) {
         Cell start = grid.getRandomCell();
 
-        while(start.getCellType() != null){
+        /*while(start.getCellType() != null){
             start = grid.getRandomCell();
-        }
+        }*/
 
         List<Cell> cells = grid.getSquareGroupofCells(start, 3, false, null);
         for(Cell cell: cells){

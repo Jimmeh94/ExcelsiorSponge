@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.world.World;
@@ -60,7 +61,7 @@ public abstract class Grid {
         terrainTemplate.generateTerrain();
     }
 
-    public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells){
+    public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells, boolean useNearestIfEmpty){
         double xDistance = cellDem * distanceInCells.getX();
         xDistance += 1 * distanceInCells.getX();
 
@@ -73,7 +74,7 @@ public abstract class Grid {
             if(cell.isAvailable()){
                 return Optional.of(cell);
             }
-        } else {
+        } else if(useNearestIfEmpty){
             //This will get the cell nearest to the target
             EditableVector temp = new EditableVector(target);
             int x = xDistance < 0 ? 1 : -1;
@@ -94,41 +95,24 @@ public abstract class Grid {
     }
 
     public boolean areCellsInLine(Cell one, Cell two){
-        Optional<Row> horizontal = getHorizontalRow(one);
-        Optional<Row> vertical = getVerticalRow(one);
+        Vector3i first = one.getCenter().toInt();
+        Vector3i second = two.getCenter().toInt();
 
-        if(horizontal.isPresent() && horizontal.get().containsCell(two)){
-            return true;
-        } else if(vertical.isPresent() && vertical.get().containsCell(two)){
-            return true;
-        }
-        return false;
+        return first.getX() == second.getX() || first.getZ() == second.getZ();
     }
 
     public List<Cell> getSquareGroupofCells(Cell start, int radiusInCells, boolean includeEnemyOccupiedCells, Team owner) {
         List<Cell> cells = new ArrayList<>();
 
-        Cell begin = getCellInDirection(start, new Vector3d(radiusInCells, 0, radiusInCells)).get();
-        Cell end = getCellInDirection(start, new Vector3d(-radiusInCells, 0, -radiusInCells)).get();
-
-        Cell add = begin;
-        while(add != end){
-            while(!areCellsInLine(add, end)){
-                cells.add(add);
-                add = getCellInDirection(add, new Vector3d(-cellDem, 0, 0)).get();
-            }
-            add = getCellInDirection(begin, new Vector3d(0, 0, -cellDem)).get();
-        }
-
-        /*EditableVector ev = new EditableVector(start);
+        EditableVector ev = new EditableVector(start.getCenter());
         double tempDistance = cellDem + 1;
-        ev.setX(start.getX() - (tempDistance * distanceInCells));
-        ev.setZ(start.getZ() - (tempDistance * distanceInCells));
+        ev.setX(start.getCenter().getX() - (tempDistance * radiusInCells));
+        ev.setZ(start.getCenter().getZ() - (tempDistance * radiusInCells));
 
         EditableVector use = ev.clone();
 
         //Now we have bottom right corner of area
-        int limit = distanceInCells * 2;
+        int limit = radiusInCells * 2;
         limit += 1;
 
         for(int i = 0; i < limit; i++){
@@ -147,9 +131,24 @@ public abstract class Grid {
             }
             use.setX(ev.getX());
             use.setZ(use.getZ() + tempDistance);
-        }*/
+        }
 
         return cells;
+    }
+
+    public Row getRowInDirectionForLength(Cell start, int length, Vector3i direction){
+        Row row = new Row();
+        row.addCell(start);
+        for(int i = 0; i < length; i++){
+            Optional<Cell> cell = getCellInDirection(start, direction.toDouble(), false);
+            if(cell.isPresent()){
+                row.addCell(cell.get());
+                start = cell.get();
+            } else {
+                return row;
+            }
+        }
+        return row;
     }
 
     public List<Cell> getAvailableCellsCross(Cell current, int plusXDistanceInCells, int minusXDistanceInCells, int plusZDistanceInCels,
@@ -290,7 +289,7 @@ public abstract class Grid {
             for(Row r: rows){
                 row.addCell(r.getCells().get(index));
             }
-            Optional.of(row);
+            return Optional.of(row);
         }
 
         return Optional.empty();
@@ -340,9 +339,13 @@ public abstract class Grid {
     }
 
     public Optional<Cell> getCell(Vector3d toVector3d) {
+        return getCell(toVector3d.toInt());
+    }
+
+    public Optional<Cell> getCell(Vector3i v) {
         for(Row row: rows){
-            if(row.isWithinCell(toVector3d.toInt())){
-                return row.getCell(toVector3d.toInt());
+            if(row.isWithinCell(v)){
+                return row.getCell(v);
             }
         }
         return Optional.empty();

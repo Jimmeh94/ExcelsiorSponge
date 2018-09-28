@@ -3,6 +3,8 @@ package com.excelsiormc.excelsiorsponge.game.match.field.cells;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public enum TerrainTypes {
@@ -40,10 +42,9 @@ public enum TerrainTypes {
 
     public static TerrainTemplate getNewTemplate(Grid grid){
         TerrainTemplate template = new TerrainTemplate(grid);
-        template.addType(PLAINS.getCellType());
-        template.addType(DESERT.getCellType());
+        template.setBase(getRandomTypeOf(CellTerrain.GenerationPriority.LOW).getCellType());
 
-        int count = 2;
+        int count = 0;
         while(count < 4){
             TerrainTypes temp = getRandomType();
             if(!template.hasType(temp.getCellType())){
@@ -53,6 +54,16 @@ public enum TerrainTypes {
         }
 
         return template;
+    }
+
+    private static TerrainTypes getRandomTypeOf(CellTerrain.GenerationPriority priority){
+        List<TerrainTypes> temp = new ArrayList<>();
+        for(TerrainTypes t: TerrainTypes.values()){
+            if(t.getCellType().getPriority() == priority){
+                temp.add(t);
+            }
+        }
+        return temp.get(random.nextInt(temp.size() - 1));
     }
 
     public static TerrainTypes getTerrainTypesFromTerrain(CellTerrain c){

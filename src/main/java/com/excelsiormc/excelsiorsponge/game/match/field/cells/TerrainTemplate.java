@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field.cells;
 
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
+import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TerrainTemplate {
 
+    private CellTerrain base;
     private List<CellTerrain> types;
     private Grid grid;
 
@@ -18,6 +20,10 @@ public class TerrainTemplate {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    public void setBase(CellTerrain base) {
+        this.base = base;
     }
 
     public void addType(CellTerrain type){
@@ -50,6 +56,14 @@ public class TerrainTemplate {
         temp = getPriority(CellTerrain.GenerationPriority.LOW);
         for(CellTerrain c: temp){
             c.generateTerrain(grid);
+        }
+
+        for(Row row: grid.getRows()){
+            for(Cell cell: row.getCells()){
+                if(cell.getCellType() == null) {
+                    cell.setCellType(TerrainTypes.getTerrainTypesFromTerrain(base));
+                }
+            }
         }
     }
 
