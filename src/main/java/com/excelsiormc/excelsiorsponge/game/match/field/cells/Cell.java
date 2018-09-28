@@ -29,7 +29,7 @@ public class Cell {
     private boolean isAvailable = true;
     private CardBase occupyingCard;
     private Vector3d center;
-    private CellTerrain cellType;
+    private TerrainTypes cellType;
 
     public Cell(Vector3d startingPos, int dem, String world, BlockType material) {
         this.world = world;
@@ -52,8 +52,9 @@ public class Cell {
         center = LocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
     }
 
-    public void setCellType(CellTerrain cellType) {
+    public void setCellType(TerrainTypes cellType) {
         this.cellType = cellType;
+        drawCell();
     }
 
     public boolean isWithinCell(Vector3i check){
@@ -69,7 +70,11 @@ public class Cell {
     public void drawCell(){
         World world = Sponge.getServer().getWorld(getWorld()).get();
         for(Vector3d v: locations){
-            world.getLocation(v).setBlockType(material);
+            if(cellType != null){
+                world.getLocation(v).setBlockType(cellType.getCellType().getTerrainMat());
+            } else {
+                world.getLocation(v).setBlockType(material);
+            }
         }
     }
 
@@ -89,7 +94,11 @@ public class Cell {
 
     public void clearAimForPlayer(Player player){
         for (Vector3d v : getVector3ds()) {
-            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(material).build());
+            if(cellType != null){
+                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(cellType.getCellType().terrainMat).build());
+            } else {
+                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(material).build());
+            }
         }
     }
 
@@ -148,7 +157,7 @@ public class Cell {
         return world;
     }
 
-    public CellTerrain getCellType() {
+    public TerrainTypes getCellType() {
         return cellType;
     }
 }

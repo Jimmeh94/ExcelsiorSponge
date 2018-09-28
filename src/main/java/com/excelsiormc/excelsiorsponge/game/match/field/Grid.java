@@ -42,10 +42,16 @@ public abstract class Grid {
         rows = new CopyOnWriteArrayList<>();
         border = new CopyOnWriteArrayList<>();
 
-        GenerateCells(startingPos);
-
+        generateCells();
+        drawCells();
         if(drawGrid){
             drawGrid();
+        }
+    }
+
+    private void drawCells(){
+        for(Row row: rows){
+            row.drawCells();
         }
     }
 
@@ -72,9 +78,6 @@ public abstract class Grid {
     }
 
     public void drawGrid(){
-        for(Row row: rows){
-            row.drawCells();
-        }
         World world = Sponge.getServer().getWorld(getWorld()).get();
         for(Vector3d v: border){
             world.getLocation(v).setBlockType(gridBorder);
@@ -286,7 +289,7 @@ public abstract class Grid {
         return world;
     }
 
-    protected abstract void GenerateCells(Vector3d startingPos);
+    protected abstract void generateCells();
 
     public List<Row> getRows() {
         return rows;

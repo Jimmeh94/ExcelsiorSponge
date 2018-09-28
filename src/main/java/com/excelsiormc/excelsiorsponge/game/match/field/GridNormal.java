@@ -12,29 +12,30 @@ import org.spongepowered.api.world.World;
 import java.util.List;
 
 /**
- * A GridNormal contains a playing field of 11 x 11 cells, each cell separated by a 1 block wide divider
+ * A GridNormal contains a playing field of cell x cell cells, each cell separated by a 1 block wide divider
  * Generates rows starting from z -> z + distance
  */
 public class GridNormal extends Grid {
 
+    //StartingPos will be where the corner of the border is
     public GridNormal(Vector3d startingPos, String world, int rowCount, int rowLength, int cell, boolean drawGrid) {
         super(startingPos, world, rowCount, rowLength, cell, drawGrid, BlockTypes.OBSIDIAN, BlockTypes.STONE);
     }
 
     @Override
-    protected void GenerateCells(Vector3d startingPos) {
+    protected void generateCells() {
+        EditableVector use = new EditableVector(startPos.toInt().clone());
+        use.add(1, 1, 1);
 
-        EditableVector use = new EditableVector(startingPos.clone());
-        //use.subtract(1, 0, 1);
+        final EditableVector reference = use.clone();
 
-        EditableVector start = use.clone();
         for(int i = 0; i < rowCount; i++){
             Row row = new Row();
             for(int j = 0; j < rowLength; j++){
                 row.addCell(new Cell(use.toVector3d(), cellDem, world, cellMat));
                 use.setZ(use.getZ() + cellDem + 1);
             }
-            use.setZ(start.getZ());
+            use.setZ(reference.getZ());
             use.setX(use.getX() + cellDem + 1);
 
             rows.add(row);
@@ -44,7 +45,7 @@ public class GridNormal extends Grid {
         EditableVector end = new EditableVector(row.getCells().get(row.getCells().size() - 1).getCenter());
         end.add(cellDem, -1, cellDem);
 
-        use = new EditableVector(startingPos.toInt().clone());
+        use = reference.clone();
         use.subtract(1, 1, 1);
 
         World world = Sponge.getServer().getWorld(getWorld()).get();

@@ -40,8 +40,10 @@ public enum TerrainTypes {
 
     public static TerrainTemplate getNewTemplate(Grid grid){
         TerrainTemplate template = new TerrainTemplate(grid);
+        template.addType(PLAINS.getCellType());
+        template.addType(DESERT.getCellType());
 
-        int count = 0;
+        int count = 2;
         while(count < 4){
             TerrainTypes temp = getRandomType();
             if(!template.hasType(temp.getCellType())){
@@ -51,5 +53,14 @@ public enum TerrainTypes {
         }
 
         return template;
+    }
+
+    public static TerrainTypes getTerrainTypesFromTerrain(CellTerrain c){
+        for(TerrainTypes type: TerrainTypes.values()){
+            if(type.getCellType() == c){
+                return type;
+            }
+        }
+        return null;
     }
 }

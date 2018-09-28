@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.user.scoreboard;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.presets.ScoreboardPreset;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.AltCodes;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
@@ -39,7 +40,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
         CombatantProfilePlayer cpp = (CombatantProfilePlayer) arena.getCombatantProfile(getOwner().getOwner()).get();
         if(cpp.getCurrentAim().isPresent() && cpp.getCurrentAim().get().getCellType() != null){
             strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
-            strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + cpp.getCurrentAim().get().getCellType().toString()));
+            strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + StringUtils.enumToString(cpp.getCurrentAim().get().getCellType(), true)));
         }
 
         setScores(strings);
