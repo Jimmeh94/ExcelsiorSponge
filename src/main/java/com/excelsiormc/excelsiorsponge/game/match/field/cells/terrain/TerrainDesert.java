@@ -22,7 +22,7 @@ public class TerrainDesert extends CellTerrain {
             start = grid.getRandomCell();
         }
 
-        List<Cell> cells = grid.getSquareGroupofCells(start.getCenter(), 3, false, null);
+        List<Cell> cells = grid.getSquareGroupofCells(start, 3, false, null);
         for(Cell cell: cells){
             if(cell.getCellType() == null){
                 cell.setCellType(TerrainTypes.getTerrainTypesFromTerrain(this));

@@ -73,6 +73,15 @@ public abstract class Grid {
             if(cell.isAvailable()){
                 return Optional.of(cell);
             }
+        } else {
+            //This will get the cell nearest to the target
+            EditableVector temp = new EditableVector(target);
+            int x = xDistance < 0 ? 1 : -1;
+            int z = zDistance < 0 ? 1 : -1;
+            while(!isCell(temp.toVector3d())){
+                temp.add(x, 0, z);
+            }
+            return Optional.of(getCell(temp.toVector3d()).get());
         }
         return Optional.empty();
     }
@@ -84,10 +93,34 @@ public abstract class Grid {
         }
     }
 
-    public List<Cell> getSquareGroupofCells(Vector3d start, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner) {
+    public boolean areCellsInLine(Cell one, Cell two){
+        Optional<Row> horizontal = getHorizontalRow(one);
+        Optional<Row> vertical = getVerticalRow(one);
+
+        if(horizontal.isPresent() && horizontal.get().containsCell(two)){
+            return true;
+        } else if(vertical.isPresent() && vertical.get().containsCell(two)){
+            return true;
+        }
+        return false;
+    }
+
+    public List<Cell> getSquareGroupofCells(Cell start, int radiusInCells, boolean includeEnemyOccupiedCells, Team owner) {
         List<Cell> cells = new ArrayList<>();
 
-        EditableVector ev = new EditableVector(start);
+        Cell begin = getCellInDirection(start, new Vector3d(radiusInCells, 0, radiusInCells)).get();
+        Cell end = getCellInDirection(start, new Vector3d(-radiusInCells, 0, -radiusInCells)).get();
+
+        Cell add = begin;
+        while(add != end){
+            while(!areCellsInLine(add, end)){
+                cells.add(add);
+                add = getCellInDirection(add, new Vector3d(-cellDem, 0, 0)).get();
+            }
+            add = getCellInDirection(begin, new Vector3d(0, 0, -cellDem)).get();
+        }
+
+        /*EditableVector ev = new EditableVector(start);
         double tempDistance = cellDem + 1;
         ev.setX(start.getX() - (tempDistance * distanceInCells));
         ev.setZ(start.getZ() - (tempDistance * distanceInCells));
@@ -101,7 +134,7 @@ public abstract class Grid {
         for(int i = 0; i < limit; i++){
             //this first loop will increase z by tempDistance each time
             for(int j = 0; j < limit; j++){
-                //this second loop will incrase x by tempDistance each time
+                //this second loop will increase x by tempDistance each time
                 if(isCell(use.toVector3d())){
                     Cell cell = getCell(use.toVector3d()).get();
                     if(cell.isAvailable()){
@@ -114,7 +147,7 @@ public abstract class Grid {
             }
             use.setX(ev.getX());
             use.setZ(use.getZ() + tempDistance);
-        }
+        }*/
 
         return cells;
     }
@@ -233,7 +266,8 @@ public abstract class Grid {
     public Row getRowLast(){
         return rows.get(rows.size() - 1);
     }
-    public Optional<Row> getRowX(Cell cell){
+
+    public Optional<Row> getHorizontalRow(Cell cell){
         for(Row row: rows){
             if(row.containsCell(cell)){
                 return Optional.of(row);
@@ -242,7 +276,7 @@ public abstract class Grid {
         return Optional.empty();
     }
 
-    public Row getVerticalRow(Cell cell){
+    public Optional<Row> getVerticalRow(Cell cell){
         Row row = new Row();
 
         int index = -1;
@@ -256,9 +290,10 @@ public abstract class Grid {
             for(Row r: rows){
                 row.addCell(r.getCells().get(index));
             }
+            Optional.of(row);
         }
 
-        return row;
+        return Optional.empty();
     }
 
     public boolean doAllCellsHaveTerrain(){

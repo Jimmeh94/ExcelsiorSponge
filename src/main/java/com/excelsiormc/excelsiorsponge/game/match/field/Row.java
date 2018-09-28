@@ -8,6 +8,7 @@ import com.flowpowered.math.vector.Vector3i;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A row is a row of cells generated from z -> z + distance
@@ -24,6 +25,16 @@ public class Row {
         if(!cells.contains(cell)){
             cells.add(cell);
         }
+    }
+
+    public void setCells(List<Cell> cells) {
+        this.cells = cells;
+    }
+
+    public Row clone(){
+        Row row = new Row();
+        row.setCells(new CopyOnWriteArrayList<>(cells));
+        return row;
     }
 
     public boolean containsCell(Cell cell){
