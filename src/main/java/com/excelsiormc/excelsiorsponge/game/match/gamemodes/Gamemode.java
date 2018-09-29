@@ -72,6 +72,7 @@ public abstract class Gamemode {
                     PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
                     Player player = p.getPlayer();
                     player.setLocation(new Location<World>(player.getWorld(), team.getSpawn()));
+                    team.getPlaceableRows().get(0).getCenterCell().setOccupyingCard(p.getCard(), true);
                 }
             }
         }

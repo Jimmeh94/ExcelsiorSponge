@@ -33,12 +33,12 @@ public abstract class CardBase {
     private Text name;
     private List<Text> lore;
     private UUID owner;
-    private ArmorStand stand;
+    protected ArmorStand stand;
     private ItemType material;
     private int materialDamageValue;
     private ItemStack mesh;
-    private Cell currentCell;
-    private CardMovement cardMovement;
+    protected Cell currentCell;
+    protected CardMovement cardMovement;
     protected Stats<CardBase> stats;
     protected CardRarity rarity;
 
@@ -55,7 +55,10 @@ public abstract class CardBase {
         stats = new Stats<>(this);
 
         generateStats();
-        generateItemStack();
+
+        if(material != null) {
+            generateItemStack();
+        }
     }
 
     protected abstract void generateStats();
@@ -140,7 +143,7 @@ public abstract class CardBase {
         return name;
     }
 
-    public void spawn3DRepresentationServer(Location center) {
+    public void spawn(Location center) {
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
         stand.offer(Keys.DISPLAY_NAME, Text.of(name));
         stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
@@ -151,13 +154,13 @@ public abstract class CardBase {
         center.getExtent().spawnEntity(stand);
     }
 
-    private void removeArmorStand(){
+    private void remove(){
         if(stand != null){
             stand.remove();
         }
     }
 
-    public void moveArmorStand(Vector3d destination, Cell old){
+    public void move(Vector3d destination, Cell old){
         stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
         ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
@@ -180,7 +183,7 @@ public abstract class CardBase {
     }
 
     public void cardEliminated(){
-        removeArmorStand();
+        remove();
         currentCell.setAvailable(true);
         Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
     }

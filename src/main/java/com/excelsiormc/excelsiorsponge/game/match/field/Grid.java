@@ -1,8 +1,9 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
@@ -433,5 +434,10 @@ public abstract class Grid {
         cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(-1, 0, -1)).getCells());
         cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(-1, 0, 1)).getCells());
         return cells;
+    }
+
+    public Cell getCenterCell() {
+        Row first = rows.get(0), last = rows.get(rows.size() - 1);
+        return getCell(LocationUtils.getMiddleLocation(first.getCells().get(0).getCenter(), last.getCells().get(last.getCells().size() - 1).getCenter())).get();
     }
 }

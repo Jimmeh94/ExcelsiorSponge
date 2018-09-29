@@ -80,44 +80,44 @@ public class LocationUtils {
                 Double.valueOf(temp[1]), Double.valueOf(temp[2]), Double.valueOf(temp[3]));
     }
 
-    public static Vector3d getOffsetBetween(Location start, Location end){
-        if(start == null || end == null)
+    public static Vector3d getOffsetBetween(Location start, Location target){
+        if(start == null || target == null)
             return new Vector3d(0.0, 0.0, 0.0);
 
         double deltaX, deltaY, deltaZ;
-        deltaX = Math.max(start.getX(), end.getX()) - Math.min(start.getX(), end.getX());
+        deltaX = Math.max(start.getX(), target.getX()) - Math.min(start.getX(), target.getX());
         if(deltaX > 0)
-            deltaX = Math.max(start.getX(), end.getX()) == start.getX() ? deltaX *-1 : deltaX * 1;
+            deltaX = Math.max(start.getX(), target.getX()) == start.getX() ? deltaX *-1 : deltaX * 1;
 
-        deltaY = Math.max(start.getY(), end.getY()) - Math.min(start.getY(), end.getY());
+        deltaY = Math.max(start.getY(), target.getY()) - Math.min(start.getY(), target.getY());
         if(deltaY > 0)
-            deltaY = Math.max(start.getY(), end.getY()) == start.getY() ? deltaY *-1 : deltaY * 1;
+            deltaY = Math.max(start.getY(), target.getY()) == start.getY() ? deltaY *-1 : deltaY * 1;
 
-        deltaZ = Math.max(start.getZ(), end.getZ()) - Math.min(start.getZ(), end.getZ());
+        deltaZ = Math.max(start.getZ(), target.getZ()) - Math.min(start.getZ(), target.getZ());
         if(deltaZ > 0)
-            deltaZ = Math.max(start.getZ(), end.getZ()) == start.getZ() ? deltaZ *-1 : deltaZ * 1;
+            deltaZ = Math.max(start.getZ(), target.getZ()) == start.getZ() ? deltaZ *-1 : deltaZ * 1;
 
         return new Vector3d(deltaX, deltaY, deltaZ);
     }
 
-    public static List<Location> getConnectingLine(Location start, Location end){
+    public static List<Location> getConnectingLine(Location start, Location target){
         List<Location> give = new ArrayList<>();
         give.add(start);
 
-        double deltaX = Math.max(start.getX(), end.getX()) - Math.min(start.getX(), end.getX());
-        double deltaY = Math.max(start.getY(), end.getY()) - Math.min(start.getY(), end.getY());
-        double deltaZ = Math.max(start.getZ(), end.getZ()) - Math.min(start.getZ(), end.getZ());
+        double deltaX = Math.max(start.getX(), target.getX()) - Math.min(start.getX(), target.getX());
+        double deltaY = Math.max(start.getY(), target.getY()) - Math.min(start.getY(), target.getY());
+        double deltaZ = Math.max(start.getZ(), target.getZ()) - Math.min(start.getZ(), target.getZ());
 
-        int xCoefficient = start.getX() > end.getX() ? -1 : 1;
-        if(start.getX() == end.getX())
+        int xCoefficient = start.getX() > target.getX() ? -1 : 1;
+        if(start.getX() == target.getX())
             xCoefficient = 0;
 
-        int zCoefficient = start.getZ() > end.getZ() ? -1 : 1;
-        if(start.getZ() == end.getZ())
+        int zCoefficient = start.getZ() > target.getZ() ? -1 : 1;
+        if(start.getZ() == target.getZ())
             zCoefficient = 0;
 
-        int yCoefficient = start.getY() > end.getY() ? -1 : 1;
-        if(start.getY() == end.getY())
+        int yCoefficient = start.getY() > target.getY() ? -1 : 1;
+        if(start.getY() == target.getY())
             yCoefficient = 0;
 
         Location temp = start.copy();
@@ -137,7 +137,7 @@ public class LocationUtils {
             deltaZ--;
         } while(deltaX > 0 && deltaY > 0&& deltaZ> 0);
 
-        give.add(end);
+        give.add(target);
 
         return give;
     }
@@ -220,4 +220,20 @@ public class LocationUtils {
         return rotateDirectionBy90(rotateDirectionBy90(rotateDirectionBy90(direction)));
     }
 
+    public static Vector3i getDirection(Vector3d current, Vector3d target) {
+        
+        int x = current.getFloorX() > target.getFloorX() ? -1 : 1;
+        if(current.getFloorX() == target.getFloorX())
+            x = 0;
+
+        int z = current.getFloorZ() > target.getFloorZ() ? -1 : 1;
+        if(current.getFloorZ() == target.getFloorZ())
+            z = 0;
+
+        int y = current.getFloorY() > target.getFloorY() ? -1 : 1;
+        if(current.getFloorY() == target.getFloorY())
+            y = 0;
+        
+        return new Vector3i(x, y, z);
+    }
 }

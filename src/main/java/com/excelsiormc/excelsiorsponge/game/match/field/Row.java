@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,20 @@ public class Row {
     public void drawCells() {
         for(Cell cell: cells){
             cell.drawCell();
+        }
+    }
+
+    public void highlightAsPlaceableRow(Player player){
+        for(Cell cell: cells){
+            if(cell.isAvailable()){
+                cell.highlightAsPlaceable(player);
+            }
+        }
+    }
+
+    public void eraseAsPlaceableRow(Player player){
+        for(Cell cell: cells){
+            cell.eraseAsPlaceable(player);
         }
     }
 

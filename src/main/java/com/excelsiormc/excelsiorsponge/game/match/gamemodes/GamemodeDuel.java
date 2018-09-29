@@ -1,10 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
+import com.flowpowered.math.vector.Vector3i;
 
 public class GamemodeDuel extends Gamemode {
 
@@ -33,8 +35,28 @@ public class GamemodeDuel extends Gamemode {
     protected void generateSpawnPoints() {
         //We need 2
         Grid grid = arena.getGrid();
-        teams.get(0).setSpawn(grid.getRowFirst().getCenterCell());
-        teams.get(1).setSpawn(grid.getRowLast().getCenterCell());
+        Cell firstSpawn = grid.getRowFirst().getCenterCell();
+        Cell secondSpawn = grid.getRowLast().getCenterCell();
+
+        teams.get(0).setSpawn(firstSpawn);
+        teams.get(1).setSpawn(secondSpawn);
+
+        Cell gridCenter = grid.getCenterCell();
+        Vector3i direction;
+
+        direction = LocationUtils.getDirection(firstSpawn.getCenter(), gridCenter.getCenter());
+        teams.get(0).addPlaceableRow(grid.getHorizontalRow(firstSpawn).get());
+
+        firstSpawn = grid.getCellInDirection(firstSpawn, direction.toDouble(), false).get();
+        teams.get(0).addPlaceableRow(grid.getHorizontalRow(firstSpawn).get());
+
+
+        direction = LocationUtils.getDirection(secondSpawn.getCenter(), gridCenter.getCenter());
+        teams.get(1).addPlaceableRow(grid.getHorizontalRow(secondSpawn).get());
+
+        secondSpawn = grid.getCellInDirection(secondSpawn, direction.toDouble(), false).get();
+        teams.get(1).addPlaceableRow(grid.getHorizontalRow(secondSpawn).get());
+
     }
 
     @Override

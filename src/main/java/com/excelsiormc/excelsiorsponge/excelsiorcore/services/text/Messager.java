@@ -33,6 +33,12 @@ public class Messager {
                 .build());
     }
 
+    public static void clearChat(Player player){
+        for(int i = 0; i < 25; i++){
+            sendBlankLine(player);
+        }
+    }
+
     public static void sendMessage(Message message){
         for(Player player: message.getSendTo()){
             for(Message.Entry entry: message.getMessages()){

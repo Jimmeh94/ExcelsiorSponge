@@ -1,6 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.match.profiles;
 
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementSquare;
 import com.excelsiormc.excelsiorsponge.game.match.cards.Hand;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,17 +14,14 @@ public abstract class CombatantProfile {
     private UUID owner;
     private Hand hand;
     private Deck deck;
-
-    private double health, energy;
+    private CardBaseCombatant card;
 
     public CombatantProfile(UUID owner, Deck deck) {
         this.owner = owner;
         this.deck = deck.clone();
 
-        health = 800;
-        energy = 100;
-
         hand = new Hand(owner);
+        card = new CardBaseCombatant(owner, this, 0, new CardMovementSquare(1));
     }
 
     public void drawHand(){
@@ -40,16 +39,12 @@ public abstract class CombatantProfile {
         return false;
     }
 
+    public CardBaseCombatant getCard() {
+        return card;
+    }
+
     public Deck getDeck() {
         return deck;
-    }
-
-    public double getHealth() {
-        return health;
-    }
-
-    public double getEnergy() {
-        return energy;
     }
 
     public Hand getHand() {

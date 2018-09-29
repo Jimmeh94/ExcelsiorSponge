@@ -9,6 +9,7 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
+import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
@@ -61,16 +62,19 @@ public class HotbarHand extends Hotbar {
 
                     int index = InventoryUtils.getHeldItemSlot(player, action).get().getValue();
                     //Lay card on field
-                    Cell currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim().get();
+                    Optional<Cell> currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
 
-                    if (currentAim != null && currentAim.isAvailable() && profile.getHand().hasCardAt(index)) {
-                        currentAim.setOccupyingCard(profile.getHand().getCard(index), true);
+                    if (currentAim.isPresent() && currentAim.get().isAvailable() && profile.getHand().hasCardAt(index)) {
 
-                        Optional<Slot> op = InventoryUtils.getSlot(index, player);
-                        if(op.isPresent()){
-                            op.get().clear();
+                        if(PlayerUtils.getTeam(player.getUniqueId()).isPlaceable(currentAim.get())) {
+                            currentAim.get().setOccupyingCard(profile.getHand().getCard(index), true);
+
+                            Optional<Slot> op = InventoryUtils.getSlot(index, player);
+                            if (op.isPresent()) {
+                                op.get().clear();
+                            }
+                            setHotbar(player);
                         }
-                        setHotbar(player);
                     }
                 }
 
@@ -138,8 +142,10 @@ public class HotbarHand extends Hotbar {
             }
 
             private void action(Player player){
-                if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().isPlayersTurn(player)){
+                Arena arena = PlayerUtils.findArenaWithPlayer(player).get();
+                if(arena.isPlayersTurn(player)){
                     Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
+                    PlayerUtils.getTeam(player.getUniqueId()).eraseAsPlaceableRows(player);
                 } else {
                     Hotbars.HOTBAR_WAITING_TURN.setHotbar(player);
                 }
