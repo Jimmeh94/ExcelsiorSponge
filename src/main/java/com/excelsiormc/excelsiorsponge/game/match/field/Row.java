@@ -74,6 +74,7 @@ public class Row {
         for(Cell cell: cells){
             cell.setAvailable(true);
             cell.setCellType(null);
+            cell.eraseBuild();
         }
     }
 

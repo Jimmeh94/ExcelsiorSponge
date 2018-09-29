@@ -114,6 +114,7 @@ public class ExcelsiorSponge {
 
     @Listener
     public void onServerStopping(GameStoppingEvent event){
+        //getMatchMaker().getArenaManager().clean();
         mongoUtils.close();
     }
 

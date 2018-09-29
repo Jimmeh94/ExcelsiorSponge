@@ -20,11 +20,11 @@ public abstract class CellTerrain {
         this.priority = priority;
         this.terrainMat = terrainMat;
         build = new ArrayList<>();
-
-        loadTerrainBuild();
     }
 
-    protected abstract void loadTerrainBuild();
+    public List<TerrainBuild> getBuild() {
+        return build;
+    }
 
     public BlockType getTerrainMat() {
         return terrainMat;
@@ -52,8 +52,10 @@ public abstract class CellTerrain {
         setCells(cells);
 
         Random random = new Random();
-        for(Cell cell: cells){
-            build.get(random.nextInt(build.size())).draw(cell.getCenter().clone().sub(1, -1, 1));
+        if(cells.size() > 0) {
+            for (Cell cell : cells) {
+                build.get(random.nextInt(build.size())).draw(cell, cell.getVector3ds().get(0).clone().add(0, 1, 0));
+            }
         }
     }
 

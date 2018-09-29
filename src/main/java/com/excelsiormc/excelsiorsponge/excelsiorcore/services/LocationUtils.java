@@ -149,14 +149,21 @@ public class LocationUtils {
 
         int xCoefficient = start.getBlockX() > finish.getBlockX() ? -1 : 1;
         int zCoefficient = start.getBlockZ() > finish.getBlockZ() ? -1 : 1;
+        int yCoefficient = start.getBlockY() > finish.getBlockY() ? -1 : 1;
 
-        for(int x = 0; x < difference.getFloorX(); x++){
-            for(int z = 0; z < difference.getFloorZ(); z++){
-                give.add(new Location(start.getExtent(), temp.toVector3d()));
-                temp.add(0, 0, zCoefficient);
+        int yLimit = difference.getFloorY() == 0 ? 1 : difference.getFloorY();
+
+        for(int y = 0; y < yLimit; y++) {
+            for (int x = 0; x < difference.getFloorX(); x++) {
+                for (int z = 0; z < difference.getFloorZ(); z++) {
+                    give.add(new Location(start.getExtent(), temp.toVector3d()));
+                    temp.add(0, 0, zCoefficient);
+                }
+                temp.setZ(start.getBlockZ());
+                temp.add(xCoefficient, 0, 0);
             }
-            temp.setZ(start.getBlockZ());
-            temp.add(xCoefficient, 0, 0);
+            temp.setX(start.getBlockX());
+            temp.add(0, yCoefficient, 0);
         }
         return give;
     }

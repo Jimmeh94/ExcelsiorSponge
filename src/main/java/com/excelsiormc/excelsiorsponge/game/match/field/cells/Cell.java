@@ -16,6 +16,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,14 +25,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Cell {
 
     private List<Vector3d> locations;
+    private List<Vector3d> ceiling;
     private String world;
     private BlockType material;
     private boolean isAvailable = true;
     private CardBase occupyingCard;
     private Vector3d center;
     private TerrainTypes cellType;
+    private TerrainBuild build;
+    private Vector3d placeCardAt;
 
-    public Cell(Vector3d startingPos, int dem, String world, BlockType material) {
+    public Cell(Vector3d startingPos, int dim, String world, BlockType material) {
         this.world = world;
         this.material = material;
 
@@ -40,9 +44,9 @@ public class Cell {
         EditableVector use = new EditableVector(startingPos.clone());
         int x = startingPos.getFloorX();
         int z = startingPos.getFloorZ();
-        for(int i = 0; i < dem; i++, x++){
+        for(int i = 0; i < dim; i++, x++){
             use.setX(startingPos.getFloorX() + i);
-            for(int j = 0; j < dem; j++, z++){
+            for(int j = 0; j < dim; j++, z++){
                 use.setZ(z);
                 locations.add(use.toVector3d());
             }
@@ -50,6 +54,12 @@ public class Cell {
         }
 
         center = LocationUtils.getMiddleLocation(locations.get(0), locations.get(locations.size() - 1));
+
+        placeCardAt = center.clone().add(0, 10, 0);
+        ceiling = new CopyOnWriteArrayList<>(locations);
+        for(Vector3d v: ceiling){
+            ceiling.set(ceiling.indexOf(v), v.add(0, 10, 0));
+        }
     }
 
     public void setCellType(TerrainTypes cellType) {
@@ -57,10 +67,14 @@ public class Cell {
         drawCell();
     }
 
+    public void setBuild(TerrainBuild build) {
+        this.build = build;
+    }
+
     public boolean isWithinCell(Vector3i check){
         for(Vector3d v: locations){
             Vector3i temp = v.toInt();
-            if(temp.getX() == check.getX() && (temp.getY() == check.getY() || Math.abs(temp.getY() - check.getY()) <= 1) && temp.getZ() == check.getZ()){
+            if(temp.getX() == check.getX() && (temp.getY() == check.getY() || Math.abs(temp.getY() - check.getY()) <= 15) && temp.getZ() == check.getZ()){
                 return true;
             }
         }
@@ -68,13 +82,22 @@ public class Cell {
     }
 
     public void drawCell(){
-        World world = Sponge.getServer().getWorld(getWorld()).get();
+        Optional<World> world = Sponge.getServer().getWorld(getWorld());
+
+        if(!world.isPresent()){
+            return;
+        }
+
         for(Vector3d v: locations){
             if(cellType != null){
-                world.getLocation(v).setBlockType(cellType.getCellType().getTerrainMat());
+                world.get().getLocation(v).setBlockType(cellType.getCellType().getTerrainMat());
             } else {
-                world.getLocation(v).setBlockType(material);
+                world.get().getLocation(v).setBlockType(material);
             }
+        }
+
+        if(cellType != null){
+            cellType.getCellType().getBuild().get(0).draw(this, getVector3ds().get(0).clone().add(0, 1, 0));
         }
     }
 
@@ -86,19 +109,19 @@ public class Cell {
     }
 
     public void drawAimForPlayer(Player player){
-        for(Vector3d v: getVector3ds()){
+        /*for(Vector3d v: ceiling){
             BlockState state = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
             player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.RED).get());
-        }
+        }*/
     }
 
     public void clearAimForPlayer(Player player){
-        for (Vector3d v : getVector3ds()) {
-            if(cellType != null){
-                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(cellType.getCellType().terrainMat).build());
-            } else {
-                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(material).build());
-            }
+        for (Vector3d v : ceiling) {
+            //if(cellType != null){
+                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.AIR).build());
+            //} else {
+              //  player.sendBlockChange(v.toInt(), BlockState.builder().blockType(material).build());
+            //}
         }
     }
 
@@ -131,8 +154,8 @@ public class Cell {
         setAvailable(false);
         occupyingCard = card;
         if(spawnArmorStand) {
-            occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), getCenter().getX(),
-                    getCenter().getY() + 1, getCenter().getZ()));
+            occupyingCard.spawn3DRepresentationServer(new Location(Sponge.getServer().getWorld(world).get(), placeCardAt.getX(),
+                    placeCardAt.getY() + 1, placeCardAt.getZ()));
         }
         occupyingCard.setCurrentCell(this);
     }
@@ -142,7 +165,7 @@ public class Cell {
      * @param player
      */
     public void drawAvailableSpaceForPlayer(Player player) {
-        for(Vector3d v: getVector3ds()){
+        for(Vector3d v: ceiling){
             BlockState state = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
             if(!isAvailable){
                 //We can assume that this is an enemy occupied cell
@@ -159,5 +182,13 @@ public class Cell {
 
     public TerrainTypes getCellType() {
         return cellType;
+    }
+
+    public void eraseBuild() {
+        this.build.destroy(locations.get(0));
+    }
+
+    public Vector3d getPlaceCardAt() {
+        return placeCardAt;
     }
 }

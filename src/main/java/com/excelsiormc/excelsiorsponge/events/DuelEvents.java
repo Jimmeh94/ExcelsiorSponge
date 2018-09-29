@@ -2,9 +2,9 @@ package com.excelsiormc.excelsiorsponge.events;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.event.Listener;
@@ -26,7 +26,17 @@ public class DuelEvents {
 
     @Listener
     public void onTurnEnd(DuelEvent.EndTurn event){
+        Team team = event.getTeam();
 
+        for(CombatantProfile c: team.getCombatants()){
+            if(c.isPlayer()){
+                CombatantProfilePlayer cpp = (CombatantProfilePlayer) c;
+                if(cpp.getCurrentlyMovingCard() != null){
+                    cpp.getCurrentlyMovingCard().getCurrentCell().clearAimForPlayer(cpp.getPlayer());
+                    cpp.setCurrentlyMovingCard(null);
+                }
+            }
+        }
     }
 
     @Listener

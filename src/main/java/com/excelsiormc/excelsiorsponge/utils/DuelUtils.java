@@ -26,7 +26,7 @@ public class DuelUtils {
                 Cell old = card.getCurrentCell();
                 old.setAvailable(true);
                 aim.setOccupyingCard(card, false);
-                card.moveArmorStand(aim.getCenter(), old);
+                card.moveArmorStand(aim.getPlaceCardAt(), old);
 
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
                 PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);

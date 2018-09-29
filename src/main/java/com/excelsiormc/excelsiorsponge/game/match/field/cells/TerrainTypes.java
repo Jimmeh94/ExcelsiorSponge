@@ -15,7 +15,7 @@ public enum TerrainTypes {
     DESERT(new TerrainDesert(CellTerrain.GenerationPriority.LOW)),
     PLAINS(new TerrainPlains(CellTerrain.GenerationPriority.LOW)),
     RIVER(new TerrainRiver(CellTerrain.GenerationPriority.MEDIUM)),
-    ARTIC(new TerrainArtic(CellTerrain.GenerationPriority.MEDIUM)),
+    ARCTIC(new TerrainArctic(CellTerrain.GenerationPriority.MEDIUM)),
     MOUNTAINS(new TerrainMountains(CellTerrain.GenerationPriority.HIGHEST)),
     LABYRINTH(new TerrainLabyrinth(CellTerrain.GenerationPriority.HIGHEST));
 

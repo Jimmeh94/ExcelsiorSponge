@@ -81,13 +81,13 @@ public abstract class Gamemode {
 
     public void endGame(){
         arena.getGrid().resetCells();
+        arena.end();
         endingGame();
         arena = null;
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
                 if(p.isPlayer()){
                     PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.NORMAL);
-                    //Teleport out
                 }
             }
         }

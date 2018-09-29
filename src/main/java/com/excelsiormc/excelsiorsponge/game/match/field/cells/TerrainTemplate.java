@@ -58,8 +58,6 @@ public class TerrainTemplate {
             c.generateTerrain(grid, TerrainShapes.getRandomShape(), TerrainFilters.getRandomFilter());
         }
 
-        System.out.println(baseGradient.getTypes().toString());
-
         for(Row row: grid.getRows()){
             for(Cell cell: row.getCells()){
                 if(cell.getCellType() == null) {

@@ -3,9 +3,6 @@ package com.excelsiormc.excelsiorsponge.managers;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Manager;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
-import com.excelsiormc.excelsiorsponge.game.match.Team;
-import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
-import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.Optional;
@@ -62,6 +59,14 @@ public class ManagerArena extends Manager<Arena> {
         for(Arena a: objects){
             if(a.isInUse()){
                 a.tick();
+            }
+        }
+    }
+
+    public void clean() {
+        for(Arena arena: objects){
+            if(arena.isInUse()){
+                arena.getGrid().resetCells();
             }
         }
     }

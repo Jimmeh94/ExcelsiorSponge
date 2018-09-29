@@ -89,7 +89,7 @@ public class PlayerEvents {
                 }
             } else if(event.getChangeTo() == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT){
                 if(cpp.getCurrentAim().isPresent()){
-                    cpp.getCurrentAim().get().drawAimForPlayer(event.getPlayer());
+                    //cpp.getCurrentAim().get().drawAimForPlayer(event.getPlayer());
                 }
                 if(event.getChangeFrom() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
                     cpp.getCurrentlyMovingCard().getMovement().clearCurrentlyHighlighted();

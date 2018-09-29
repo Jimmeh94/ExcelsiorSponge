@@ -7,6 +7,7 @@ import org.spongepowered.api.world.Location;
 
 import java.util.List;
 
+
 public class TerrainBuild {
 
     private List<Location> locations;
@@ -22,7 +23,9 @@ public class TerrainBuild {
         locations = LocationUtils.getAllLocationsBetween(start, end);
     }
 
-    public void draw(Vector3d start){
+    public void draw(Cell cell, Vector3d start){
+        cell.setBuild(this);
+
         Vector3d distance = locations.get(0).getPosition().sub(start);
 
         for(Location location: locations){
@@ -39,5 +42,13 @@ public class TerrainBuild {
             Location loc = location.getExtent().getLocation(location.getPosition().sub(distance));
             loc.setBlockType(BlockTypes.AIR);
         }
+    }
+
+    public Location getStart() {
+        return start;
+    }
+
+    public Location getEnd() {
+        return end;
     }
 }

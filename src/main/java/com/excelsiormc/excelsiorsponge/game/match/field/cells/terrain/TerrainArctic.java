@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class TerrainArtic extends CellTerrain {
+public class TerrainArctic extends CellTerrain {
 
-    public TerrainArtic(GenerationPriority priority) {
+    public TerrainArctic(GenerationPriority priority) {
         super(priority, BlockTypes.SNOW);
     }
 

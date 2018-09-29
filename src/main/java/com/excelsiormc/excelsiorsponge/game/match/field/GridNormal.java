@@ -43,7 +43,7 @@ public class GridNormal extends Grid {
 
         Row row = rows.get(rows.size() - 1);
         EditableVector end = new EditableVector(row.getCells().get(row.getCells().size() - 1).getCenter());
-        end.add(cellDim, -1, cellDim);
+        end.add(cellDim  - 1, -1, cellDim - 1);
 
         use = reference.clone();
         use.subtract(1, 1, 1);
@@ -51,21 +51,8 @@ public class GridNormal extends Grid {
         World world = Sponge.getServer().getWorld(getWorld()).get();
         List<Location> temp = LocationUtils.getAllLocationsBetween(new Location(world, use.toVector3d()), new Location(world, end.toVector3d()));
         for(Location location: temp){
-            use = new EditableVector(location.getPosition());
-            use.add(0, 1, 0);
-            boolean needToPaint = true;
-            for(Row r: rows){
-                for(Cell cell: r.getCells()){
-                    if(needToPaint == true && cell.isWithinCell(use.toVector3d().toInt())){
-                        needToPaint = false;
-                    }
-                }
-            }
-            if(needToPaint){
-                //So we just made sure that the block above this one isn't in a cell, in other words,
-                //This is a border between some cells
-                use.subtract(0, 1, 0);
-                border.add(use.toVector3d());
+            if(!isCell(location.getPosition())){
+                border.add(location.getPosition());
             }
         }
     }
