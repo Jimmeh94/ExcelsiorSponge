@@ -41,11 +41,10 @@ public enum TerrainTypes {
     }
 
     public static TerrainTemplate getNewTemplate(Grid grid){
-        TerrainTemplate template = new TerrainTemplate(grid);
-        template.setBase(getRandomTypeOf(CellTerrain.GenerationPriority.LOW).getCellType());
+        TerrainTemplate template = new TerrainTemplate(grid, getNewBaseGradient());
 
         int count = 0;
-        while(count < 4){
+        while(count < random.nextInt(3) + 4){
             TerrainTypes temp = getRandomType();
             if(!template.hasType(temp.getCellType())){
                 template.addType(temp.getCellType());
@@ -56,13 +55,34 @@ public enum TerrainTypes {
         return template;
     }
 
-    private static TerrainTypes getRandomTypeOf(CellTerrain.GenerationPriority priority){
+    private static CellTerrainGradient getNewBaseGradient() {
+        List<TerrainTypes> temp = getTypesOf(CellTerrain.GenerationPriority.LOW);
+        Random random = new Random();
+        int amount = random.nextInt(temp.size());
+        if(amount == 0){
+            amount++;
+        }
+        CellTerrainGradient gradient = new CellTerrainGradient();
+
+        for(int i = 0; i < amount; i++){
+            gradient.addType(temp.get(random.nextInt(temp.size())));
+        }
+
+        return gradient;
+    }
+
+    private static List<TerrainTypes> getTypesOf(CellTerrain.GenerationPriority priority){
         List<TerrainTypes> temp = new ArrayList<>();
         for(TerrainTypes t: TerrainTypes.values()){
             if(t.getCellType().getPriority() == priority){
                 temp.add(t);
             }
         }
+        return temp;
+    }
+
+    private static TerrainTypes getRandomTypeOf(CellTerrain.GenerationPriority priority){
+        List<TerrainTypes> temp = getTypesOf(priority);
         return temp.get(random.nextInt(temp.size() - 1));
     }
 
@@ -73,5 +93,14 @@ public enum TerrainTypes {
             }
         }
         return null;
+    }
+
+    public boolean canBeOverriddenBy(CellTerrain terrain) {
+        switch(this.getCellType().getPriority()){
+            case HIGHEST: return false;
+            case MEDIUM: return terrain.getPriority() == CellTerrain.GenerationPriority.HIGHEST ? true : false;
+            case LOW: return terrain.getPriority() != CellTerrain.GenerationPriority.LOW ? true : false;
+        }
+        return false;
     }
 }

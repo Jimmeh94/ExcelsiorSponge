@@ -5,7 +5,13 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.shapes.TerrainShape;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.shapes.filters.TerrainFilter;
 import org.spongepowered.api.block.BlockTypes;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class TerrainCity extends CellTerrain {
 
@@ -13,19 +19,4 @@ public class TerrainCity extends CellTerrain {
         super(priority, BlockTypes.CONCRETE);
     }
 
-    @Override
-    public void generateTerrain(Grid grid) {
-        Cell start = grid.getRandomCell();
-
-        /*while(start.getCellType() != null){
-            start = grid.getRandomCell();
-        }*/
-
-        Row row = grid.getHorizontalRow(start).get();
-        for(Cell cell: row.getCells()){
-            if(cell.getCellType() == null){
-                cell.setCellType(TerrainTypes.getTerrainTypesFromTerrain(this));
-            }
-        }
-    }
 }

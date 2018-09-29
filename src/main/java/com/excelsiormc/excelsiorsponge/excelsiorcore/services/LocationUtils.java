@@ -3,10 +3,12 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class LocationUtils {
@@ -157,6 +159,58 @@ public class LocationUtils {
             temp.add(xCoefficient, 0, 0);
         }
         return give;
+    }
+
+    public static Vector3i getRandomDirection2D(){
+        Random random = new Random();
+        int x = 0, z = 0, r;
+
+        r = random.nextInt(3);
+        switch (r){
+            case 0: x = -1;
+                break;
+            case 1: x = 0;
+                break;
+            case 2: x = 1;
+        }
+
+        r = random.nextInt(3);
+        switch (r){
+            case 0: z = -1;
+                break;
+            case 1: z = 0;
+                break;
+            case 2: z = 1;
+        }
+
+        if(x == 0 && z == 0){
+            return getRandomDirection2D();
+        }
+
+        return new Vector3i(x, 0, z);
+    }
+
+    public static Vector3i rotateDirectionBy90(Vector3i direction){
+        Direction d = Direction.getClosest(direction.toDouble());
+        switch(d){
+            case NORTH: return Direction.EAST.asBlockOffset();
+            case NORTHEAST: return Direction.SOUTHEAST.asBlockOffset();
+            case EAST: return Direction.SOUTH.asBlockOffset();
+            case SOUTHEAST: return Direction.SOUTHWEST.asBlockOffset();
+            case SOUTH: return Direction.WEST.asBlockOffset();
+            case SOUTHWEST: return Direction.NORTHWEST.asBlockOffset();
+            case WEST: return Direction.NORTH.asBlockOffset();
+            case NORTHWEST: return Direction.NORTHEAST.asBlockOffset();
+        }
+        return direction;
+    }
+
+    public static Vector3i rotateDirectionBy180(Vector3i direction){
+        return rotateDirectionBy90(rotateDirectionBy90(direction));
+    }
+
+    public static Vector3i rotateDirectionBy270(Vector3i direction){
+        return rotateDirectionBy90(rotateDirectionBy90(rotateDirectionBy90(direction)));
     }
 
 }

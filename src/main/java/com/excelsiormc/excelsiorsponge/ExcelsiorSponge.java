@@ -36,6 +36,8 @@ import org.spongepowered.api.world.World;
 )
 public class ExcelsiorSponge {
 
+    //TODO mongo utils need to write cell terrain build start locations and type
+
     @Inject
     private Logger logger;
 

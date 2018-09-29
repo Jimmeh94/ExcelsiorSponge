@@ -215,12 +215,12 @@ public abstract class Gamemode {
 
                     if(mode == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT) {
                         if (cpp.getCurrentAim().isPresent()) {
-                            cpp.getCurrentAim().get().clearAimForPlayer(player);
+                            //cpp.getCurrentAim().get().clearAimForPlayer(player);
                         }
                         cpp.setCurrentAim(newAim);
 
                         if(cpp.getCurrentAim().isPresent()) {
-                            cpp.getCurrentAim().get().drawAimForPlayer(player);
+                            //cpp.getCurrentAim().get().drawAimForPlayer(player);
                         }
 
                     } else if(mode == UserPlayer.PlayerMode.ARENA_MOVING_CARD){

@@ -10,9 +10,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.world.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class MongoUtils extends ServiceMongoDB {
                     Vector3d v = new Vector3d(Double.valueOf(temp[0]), Double.valueOf(temp[1]), Double.valueOf(temp[2]));
 
                     int rowCount = gridDoc.getInteger("rowCount"), rowLength = gridDoc.getInteger("rowLength");
-                    int cellDem = gridDoc.getInteger("cellDem");
+                    int cellDem = gridDoc.getInteger("cellDim");
                     ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()
                             .add(new Arena(new GridNormal(v, world, rowCount, rowLength, cellDem, false), world, id));
                 }
@@ -90,7 +87,7 @@ public class MongoUtils extends ServiceMongoDB {
                         .append("grid", new Document("startPos", startPos)
                                     .append("rowCount", arena.getGrid().getRowCount())
                                     .append("rowLength", arena.getGrid().getRowLength())
-                                    .append("cellDem", arena.getGrid().getCellDeminsion())
+                                    .append("cellDim", arena.getGrid().getCellDimension())
                         )
                 );
             }

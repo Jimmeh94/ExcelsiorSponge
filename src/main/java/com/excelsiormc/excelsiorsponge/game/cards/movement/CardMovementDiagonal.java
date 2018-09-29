@@ -19,7 +19,7 @@ public class CardMovementDiagonal extends CardMovementNormal {
     public List<MovementEntry> getAvailableSpaces() {
         //Vector3d start = owner.getCurrentCell().getCenter();
         Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
-        List<Cell> temp = grid.getSquareGroupofCells(owner.getCurrentCell(), distanceInCells, true, PlayerUtils.getTeam(owner.getOwner()));
+        List<Cell> temp = grid.getSquareGroupofAvailableCells(owner.getCurrentCell(), distanceInCells, true, PlayerUtils.getTeam(owner.getOwner()));
         List<MovementEntry> give = new ArrayList<>();
         for(Cell cell: temp){
             if(cell.isAvailable()){

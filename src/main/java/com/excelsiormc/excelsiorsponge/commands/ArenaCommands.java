@@ -1,10 +1,13 @@
 package com.excelsiormc.excelsiorsponge.commands;
 
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
+import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.GridNormal;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainBuild;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.GamemodeDuel;
 import com.excelsiormc.excelsiorsponge.game.match.matchmaking.Queues;
@@ -13,7 +16,6 @@ import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -24,7 +26,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.Location;
 
 import java.util.Optional;
 
@@ -94,6 +96,19 @@ public class ArenaCommands implements CommandExecutor {
 
         } else if(mode.equalsIgnoreCase("join")){
             ExcelsiorSponge.INSTANCE.getMatchMaker().playerJoinQueue(player, Queues.DUEL);
+        } else if(mode.equalsIgnoreCase("tgen")){
+            Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(player.getUniqueId()).get().getGrid();
+            grid.resetCells();
+            grid.generateTerrain();
+        } else if(mode.equalsIgnoreCase("build")){
+            int xzDim = Integer.valueOf(args.<String>getOne("data").get());
+            int yDim = Integer.valueOf(args.<String>getOne("data1").get());
+
+            TerrainTypes type = TerrainTypes.valueOf(args.<String>getOne("data2").get().toUpperCase());
+            Vector3d start = player.getLocation().getPosition().clone().add(1, 0, 1);
+            Vector3d end = start.clone().add(xzDim, yDim, xzDim);
+
+            type.getCellType().addBuild(new TerrainBuild(new Location(player.getWorld(), start), new Location(player.getWorld(), end)));
         }
 
         return CommandResult.success();

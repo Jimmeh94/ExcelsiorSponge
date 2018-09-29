@@ -26,18 +26,18 @@ public abstract class Grid {
     protected List<Row> rows;
     protected List<Vector3d> border;
     protected String world;
-    protected int rowCount, rowLength, cellDem;
+    protected int rowCount, rowLength, cellDim;
     protected final Vector3d startPos;
     protected BlockType gridBorder, cellMat;
     protected TerrainTemplate terrainTemplate;
 
-    public Grid(Vector3d startingPos, String world, int rowCount, int rowLength, int cellDem, boolean drawGrid,
+    public Grid(Vector3d startingPos, String world, int rowCount, int rowLength, int cellDim, boolean drawGrid,
                 BlockType gridBorder, BlockType cellMat){
         this.startPos = startingPos;
         this.world = world;
         this.rowCount = rowCount;
         this.rowLength = rowLength;
-        this.cellDem = cellDem;
+        this.cellDim = cellDim;
         this.gridBorder = gridBorder;
         this.cellMat = cellMat;
         rows = new CopyOnWriteArrayList<>();
@@ -62,10 +62,10 @@ public abstract class Grid {
     }
 
     public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells, boolean useNearestIfEmpty){
-        double xDistance = cellDem * distanceInCells.getX();
+        double xDistance = cellDim * distanceInCells.getX();
         xDistance += 1 * distanceInCells.getX();
 
-        double zDistance = cellDem * distanceInCells.getZ();
+        double zDistance = cellDim * distanceInCells.getZ();
         zDistance += 1 * distanceInCells.getZ();
 
         Vector3d target = current.getCenter().clone().add(new Vector3d(xDistance, 0, zDistance));
@@ -87,6 +87,16 @@ public abstract class Grid {
         return Optional.empty();
     }
 
+    public List<Cell> getAllCells(){
+        List<Cell> cells = new CopyOnWriteArrayList<>();
+
+        for(Row row: rows){
+            cells.addAll(row.getCells());
+        }
+
+        return cells;
+    }
+
     public void drawGrid(){
         World world = Sponge.getServer().getWorld(getWorld()).get();
         for(Vector3d v: border){
@@ -101,11 +111,11 @@ public abstract class Grid {
         return first.getX() == second.getX() || first.getZ() == second.getZ();
     }
 
-    public List<Cell> getSquareGroupofCells(Cell start, int radiusInCells, boolean includeEnemyOccupiedCells, Team owner) {
-        List<Cell> cells = new ArrayList<>();
+    public List<Cell> getSquareGroupofCells(Cell start, int radiusInCells) {
+        List<Cell> cells = new CopyOnWriteArrayList<>();
 
         EditableVector ev = new EditableVector(start.getCenter());
-        double tempDistance = cellDem + 1;
+        double tempDistance = cellDim + 1;
         ev.setX(start.getCenter().getX() - (tempDistance * radiusInCells));
         ev.setZ(start.getCenter().getZ() - (tempDistance * radiusInCells));
 
@@ -120,17 +130,28 @@ public abstract class Grid {
             for(int j = 0; j < limit; j++){
                 //this second loop will increase x by tempDistance each time
                 if(isCell(use.toVector3d())){
-                    Cell cell = getCell(use.toVector3d()).get();
-                    if(cell.isAvailable()){
-                        cells.add(cell);
-                    } else if(includeEnemyOccupiedCells && !owner.isCombatant(cell.getOccupyingCard().getOwner())){
-                        cells.add(cell);
-                    }
+                    cells.add(getCell(use.toVector3d()).get());
                 }
                 use.setX(use.getX() + tempDistance);
             }
             use.setX(ev.getX());
             use.setZ(use.getZ() + tempDistance);
+        }
+
+        return cells;
+    }
+
+    public List<Cell> getSquareGroupofAvailableCells(Cell start, int radiusInCells, boolean includeEnemyOccupiedCells, Team owner) {
+        List<Cell> cells = getSquareGroupofCells(start, radiusInCells);
+
+        for(Cell cell: cells){
+            if(!cell.isAvailable()){
+                if(includeEnemyOccupiedCells && !owner.isCombatant(cell.getOccupyingCard().getOwner())){
+                    continue;
+                } else {
+                    cells.remove(cell);
+                }
+            }
         }
 
         return cells;
@@ -162,7 +183,7 @@ public abstract class Grid {
 
         //+ x
         for(int i = 1; i <= plusXDistanceInCells; i++){
-            use.setX(use.getX() + (cellDem) + 1);
+            use.setX(use.getX() + (cellDim) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -174,7 +195,7 @@ public abstract class Grid {
         //- x
         use = start.clone();
         for(int i = 1; i <= minusXDistanceInCells; i++){
-            use.setX(use.getX() - (cellDem) - 1);
+            use.setX(use.getX() - (cellDim) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -186,7 +207,7 @@ public abstract class Grid {
         //+ z
         use = start.clone();
         for(int i = 1; i <= plusZDistanceInCels; i++){
-            use.setZ(use.getZ() + (cellDem) + 1);
+            use.setZ(use.getZ() + (cellDim) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -198,7 +219,7 @@ public abstract class Grid {
         //- z
         use = start.clone();
         for(int i = 1; i <= minusZDistanceInCells; i++){
-            use.setZ(use.getZ() - (cellDem) - 1);
+            use.setZ(use.getZ() - (cellDim) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -212,14 +233,15 @@ public abstract class Grid {
 
     public List<Cell> getAvailableCellsEqualLengthCross(Cell current, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner){
         Vector3d center = current.getCenter();
-        List<Cell> give = new ArrayList<>();
+        List<Cell> give = new CopyOnWriteArrayList<>();
+        give.add(current);
 
         //get cell in +x, -x, +z, -z
         EditableVector start = new EditableVector(center.clone());
         EditableVector use = start.clone();
 
         for(int i = 1; i <= distanceInCells; i++){
-            use.setX(use.getX() + (cellDem * i) + 1);
+            use.setX(use.getX() + (cellDim * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -228,7 +250,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setX(use.getX() - (cellDem* i) - 1);
+            use.setX(use.getX() - (cellDim * i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -237,7 +259,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setZ(use.getZ() - (cellDem * i) - 1);
+            use.setZ(use.getZ() - (cellDim * i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -246,7 +268,7 @@ public abstract class Grid {
             }
 
             use = start.clone();
-            use.setZ(use.getZ() + (cellDem * i) + 1);
+            use.setZ(use.getZ() + (cellDim * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
                 if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
@@ -363,8 +385,8 @@ public abstract class Grid {
         return rowLength;
     }
 
-    public int getCellDeminsion(){
-        return cellDem;
+    public int getCellDimension(){
+        return cellDim;
     }
 
     public void resetCells() {
@@ -401,5 +423,15 @@ public abstract class Grid {
         }
 
         return give;
+    }
+
+    public List<Cell> getXGroupOfCells(int radius, Cell start) {
+        List<Cell> cells = new CopyOnWriteArrayList<>();
+
+        cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(1, 0, 1)).getCells());
+        cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(1, 0, -1)).getCells());
+        cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(-1, 0, -1)).getCells());
+        cells.addAll(getRowInDirectionForLength(start, radius, new Vector3i(-1, 0, 1)).getCells());
+        return cells;
     }
 }

@@ -29,7 +29,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
 
         strings.add(Text.of(TextColors.RED, AltCodes.CROSSED_SWORDS.getSign() + " " + TextColors.GRAY 
                 + arena.getGamemode().getName() + " " + TextColors.RED + AltCodes.CROSSED_SWORDS.getSign()));
-        strings.add(Text.of("==============================="));
+        strings.add(Text.of("==============="));
         //strings.add(owner.getPresentArea().getDisplayName());
         strings.add(Text.of(TextColors.RED));
         strings.add(Text.of(TextColors.GREEN, "Game Time Left: " + arena.getGamemode().getTimeLeftFormatted()));

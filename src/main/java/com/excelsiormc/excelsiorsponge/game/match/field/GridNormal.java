@@ -32,18 +32,18 @@ public class GridNormal extends Grid {
         for(int i = 0; i < rowCount; i++){
             Row row = new Row();
             for(int j = 0; j < rowLength; j++){
-                row.addCell(new Cell(use.toVector3d(), cellDem, world, cellMat));
-                use.setZ(use.getZ() + cellDem + 1);
+                row.addCell(new Cell(use.toVector3d(), cellDim, world, cellMat));
+                use.setZ(use.getZ() + cellDim + 1);
             }
             use.setZ(reference.getZ());
-            use.setX(use.getX() + cellDem + 1);
+            use.setX(use.getX() + cellDim + 1);
 
             rows.add(row);
         }
 
         Row row = rows.get(rows.size() - 1);
         EditableVector end = new EditableVector(row.getCells().get(row.getCells().size() - 1).getCenter());
-        end.add(cellDem, -1, cellDem);
+        end.add(cellDim, -1, cellDim);
 
         use = reference.clone();
         use.subtract(1, 1, 1);
