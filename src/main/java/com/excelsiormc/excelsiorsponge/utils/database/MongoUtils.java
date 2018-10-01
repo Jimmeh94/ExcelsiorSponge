@@ -5,7 +5,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.database.ServiceMo
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.field.GridNormal;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainBuild;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.mongodb.Block;
@@ -124,27 +124,21 @@ public class MongoUtils extends ServiceMongoDB {
             MongoCollection<Document> builds = database.getCollection(COLLECTION_TERRAIN_BUILDS);
 
             boolean exists = false;
-            for(TerrainTypes type: TerrainTypes.values()){
-                if(type.getCellType().getBuild().size() == 0){
-                    continue;
-                }
+            for(CellTerrains type: CellTerrains.values()){
 
                 if(builds.find(eq("type", type.toString().toUpperCase())).first() != null){
                     exists = true;
                 }
 
                 Document document = new Document("type", type.toString().toUpperCase())
-                        .append("world", ((World)type.getCellType().getBuild().get(0).getStart().getExtent()).getName());
+                        .append("world", ((World)type.getCellType().getBuild().getStart().getExtent()).getName());
 
-                int count = 1;
-                for(TerrainBuild build: type.getCellType().getBuild()){
-                    Vector3i start = build.getStart().getPosition().toInt(), end = build.getEnd().getPosition().toInt();
-                    String s = "" + start.getX() + "," + start.getY() + "," + start.getZ();
-                    String e = "" + end.getX() + "," + end.getY() + "," + end.getZ();
-                    document.append(type.toString() + String.valueOf(count),
-                            new Document("start", s).append("end", e));
-                    count++;
-                }
+                TerrainBuild build = type.getCellType().getBuild();
+
+                Vector3i start = build.getStart().getPosition().toInt(), end = build.getEnd().getPosition().toInt();
+                String s = "" + start.getX() + "," + start.getY() + "," + start.getZ();
+                String e = "" + end.getX() + "," + end.getY() + "," + end.getZ();
+                document.append("start", s).append("end", e);
 
                 if(!exists) {
                     write.add(document);
@@ -166,28 +160,15 @@ public class MongoUtils extends ServiceMongoDB {
             arenas.find().forEach(new Block<Document>() {
                 @Override
                 public void apply(Document document) {
-                    TerrainTypes type = TerrainTypes.valueOf(document.getString("type").toUpperCase());
+                    CellTerrains type = CellTerrains.valueOf(document.getString("type").toUpperCase());
                     World world = Sponge.getServer().getWorld(document.getString("world")).get();
 
-                    Set<Map.Entry<String, Object>> entries = document.entrySet();
 
-                    int count = 0;
-                    for(Map.Entry<String, Object> entry: entries){
-                        if(count < 3){
-                            count++;
-                            continue;
-                        }
+                    String[] s = document.getString("start").split(","), e = document.getString("end").split(",");
+                    Location start = new Location(world, new Vector3d(Double.valueOf(s[0]), Double.valueOf(s[1]), Double.valueOf(s[2])));
+                    Location end = new Location(world, new Vector3d(Double.valueOf(e[0]), Double.valueOf(e[1]), Double.valueOf(e[2])));
 
-                        //Now we've passed the "type" and "world"
-
-                        Document doc = (Document) document.get(entry.getKey());
-                        String[] s = doc.getString("start").split(","), e = doc.getString("end").split(",");
-                        Location start = new Location(world, new Vector3d(Double.valueOf(s[0]), Double.valueOf(s[1]), Double.valueOf(s[2])));
-                        Location end = new Location(world, new Vector3d(Double.valueOf(e[0]), Double.valueOf(e[1]), Double.valueOf(e[2])));
-
-                        type.getCellType().addBuild(new TerrainBuild(start, end));
-                        count++;
-                    }
+                    type.getCellType().setBuild(new TerrainBuild(start, end));
                 }
             });
         }

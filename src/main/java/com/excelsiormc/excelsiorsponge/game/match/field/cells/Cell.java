@@ -31,7 +31,7 @@ public class Cell {
     private boolean isAvailable = true;
     private CardBase occupyingCard;
     private Vector3d center, centerCeiling;
-    private TerrainTypes cellType;
+    private CellTerrains cellType;
     private TerrainBuild build;
 
     public Cell(Vector3d startingPos, int dim, String world, BlockType material) {
@@ -61,7 +61,7 @@ public class Cell {
         }
     }
 
-    public void setCellType(TerrainTypes cellType) {
+    public void setCellType(CellTerrains cellType) {
         this.cellType = cellType;
         drawCell();
     }
@@ -95,7 +95,7 @@ public class Cell {
         }
 
         if(cellType != null){
-            cellType.getCellType().getBuild().get(0).draw(this, getVector3ds().get(0).clone().add(0, 1, 0));
+            cellType.getCellType().getBuild().draw(this, getVector3ds().get(0).clone().add(0, 1, 0));
         }
 
         for(Vector3d v: ceiling){
@@ -143,7 +143,7 @@ public class Cell {
         return world;
     }
 
-    public TerrainTypes getCellType() {
+    public CellTerrains getCellType() {
         return cellType;
     }
 

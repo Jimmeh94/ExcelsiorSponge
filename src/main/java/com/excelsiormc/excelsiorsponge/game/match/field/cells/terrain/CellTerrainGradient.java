@@ -1,7 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain;
 
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,20 +10,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CellTerrainGradient {
 
-    private List<TerrainTypes> types;
+    private List<CellTerrains> types;
 
-    public CellTerrainGradient(TerrainTypes... types){
+    public CellTerrainGradient(CellTerrains... types){
         this.types = Arrays.asList(types);
     }
 
     public CellTerrainGradient(){this.types = new CopyOnWriteArrayList<>();
     }
 
-    public void addType(TerrainTypes type){
+    public void addType(CellTerrains type){
         types.add(type);
     }
 
-    public List<TerrainTypes> getTypes() {
+    public List<CellTerrains> getTypes() {
         return types;
     }
 

@@ -2,11 +2,15 @@ package com.excelsiormc.excelsiorsponge.utils;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.entity.living.player.Player;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public class DuelUtils {
 
@@ -28,7 +32,6 @@ public class DuelUtils {
             old.setAvailable(true);
             target.setOccupyingCard(card, false);
             card.move(target.getCenterCeiling(), old);
-
         }
     }
 
@@ -40,6 +43,10 @@ public class DuelUtils {
         }
 
         return start;
+    }
+
+    public static Optional<Arena> getArena(UUID uuid){
+        return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(uuid);
     }
 
 }

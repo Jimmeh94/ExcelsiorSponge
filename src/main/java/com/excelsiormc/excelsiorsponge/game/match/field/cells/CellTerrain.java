@@ -5,24 +5,21 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.shapes.Ter
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.shapes.filters.TerrainFilter;
 import org.spongepowered.api.block.BlockType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 public abstract class CellTerrain {
 
     protected GenerationPriority priority;
     protected BlockType terrainMat;
-    protected List<TerrainBuild> build;
+    protected TerrainBuild build;
 
     public CellTerrain(GenerationPriority priority, BlockType terrainMat) {
         this.priority = priority;
         this.terrainMat = terrainMat;
-        build = new ArrayList<>();
     }
 
-    public List<TerrainBuild> getBuild() {
+    public TerrainBuild getBuild() {
         return build;
     }
 
@@ -37,7 +34,7 @@ public abstract class CellTerrain {
     protected void setCells(List<Cell> cells){
         for(Cell cell: cells){
             if(cell.getCellType() == null){
-                cell.setCellType(TerrainTypes.getTerrainTypesFromTerrain(this));
+                cell.setCellType(CellTerrains.getTerrainTypesFromTerrain(this));
             }
         }
     }
@@ -51,16 +48,15 @@ public abstract class CellTerrain {
 
         setCells(cells);
 
-        Random random = new Random();
         if(cells.size() > 0) {
             for (Cell cell : cells) {
-                build.get(random.nextInt(build.size())).draw(cell, cell.getVector3ds().get(0).clone().add(0, 1, 0));
+                build.draw(cell, cell.getVector3ds().get(0).clone().add(0, 1, 0));
             }
         }
     }
 
-    public void addBuild(TerrainBuild terrainBuild) {
-        this.build.add(terrainBuild);
+    public void setBuild(TerrainBuild terrainBuild) {
+        this.build = terrainBuild;
     }
 
     public enum GenerationPriority {

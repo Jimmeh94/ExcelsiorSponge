@@ -3,9 +3,11 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3i;
 
 public class GamemodeDuel extends Gamemode {
@@ -70,22 +72,31 @@ public class GamemodeDuel extends Gamemode {
     }
 
     @Override
-    public void battle(Cell first, Cell second) {
+    public BattleResult battle(Cell first, Cell second) {
         CardBase one = first.getOccupyingCard(), two = second.getOccupyingCard();
 
-        StatBase hOne = one.getStats().getStat(StatIDs.HEALTH).get();
-        StatBase hTwo = two.getStats().getStat(StatIDs.HEALTH).get();
+        //StatBase hOne = one.getStats().getStat(StatIDs.HEALTH).get();
+        //StatBase hTwo = two.getStats().getStat(StatIDs.HEALTH).get();
         StatBase aOne = one.getStats().getStat(StatIDs.ATTACK).get();
         StatBase aTwo = two.getStats().getStat(StatIDs.ATTACK).get();
 
-        hOne.subtract(aTwo.getCurrent());
-        hTwo.subtract(aOne.getCurrent());
+        //hOne.subtract(aTwo.getCurrent());
+        //hTwo.subtract(aOne.getCurrent());
 
-        if(hOne.getCurrent() <= 0){
+        BattleResult.BattleResultBuilder result = BattleResult.builder();
+
+        if(aOne.getCurrent() > aTwo.getCurrent()){
+            result.setVictor(PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), one);
+            result.setLoser(PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), two);
+
+            two.cardEliminated();
+        } else if(aOne.getCurrent() < aTwo.getCurrent()){
+            result.setLoser(PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), one);
+            result.setVictor(PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), two);
+
             one.cardEliminated();
         }
-        if(hTwo.getCurrent() <= 0){
-            two.cardEliminated();
-        }
+
+        return result.build();
     }
 }

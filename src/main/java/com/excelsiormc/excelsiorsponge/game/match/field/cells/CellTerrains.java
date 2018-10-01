@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public enum TerrainTypes {
+public enum CellTerrains {
 
     FOREST(new TerrainForest(CellTerrain.GenerationPriority.LOW)),
     OCEAN(new TerrainOcean(CellTerrain.GenerationPriority.LOW)),
@@ -22,7 +22,7 @@ public enum TerrainTypes {
     private CellTerrain cellType;
     private static final Random random = new Random();
 
-    TerrainTypes(CellTerrain cellType) {
+    CellTerrains(CellTerrain cellType) {
         this.cellType = cellType;
     }
 
@@ -30,8 +30,8 @@ public enum TerrainTypes {
         return cellType;
     }
 
-    public static TerrainTypes getRandomType(){
-        return TerrainTypes.values()[random.nextInt(TerrainTypes.values().length)];
+    public static CellTerrains getRandomType(){
+        return CellTerrains.values()[random.nextInt(CellTerrains.values().length)];
     }
 
     @Override
@@ -45,7 +45,7 @@ public enum TerrainTypes {
 
         int count = 0;
         while(count < random.nextInt(3) + 4){
-            TerrainTypes temp = getRandomType();
+            CellTerrains temp = getRandomType();
             if(!template.hasType(temp.getCellType())){
                 template.addType(temp.getCellType());
                 count++;
@@ -56,7 +56,7 @@ public enum TerrainTypes {
     }
 
     private static CellTerrainGradient getNewBaseGradient() {
-        List<TerrainTypes> temp = getTypesOf(CellTerrain.GenerationPriority.LOW);
+        List<CellTerrains> temp = getTypesOf(CellTerrain.GenerationPriority.LOW);
         Random random = new Random();
         int amount = random.nextInt(temp.size());
         if(amount == 0){
@@ -71,9 +71,9 @@ public enum TerrainTypes {
         return gradient;
     }
 
-    private static List<TerrainTypes> getTypesOf(CellTerrain.GenerationPriority priority){
-        List<TerrainTypes> temp = new ArrayList<>();
-        for(TerrainTypes t: TerrainTypes.values()){
+    private static List<CellTerrains> getTypesOf(CellTerrain.GenerationPriority priority){
+        List<CellTerrains> temp = new ArrayList<>();
+        for(CellTerrains t: CellTerrains.values()){
             if(t.getCellType().getPriority() == priority){
                 temp.add(t);
             }
@@ -81,13 +81,13 @@ public enum TerrainTypes {
         return temp;
     }
 
-    private static TerrainTypes getRandomTypeOf(CellTerrain.GenerationPriority priority){
-        List<TerrainTypes> temp = getTypesOf(priority);
+    private static CellTerrains getRandomTypeOf(CellTerrain.GenerationPriority priority){
+        List<CellTerrains> temp = getTypesOf(priority);
         return temp.get(random.nextInt(temp.size() - 1));
     }
 
-    public static TerrainTypes getTerrainTypesFromTerrain(CellTerrain c){
-        for(TerrainTypes type: TerrainTypes.values()){
+    public static CellTerrains getTerrainTypesFromTerrain(CellTerrain c){
+        for(CellTerrains type: CellTerrains.values()){
             if(type.getCellType() == c){
                 return type;
             }

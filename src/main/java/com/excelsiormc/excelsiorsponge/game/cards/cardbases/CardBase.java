@@ -186,6 +186,7 @@ public abstract class CardBase {
     public void cardEliminated(){
         remove();
         currentCell.setAvailable(true);
+        currentCell = null;
         Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
     }
 

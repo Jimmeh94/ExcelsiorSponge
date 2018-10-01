@@ -4,12 +4,10 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3i;
 
 import java.util.List;
-import java.util.Random;
 
 public class TerrainShapeRow implements TerrainShape{
 

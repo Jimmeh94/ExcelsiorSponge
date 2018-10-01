@@ -2,10 +2,11 @@ package com.excelsiormc.excelsiorsponge;
 
 import com.excelsiormc.excelsiorsponge.commands.ArenaCommands;
 import com.excelsiormc.excelsiorsponge.events.DuelEvents;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
+import com.excelsiormc.excelsiorsponge.events.EntityEvents;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.events.WorldEvents;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.event.ChatEvents;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelAuction;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
@@ -17,8 +18,6 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.ArmorStand;
-import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
@@ -84,9 +83,9 @@ public class ExcelsiorSponge {
     public void clearAllEntities(){
         for(World w: Sponge.getServer().getWorlds()){
             for(Entity e: w.getEntities()){
-                if(e instanceof ArmorStand || e instanceof Human){
+                //if(e instanceof ArmorStand || e instanceof Human){
                     e.remove();
-                }
+                //}
             }
         }
     }
@@ -111,6 +110,7 @@ public class ExcelsiorSponge {
         Sponge.getEventManager().registerListeners(this, new DuelEvents());
         Sponge.getEventManager().registerListeners(this, new PlayerEvents());
         Sponge.getEventManager().registerListeners(this, new WorldEvents());
+        Sponge.getEventManager().registerListeners(this, new EntityEvents());
     }
 
     @Listener

@@ -61,7 +61,7 @@ public class TerrainTemplate {
         for(Row row: grid.getRows()){
             for(Cell cell: row.getCells()){
                 if(cell.getCellType() == null) {
-                    cell.setCellType(TerrainTypes.getTerrainTypesFromTerrain(baseGradient.getType()));
+                    cell.setCellType(CellTerrains.getTerrainTypesFromTerrain(baseGradient.getType()));
                 }
             }
         }

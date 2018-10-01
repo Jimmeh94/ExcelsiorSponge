@@ -6,7 +6,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTypes;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
@@ -58,7 +58,7 @@ public abstract class Grid {
     }
 
     public void generateTerrain(){
-        terrainTemplate = TerrainTypes.getNewTemplate(this);
+        terrainTemplate = CellTerrains.getNewTemplate(this);
         terrainTemplate.generateTerrain();
     }
 
@@ -153,6 +153,24 @@ public abstract class Grid {
             } else {
                 return row;
             }
+        }
+        return row;
+    }
+
+    public int getDistanceBetweenCells(Cell start, Cell end){
+        return (int) (start.getCenter().distance(end.getCenter()) / (cellDim + 1));
+    }
+
+    public Row getRowBetweenCells(Cell start, Cell end){
+        Vector3i direction = LocationUtils.getDirection(start.getCenter(), end.getCenter());
+        Cell current = start;
+        Row row = new Row();
+        while(current != end){
+            row.addCell(current);
+            current = getCellInDirection(current, direction.toDouble(), false).get();
+        }
+        if(!row.getCells().contains(current)){
+            row.addCell(current);
         }
         return row;
     }

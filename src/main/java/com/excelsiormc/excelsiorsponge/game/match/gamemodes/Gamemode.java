@@ -8,9 +8,10 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
+import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
@@ -41,6 +42,8 @@ public abstract class Gamemode {
     protected Stage gameStage = Stage.PRE_GAME;
     private int preGameTimeLimit = 5;
 
+    protected boolean timePaused = false;
+
     public Gamemode(int timeLimit, int timeLimitForEachTurn, String world){
         teams = new ArrayList<>();
 
@@ -53,7 +56,7 @@ public abstract class Gamemode {
     protected abstract void endingGame();
     protected abstract void startingGame();
     protected abstract void generateSpawnPoints();
-    public abstract void battle(Cell one, Cell two);
+    public abstract BattleResult battle(Cell one, Cell two);
     public abstract String getName();
 
     /**
@@ -154,7 +157,10 @@ public abstract class Gamemode {
             return;
         }
 
-        timeLimit--;
+        if(!timePaused) {
+            timeLimit--;
+        }
+
         if(timeLimit == 0){
             endGame();
         } else {
@@ -177,6 +183,10 @@ public abstract class Gamemode {
             }
         }
         tick();
+    }
+
+    public void setTimePaused(boolean timePaused) {
+        this.timePaused = timePaused;
     }
 
     public void addTeam(Team team){
