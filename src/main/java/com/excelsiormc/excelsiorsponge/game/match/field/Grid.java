@@ -142,22 +142,6 @@ public abstract class Grid {
         return cells;
     }
 
-    public List<Cell> getSquareGroupofAvailableCells(Cell start, int radiusInCells, boolean includeEnemyOccupiedCells, Team owner) {
-        List<Cell> cells = getSquareGroupofCells(start, radiusInCells);
-
-        for(Cell cell: cells){
-            if(!cell.isAvailable()){
-                if(includeEnemyOccupiedCells && !owner.isCombatant(cell.getOccupyingCard().getOwner())){
-                    continue;
-                } else {
-                    cells.remove(cell);
-                }
-            }
-        }
-
-        return cells;
-    }
-
     public Row getRowInDirectionForLength(Cell start, int length, Vector3i direction){
         Row row = new Row();
         row.addCell(start);
@@ -173,8 +157,8 @@ public abstract class Grid {
         return row;
     }
 
-    public List<Cell> getAvailableCellsCross(Cell current, int plusXDistanceInCells, int minusXDistanceInCells, int plusZDistanceInCels,
-                                             int minusZDistanceInCells, boolean includeEnemyOccupiedCells, Team owner){
+    public List<Cell> getCellsCross(Cell current, int plusXDistanceInCells, int minusXDistanceInCells, int plusZDistanceInCels,
+                                    int minusZDistanceInCells){
         Vector3d center = current.getCenter();
         List<Cell> give = new ArrayList<>();
 
@@ -187,9 +171,7 @@ public abstract class Grid {
             use.setX(use.getX() + (cellDim) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
         }
 
@@ -199,9 +181,7 @@ public abstract class Grid {
             use.setX(use.getX() - (cellDim) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
         }
 
@@ -211,9 +191,7 @@ public abstract class Grid {
             use.setZ(use.getZ() + (cellDim) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
         }
 
@@ -223,16 +201,14 @@ public abstract class Grid {
             use.setZ(use.getZ() - (cellDim) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
         }
 
         return give;
     }
 
-    public List<Cell> getAvailableCellsEqualLengthCross(Cell current, int distanceInCells, boolean includeEnemyOccupiedCells, Team owner){
+    public List<Cell> getCellsEqualLengthCross(Cell current, int distanceInCells){
         Vector3d center = current.getCenter();
         List<Cell> give = new CopyOnWriteArrayList<>();
         give.add(current);
@@ -245,36 +221,28 @@ public abstract class Grid {
             use.setX(use.getX() + (cellDim * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
 
             use = start.clone();
             use.setX(use.getX() - (cellDim * i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
 
             use = start.clone();
             use.setZ(use.getZ() - (cellDim * i) - 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
 
             use = start.clone();
             use.setZ(use.getZ() + (cellDim * i) + 1);
             if(isCell(use.toVector3d())){
                 Cell target = getCell(use.toVector3d()).get();
-                if(target.isAvailable() || (includeEnemyOccupiedCells && !owner.isCombatant(target.getOccupyingCard().getOwner()))){
-                    give.add(target);
-                }
+                give.add(target);
             }
         }
 

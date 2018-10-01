@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementColors;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -56,7 +57,7 @@ public class Row {
     public void highlightAsPlaceableRow(Player player){
         for(Cell cell: cells){
             if(cell.isAvailable()){
-                cell.highlightAsPlaceable(player);
+                cell.drawCustom(player, CardMovementColors.EMPTY);
             }
         }
     }

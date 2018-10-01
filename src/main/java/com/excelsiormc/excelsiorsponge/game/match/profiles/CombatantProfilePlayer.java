@@ -34,8 +34,18 @@ public class CombatantProfilePlayer extends CombatantProfile {
         return currentlyMovingCard;
     }
 
-    public void setCurrentlyMovingCard(CardBase currentlyMovingCard) {
-        this.currentlyMovingCard = currentlyMovingCard;
+    public void startMovingCard(CardBase card){
+        this.currentlyMovingCard = card;
+        currentlyMovingCard.displayAvailableSpotsToMoveTo();
+        getUserPlayer().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
+    }
+
+    public void stopMovingCard(){
+        if(currentlyMovingCard != null){
+            currentlyMovingCard.clearCurrentlyHighlighted();
+        }
+        this.currentlyMovingCard = null;
+        getUserPlayer().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
     }
 
     public UserPlayer getUserPlayer(){return PlayerUtils.getUserPlayer(getUUID()).get();}

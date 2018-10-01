@@ -1,23 +1,23 @@
 package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementBigCross;
-import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementNormal;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementBigCross;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEnemyCell;
+import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class CardDummyTwo extends CardBaseMonster {
 
     public CardDummyTwo(UUID owner) {
-        super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, ItemTypes.STONE, (short)1.0, new CardMovementBigCross());
+        super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, ItemTypes.STONE, (short)1.0,
+                new CardMovementBigCross(4, new FilterIncludeEmptyCell(), new FilterIncludeEnemyCell()));
     }
 
     @Override

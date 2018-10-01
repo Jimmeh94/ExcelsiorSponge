@@ -3,8 +3,9 @@ package com.excelsiormc.excelsiorsponge.game.match.profiles;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementSquare;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
 import com.excelsiormc.excelsiorsponge.game.match.cards.Hand;
-import org.spongepowered.api.Sponge;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.UUID;
@@ -21,7 +22,7 @@ public abstract class CombatantProfile {
         this.deck = deck.clone();
 
         hand = new Hand(owner);
-        card = new CardBaseCombatant(owner, this, 0, new CardMovementSquare(1));
+        card = new CardBaseCombatant(owner, this, 0, new CardMovementSquare(1, new FilterIncludeEmptyCell()));
     }
 
     public void drawHand(){
@@ -55,7 +56,7 @@ public abstract class CombatantProfile {
         return this instanceof CombatantProfilePlayer;
     }
 
-    public Player getPlayer(){return isPlayer() ? Sponge.getServer().getPlayer(owner).get() : null;}
+    public Player getPlayer(){return isPlayer() ? PlayerUtils.getPlayer(owner).get() : null;}
 
     public UUID getUUID() {
         return owner;

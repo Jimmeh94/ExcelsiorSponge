@@ -9,6 +9,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.Stats;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -132,7 +133,7 @@ public abstract class CardBase {
     }
 
     public boolean isOwnerPlayer(){
-        return Sponge.getServer().getPlayer(owner).isPresent();
+        return PlayerUtils.getPlayer(owner).isPresent();
     }
 
     public double getLevel() {
@@ -186,6 +187,14 @@ public abstract class CardBase {
         remove();
         currentCell.setAvailable(true);
         Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
+    }
+
+    public void clearCurrentlyHighlighted() {
+        cardMovement.clearCurrentlyHighlighted();
+    }
+
+    public boolean generateSpots() {
+        return cardMovement.generateSpots();
     }
 
     public enum CardRarity {

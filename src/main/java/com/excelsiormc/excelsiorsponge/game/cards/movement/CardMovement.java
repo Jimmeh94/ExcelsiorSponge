@@ -1,34 +1,35 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.MovementFilter;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import org.spongepowered.api.Sponge;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
+import org.spongepowered.api.entity.living.player.Player;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class CardMovement {
 
     protected CardBase owner;
     protected int distanceInCells;
-    protected List<MovementEntry> currentlyHighlighted;
+    protected List<MovementFilter> filters;
     protected boolean canMoveThisTurn = true;
 
-    public CardMovement(int distanceInCells) {
+    public CardMovement(int distanceInCells, MovementFilter... filters) {
         this.distanceInCells = distanceInCells;
+        this.filters = Arrays.asList(filters);
     }
+
+    public abstract List<Cell> getAvailableSpaces();
 
     public void setOwner(CardBase owner) {
         this.owner = owner;
-    }
 
-    public abstract List<MovementEntry> getAvailableSpaces();
-
-    public List<MovementEntry> getCurrentlyHighlighted() {
-        return currentlyHighlighted;
-    }
-
-    public void setCurrentlyHighlighted(List<MovementEntry> currentlyHighlighted) {
-        this.currentlyHighlighted = currentlyHighlighted;
+        for(MovementFilter filter: filters){
+            filter.setOwner(owner);
+        }
     }
 
     public void setCanMoveThisTurn(boolean canMoveThisTurn) {
@@ -40,59 +41,56 @@ public abstract class CardMovement {
     }
 
     public void clearCurrentlyHighlighted(){
-        for(MovementEntry entry: currentlyHighlighted){
-            entry.cell.clearAimForPlayer(Sponge.getServer().getPlayer(owner.getOwner()).get());
+        Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
+        for(Cell cell: getFilteredCells()){
+            cell.eraseAsPlaceable(player);
         }
-        currentlyHighlighted.clear();
+
+        for(MovementFilter filter: filters){
+            filter.clear();
+        }
     }
 
     public boolean isAvailableSpace(Cell aim) {
-        return currentlyHighlighted != null && currentlyHighlighted.contains(aim);
-    }
-
-    public MovementEntry getEntry(Cell aim) {
-        for(MovementEntry entry: currentlyHighlighted){
-            if(entry.isEntry(aim)){
-                return entry;
+        for(MovementFilter filter: filters){
+            if(filter.hasCell(aim)){
+                return true;
             }
         }
-        return null;
+        return false;
+    }
+
+    protected List<Cell> getFilteredCells(){
+        List<Cell> give = new CopyOnWriteArrayList<>();
+        for(MovementFilter filter: filters){
+            give.addAll(filter.getApplicableCells());
+        }
+        return give;
     }
 
     public void displayAvailableSpotsToMoveTo() {
-        List<CardMovement.MovementEntry> cells = getAvailableSpaces();
-        setCurrentlyHighlighted(cells);
-        for(CardMovement.MovementEntry entry: cells){
-            entry.getCell().drawAvailableSpaceForPlayer(Sponge.getServer().getPlayer(owner.getOwner()).get());
+        Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
+        for(MovementFilter filter: filters){
+            filter.drawCells(player);
         }
     }
 
-    public static class MovementEntry {
+    public void handle(Cell aim) {
+        for(MovementFilter filter: filters){
+            if(filter.hasCell(aim)){
+                filter.action(aim);
+            }
+        }
+    }
 
-        private Cell cell;
-        private MovementEntryType type;
+    public boolean generateSpots() {
+        List<Cell> cells = getAvailableSpaces();
 
-        public MovementEntry(Cell cell, MovementEntryType type) {
-            this.cell = cell;
-            this.type = type;
+        cells.remove(owner.getCurrentCell());
+        for(MovementFilter filter: filters){
+            filter.filter(cells);
         }
 
-        public Cell getCell() {
-            return cell;
-        }
-
-        public boolean isEntry(Cell cell){
-            return this.cell == cell;
-        }
-
-        public MovementEntryType getType() {
-            return type;
-        }
-
-        public enum MovementEntryType {
-            EMPTY,
-            ENEMY_OCCUPIED
-        }
-
+        return getFilteredCells().size() > 0;
     }
 }

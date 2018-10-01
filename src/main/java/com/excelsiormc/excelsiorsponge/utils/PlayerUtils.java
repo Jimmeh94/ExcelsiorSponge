@@ -10,6 +10,7 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -57,4 +58,7 @@ public class PlayerUtils {
         return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player);
     }
 
+    public static Optional<Player> getPlayer(UUID owner) {
+        return Sponge.getServer().getPlayer(owner);
+    }
 }

@@ -75,9 +75,13 @@ public class HotbarActiveTurn extends Hotbar {
                     return;
                 }
 
+                if(!cpp.getCurrentAim().get().getOccupyingCard().generateSpots()){
+                    Messager.sendMessage(player, Text.of(TextColors.RED, "That card can't move anywhere"), Messager.Prefix.ERROR);
+                    return;
+                }
+
                 (new HotbarCardManipulate(cpp.getCurrentAim().get().getOccupyingCard())).setHotbar(player);
-                cpp.setCurrentlyMovingCard(cpp.getCurrentAim().get().getOccupyingCard());
-                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
+                cpp.startMovingCard(cpp.getCurrentAim().get().getOccupyingCard());
             }
 
             @Override

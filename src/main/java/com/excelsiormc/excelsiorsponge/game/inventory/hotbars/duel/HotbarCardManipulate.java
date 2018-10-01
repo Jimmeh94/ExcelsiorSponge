@@ -1,16 +1,13 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
-import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
-import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
@@ -100,8 +97,7 @@ public class HotbarCardManipulate extends Hotbar {
 
             private void loadMenu(Player player){
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
-                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
+                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
             }
         });
         addPair(8, card);
@@ -121,23 +117,12 @@ public class HotbarCardManipulate extends Hotbar {
 
         if(aim != null){
             if(card != null){
-                CardMovement.MovementEntry entry = card.getMovement().getEntry(aim);
-
-                if(entry == null){
-                    return;
-                }
-
-                if(entry.getType() == CardMovement.MovementEntry.MovementEntryType.EMPTY){
-                    DuelUtils.moveCardToCell(player);
-                } else {
-                    //have the cards battle
-                    ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()
-                            .findArenaWithCombatant(player.getUniqueId()).get().getGamemode().battle(card.getCurrentCell(), aim);
+                if(card.getMovement().isAvailableSpace(aim)){
+                    card.getMovement().handle(aim);
                 }
 
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                PlayerUtils.getUserPlayer(player.getUniqueId()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
-                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().setCurrentlyMovingCard(null);
+                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
             }
         }
     }

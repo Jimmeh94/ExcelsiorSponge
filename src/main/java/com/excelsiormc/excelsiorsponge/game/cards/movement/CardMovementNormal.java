@@ -1,11 +1,10 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.MovementFilter;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
-import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,28 +12,15 @@ import java.util.List;
  */
 public class CardMovementNormal extends CardMovement {
 
-    public CardMovementNormal(int distanceInCells) {
-        super(distanceInCells);
+    public CardMovementNormal(int distanceInCells, MovementFilter... filters) {
+        super(distanceInCells, filters);
     }
 
     @Override
-    public List<MovementEntry> getAvailableSpaces() {
-        List<MovementEntry> cells = new ArrayList<>();
-
+    public List<Cell> getAvailableSpaces() {
         Grid grid = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(owner.getOwner()).get().getGrid();
         Cell current = owner.getCurrentCell();
 
-        if(current != null){
-            List<Cell> temp = grid.getAvailableCellsEqualLengthCross(current, distanceInCells, true, PlayerUtils.getTeam(owner.getOwner()));
-            for(Cell cell: temp){
-                if(cell.isAvailable()){
-                    cells.add(new MovementEntry(cell, MovementEntry.MovementEntryType.EMPTY));
-                } else {
-                    cells.add(new MovementEntry(cell, MovementEntry.MovementEntryType.ENEMY_OCCUPIED));
-                }
-            }
-        }
-
-        return cells;
+        return grid.getCellsEqualLengthCross(current, distanceInCells);
     }
 }

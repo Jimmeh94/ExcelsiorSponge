@@ -11,8 +11,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -84,7 +82,6 @@ public class Cell {
 
     public void drawCell(){
         Optional<World> world = Sponge.getServer().getWorld(getWorld());
-
         if(!world.isPresent()){
             return;
         }
@@ -106,18 +103,8 @@ public class Cell {
         }
     }
 
-    public void clearAimForPlayer(Player player){
-        for (Vector3d v : ceiling) {
-            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
-        }
-    }
-
     public List<Vector3d> getVector3ds() {
         return locations;
-    }
-
-    public BlockType getMaterial() {
-        return material;
     }
 
     public Vector3d getCenter() {
@@ -152,22 +139,6 @@ public class Cell {
         }
     }
 
-    /**
-     * This will highlight the spaces where a card can move
-     * @param player
-     */
-    public void drawAvailableSpaceForPlayer(Player player) {
-        for(Vector3d v: ceiling){
-            BlockState state = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
-            if(!isAvailable){
-                //We can assume that this is an enemy occupied cell
-                player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.RED).get());
-            } else {
-                player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.YELLOW).get());
-            }
-        }
-    }
-
     public String getWorld() {
         return world;
     }
@@ -180,13 +151,6 @@ public class Cell {
         this.build.destroy(locations.get(0));
     }
 
-    public void highlightAsPlaceable(Player player) {
-        for(Vector3d v: ceiling){
-            BlockState state = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
-            player.sendBlockChange(v.toInt(), state.with(Keys.DYE_COLOR, DyeColors.YELLOW).get());
-        }
-    }
-
     public void eraseAsPlaceable(Player player) {
         for(Vector3d v: ceiling){
             player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
@@ -195,5 +159,11 @@ public class Cell {
 
     public Vector3d getCenterCeiling() {
         return centerCeiling;
+    }
+
+    public void drawCustom(Player player, BlockState state) {
+        for(Vector3d v: ceiling){
+            player.sendBlockChange(v.toInt(), state);
+        }
     }
 }

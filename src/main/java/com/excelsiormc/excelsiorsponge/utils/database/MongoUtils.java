@@ -190,9 +190,6 @@ public class MongoUtils extends ServiceMongoDB {
                     }
                 }
             });
-            for(TerrainTypes types: TerrainTypes.values()){
-                System.out.println(types.toString() + " " + types.getCellType().getBuild().size());
-            }
         }
     }
 

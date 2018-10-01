@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
+import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.event.Listener;
 
@@ -32,9 +33,8 @@ public class DuelEvents {
         for(CombatantProfile c: team.getCombatants()){
             if(c.isPlayer()){
                 CombatantProfilePlayer cpp = (CombatantProfilePlayer) c;
-                if(cpp.getCurrentlyMovingCard() != null){
-                    cpp.getCurrentlyMovingCard().getCurrentCell().clearAimForPlayer(cpp.getPlayer());
-                    cpp.setCurrentlyMovingCard(null);
+                if(cpp.getUserPlayer().getPlayerMode() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
+                    cpp.stopMovingCard();
                 }
             }
         }

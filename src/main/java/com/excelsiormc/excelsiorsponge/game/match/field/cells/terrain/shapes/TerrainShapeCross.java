@@ -17,7 +17,6 @@ public class TerrainShapeCross implements TerrainShape {
 
     @Override
     public List<Cell> calculateShape(Grid grid, CellTerrain terrain) {
-        return grid.getAvailableCellsEqualLengthCross(DuelUtils.getCellWithoutTerrainOrOverrideable(terrain, grid),
-                radius, false, null);
+        return grid.getCellsEqualLengthCross(DuelUtils.getCellWithoutTerrainOrOverrideable(terrain, grid), radius);
     }
 }

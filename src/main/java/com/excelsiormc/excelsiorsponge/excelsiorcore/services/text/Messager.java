@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.text;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.economy.Account;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.economy.Currency;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -27,7 +28,7 @@ public class Messager {
     }
 
     public static void sendEconomyCantAffordMessage(Account account, Currency currency, double needed){
-        sendMessage(Message.builder().addReceiver(Sponge.getServer().getPlayer(account.getOwner()).get())
+        sendMessage(Message.builder().addReceiver(PlayerUtils.getPlayer(account.getOwner()).get())
                 .addMessage(Text.of(TextColors.RED, "You cannot afford this! Needed: " + currency.getSymbol().toPlain() + needed
                                 + TextColors.GREEN + " Have: " + currency.getSymbol().toPlain() + account.getBalance(currency)), Prefix.ECO)
                 .build());
