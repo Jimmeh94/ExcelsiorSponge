@@ -20,6 +20,7 @@ public class Team {
 
     private List<CombatantProfile> combatants;
     private Vector3d spawn;
+    private boolean alive = true;
 
     //These are the rows in which a card can be laid on the field by this team
     private List<Row> placeableRows = new CopyOnWriteArrayList<>();
@@ -43,6 +44,28 @@ public class Team {
                 Messager.sendTitleMessage(c.getPlayer(), Text.of(TextColors.GRAY, "Your Turn"));
             }
         }
+    }
+
+    public void checkAlive(){
+        boolean temp = true;
+
+        if(combatants.size() == 0){
+            alive = false;
+        } else {
+            for (CombatantProfile combatantProfile : combatants) {
+                if (combatantProfile.getCard().getHealth() <= 0) {
+                    temp = false;
+                } else {
+                    temp = true;
+                    break;
+                }
+            }
+            alive = temp;
+        }
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 
     public void addPlaceableRow(Row row){

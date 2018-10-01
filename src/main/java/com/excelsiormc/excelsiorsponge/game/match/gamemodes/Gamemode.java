@@ -121,7 +121,7 @@ public abstract class Gamemode {
                     }
                 }
 
-                arena.broadcastMessage(Text.of(TextColors.GOLD + "All decks have been shuffled and your hands have been drawn!"),
+                arena.broadcastMessage(Text.of(TextColors.GOLD, "All decks have been shuffled and your hands have been drawn!"),
                         Messager.Prefix.DUEL);
 
             } else if(preGameTimeLimit == 0){
@@ -165,17 +165,19 @@ public abstract class Gamemode {
             endGame();
         } else {
             for(Team team: teams){
-                if(team.isEmptyOfPlayers()){
-                    //TODO if not a PlayerVsAI game or if players don't want them to be repalced by bots
-                    //TODO game should end and the other team should win
-                } else {
-                    for(CombatantProfile c: team.getCombatants()){
-                        if(c.isPlayer()){
-                            UserPlayer user = PlayerUtils.getUserPlayer(c.getPlayer()).get();
-                            user.updateScoreboard();
-                        }
+                team.checkAlive();
+
+                for(CombatantProfile c: team.getCombatants()){
+                    if(c.isPlayer()){
+                        UserPlayer user = PlayerUtils.getUserPlayer(c.getPlayer()).get();
+                        user.updateScoreboard();
                     }
                 }
+            }
+
+            if(getTotalAliveTeams() == 1){
+                endGame();
+                return;
             }
 
             if(turnManager.needToStartNextTurn()){
@@ -183,6 +185,16 @@ public abstract class Gamemode {
             }
         }
         tick();
+    }
+
+    private int getTotalAliveTeams(){
+        int count = 0;
+        for(Team team: teams){
+            if(team.isAlive()){
+                count++;
+            }
+        }
+        return count;
     }
 
     public void setTimePaused(boolean timePaused) {

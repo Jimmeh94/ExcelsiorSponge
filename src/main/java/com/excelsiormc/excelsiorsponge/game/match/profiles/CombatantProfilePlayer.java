@@ -34,8 +34,12 @@ public class CombatantProfilePlayer extends CombatantProfile {
         return currentlyMovingCard;
     }
 
+    public void setCurrentlyMovingCard(CardBase currentlyMovingCard) {
+        this.currentlyMovingCard = currentlyMovingCard;
+    }
+
     public void startMovingCard(CardBase card){
-        this.currentlyMovingCard = card;
+        setCurrentlyMovingCard(card);
         currentlyMovingCard.displayAvailableSpotsToMoveTo();
         getUserPlayer().setPlayerMode(UserPlayer.PlayerMode.ARENA_MOVING_CARD);
     }

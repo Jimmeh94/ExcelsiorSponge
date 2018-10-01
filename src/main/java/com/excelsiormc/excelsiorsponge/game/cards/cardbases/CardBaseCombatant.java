@@ -2,11 +2,9 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
-import com.excelsiormc.excelsiorsponge.game.user.StatIDs;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -27,16 +25,10 @@ public class CardBaseCombatant extends CardBase {
     private CombatantProfile owner;
     private ArmorStand name;
 
-    public CardBaseCombatant(UUID owner, CombatantProfile profile, double level, CardMovement cardMovement) {
-        super(owner, level, "", CardRarity.LEGENDARY, null, 0, cardMovement);
+    public CardBaseCombatant(UUID owner, CombatantProfile profile, double level, double health, CardMovement cardMovement) {
+        super(owner, level, "", CardRarity.LEGENDARY, 0, health, null, 0, cardMovement);
 
         this.owner = profile;
-    }
-
-    @Override
-    protected void generateStats() {
-        stats.addStat(StatIDs.HEALTH, new StatBase(8000, 8000, Text.of(TextColors.RED, "Health")));
-        stats.addStat(StatIDs.ENERGY, new StatBase(1000, 1000, Text.of(TextColors.RED, "Energy")));
     }
 
     @Override
@@ -53,7 +45,7 @@ public class CardBaseCombatant extends CardBase {
             center.getExtent().spawnEntity(human);
 
             stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
-            stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)stats.getStat(StatIDs.HEALTH).get().getCurrent()));
+            stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth()));
             stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
             stand.offer(Keys.INVISIBLE, true);
             stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);

@@ -3,7 +3,12 @@ package com.excelsiormc.excelsiorsponge.game.match.field.cells;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.match.Team;
+import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -117,7 +122,30 @@ public class Cell {
 
     public void setAvailable(boolean b) {
         this.isAvailable = b;
-        occupyingCard = null;
+
+        if(this.isAvailable){
+            eraseAsPlaceable(PlayerUtils.getPlayer(occupyingCard.getOwner()).get());
+
+            Gamemode gamemode = DuelUtils.getArena(occupyingCard.getOwner()).get().getGamemode();
+
+            for(Team team: gamemode.getTeams()){
+                for(CombatantProfile c: team.getCombatants()){
+                    if(c.getUUID().compareTo(occupyingCard.getOwner()) == 0){
+                        continue;
+                    }
+
+                    if(c.isPlayer()){
+                        if(team.isCombatant(occupyingCard.getOwner())){
+                            eraseAsPlaceable(PlayerUtils.getPlayer(c.getUUID()).get());
+                        } else {
+                            eraseAsPlaceable(PlayerUtils.getPlayer(c.getUUID()).get());
+                        }
+                    }
+                }
+            }
+
+            occupyingCard = null;
+        }
     }
 
     public CardBase getOccupyingCard() {
@@ -137,6 +165,26 @@ public class Cell {
         if(up.isPresent()){
             eraseAsPlaceable(up.get().getPlayer());
         }
+
+        drawCustom(PlayerUtils.getPlayer(card.getOwner()).get(), BlockStateColors.OWNER);
+
+        Gamemode gamemode = DuelUtils.getArena(card.getOwner()).get().getGamemode();
+
+        for(Team team: gamemode.getTeams()){
+            for(CombatantProfile c: team.getCombatants()){
+                if(c.getUUID().compareTo(card.getOwner()) == 0){
+                    continue;
+                }
+
+                if(c.isPlayer()){
+                    if(team.isCombatant(card.getOwner())){
+                        drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.TEAMMATE);
+                    } else {
+                        drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+                    }
+                }
+            }
+        }
     }
 
     public String getWorld() {
@@ -152,8 +200,10 @@ public class Cell {
     }
 
     public void eraseAsPlaceable(Player player) {
-        for(Vector3d v: ceiling){
-            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
+        if(isAvailable) {
+            for (Vector3d v : ceiling) {
+                player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
+            }
         }
     }
 

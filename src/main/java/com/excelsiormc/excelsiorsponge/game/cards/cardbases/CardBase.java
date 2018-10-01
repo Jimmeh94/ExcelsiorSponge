@@ -5,7 +5,6 @@ import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.Stats;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
@@ -30,7 +29,7 @@ import java.util.UUID;
 
 public abstract class CardBase {
 
-    private double level;
+    private double level, attack, health;
     private Text name;
     private List<Text> lore;
     private UUID owner;
@@ -40,29 +39,31 @@ public abstract class CardBase {
     private ItemStack mesh;
     protected Cell currentCell;
     protected CardMovement cardMovement;
-    protected Stats<CardBase> stats;
+    //protected Stats<CardBase> stats;
     protected CardRarity rarity;
 
-    public CardBase(UUID owner, double level, String name, CardRarity rarity, ItemType material, int materialDamageValue, CardMovement cardMovement) {
+    public CardBase(UUID owner, double level, String name, CardRarity rarity, double attack, double health, ItemType material, int materialDamageValue, CardMovement cardMovement) {
         this.owner = owner;
         this.level = level;
         this.name = Text.of(rarity.getColor(), name);
         this.rarity = rarity;
+        this.attack = attack;
+        this.health = health;
         this.material = material;
         this.materialDamageValue = materialDamageValue;
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
 
-        stats = new Stats<>(this);
+        //stats = new Stats<>(this);
 
-        generateStats();
+        //generateStats();
 
         if(material != null) {
             generateItemStack();
         }
     }
 
-    protected abstract void generateStats();
+    //protected abstract void generateStats();
     protected abstract Text getCardDescription();
 
     protected List<Text> generateLore() {
@@ -89,14 +90,24 @@ public abstract class CardBase {
         builder.addMessage(getName());
         builder.append(getLoreAsMessage());
         builder.addMessage(Text.of(" "));
-        builder.append(Message.from(stats, getName(), displayTo));
+        builder.addMessage(Text.of(TextColors.RED, "Health: " + health));
+        builder.addMessage(Text.of(TextColors.GRAY, "Attack: " + attack));
+        //builder.append(Message.from(stats, getName(), displayTo));
         builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
         Messager.sendMessage(builder.build());
     }
 
-    public Stats<CardBase> getStats() {
-        return stats;
+    public double getAttack() {
+        return attack;
     }
+
+    public double getHealth() {
+        return health;
+    }
+
+    /*public Stats<CardBase> getStats() {
+        return stats;
+    }*/
 
     protected Message getLoreAsMessage(){
         Message.Builder builder = Message.builder();
@@ -187,6 +198,14 @@ public abstract class CardBase {
         remove();
         currentCell.setAvailable(true);
         currentCell = null;
+
+        if(isOwnerPlayer()){
+            Messager.sendMessage(PlayerUtils.getPlayer(owner).get(),
+                    Text.builder().append(getName(), Text.of(TextColors.RED, " has been destroyed!")).build(), Messager.Prefix.DUEL);
+        }
+
+        PlayerUtils.getCombatProfilePlayer(owner).get().addToGraveyard(this);
+
         Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
     }
 
@@ -196,6 +215,10 @@ public abstract class CardBase {
 
     public boolean generateSpots() {
         return cardMovement.generateSpots();
+    }
+
+    public void subtractHealth(double damage) {
+        health -= damage;
     }
 
     public enum CardRarity {

@@ -5,8 +5,8 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
@@ -71,10 +71,7 @@ public abstract class Grid {
 
         Vector3d target = current.getCenter().clone().add(new Vector3d(xDistance, 0, zDistance));
         if(isCell(target)){
-            Cell cell = getCell(target).get();
-            if(cell.isAvailable()){
-                return Optional.of(cell);
-            }
+            return Optional.of(getCell(target).get());
         } else if(useNearestIfEmpty){
             //This will get the cell nearest to the target
             EditableVector temp = new EditableVector(target);
@@ -165,6 +162,7 @@ public abstract class Grid {
         Vector3i direction = LocationUtils.getDirection(start.getCenter(), end.getCenter());
         Cell current = start;
         Row row = new Row();
+
         while(current != end){
             row.addCell(current);
             current = getCellInDirection(current, direction.toDouble(), false).get();

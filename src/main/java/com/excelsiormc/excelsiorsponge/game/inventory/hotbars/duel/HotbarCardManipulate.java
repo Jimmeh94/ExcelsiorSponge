@@ -18,6 +18,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Optional;
+
 public class HotbarCardManipulate extends Hotbar {
 
     private CardBase cardBase;
@@ -112,13 +114,13 @@ public class HotbarCardManipulate extends Hotbar {
     public void handleEmptyLeftClick(Player player) {
         //If aiming at appropriate cell for the card to move to, move card
         CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-        Cell aim = cpp.getCurrentAim().get();
+        Optional<Cell> aim = cpp.getCurrentAim();
         CardBase card = cpp.getCurrentlyMovingCard();
 
-        if(aim != null){
+        if(aim.isPresent()){
             if(card != null){
-                if(card.getMovement().isAvailableSpace(aim)){
-                    card.getMovement().handle(aim);
+                if(card.getMovement().isAvailableSpace(aim.get())){
+                    card.getMovement().handle(aim.get());
                 }
 
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);

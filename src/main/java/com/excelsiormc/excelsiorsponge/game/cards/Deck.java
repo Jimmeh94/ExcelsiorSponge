@@ -9,8 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Deck {
 
-    private List<CardBase> cards;
-    private UUID uuid;
+    protected List<CardBase> cards;
+    protected UUID uuid;
 
     public Deck(UUID uuid) {
         this.uuid = uuid;

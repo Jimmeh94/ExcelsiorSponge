@@ -1,7 +1,8 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement.filters;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementColors;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
@@ -36,13 +37,13 @@ public class FilterIncludeEnemyCell extends MovementFilter {
         if(arena.getGrid().getDistanceBetweenCells(owner.getCurrentCell(), target) > 1){
             Row row = arena.getGrid().getRowBetweenCells(owner.getCurrentCell(), target);
             DuelUtils.moveCardToCell(row.getCells().get(row.getCells().size() - 2), player);
+
             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(owner.getOwner()).get();
             cpp.stopMovingCard();
 
             arena.getGamemode().setTimePaused(true);
 
-
-            ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(3) {
+            ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(6) {
                 @Override
                 public void doTask() {
                     //battle
@@ -57,8 +58,11 @@ public class FilterIncludeEnemyCell extends MovementFilter {
 
     private void battle(Arena arena, Cell target, Player player){
         BattleResult battleResult = arena.getGamemode().battle(owner.getCurrentCell(), target);
+
         if(battleResult.getVictorCard().isPresent()){
-            if(battleResult.getVictorCard().get() == owner){
+            if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseCombatant)){
+                CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(owner.getOwner()).get();
+                cpp.setCurrentlyMovingCard(owner);
                 DuelUtils.moveCardToCell(target, player);
             }
         }
@@ -67,7 +71,7 @@ public class FilterIncludeEnemyCell extends MovementFilter {
     @Override
     public void drawCells(Player player) {
         for(Cell cell: getApplicableCells()){
-            cell.drawCustom(player, CardMovementColors.ENEMY);
+            cell.drawCustom(player, BlockStateColors.ENEMY_THREAT);
         }
     }
 }
