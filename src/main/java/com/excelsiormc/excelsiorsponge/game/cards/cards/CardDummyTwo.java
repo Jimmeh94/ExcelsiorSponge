@@ -13,7 +13,7 @@ import java.util.UUID;
 public class CardDummyTwo extends CardBaseMonster {
 
     public CardDummyTwo(UUID owner) {
-        super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, 25, 150, ItemTypes.STONE, (short)1.0,
+        super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, 500, 150, ItemTypes.STONE, (short)1.0,
                 new CardMovementBigCross(4, new FilterIncludeEnemyEmptyCell()));
     }
 

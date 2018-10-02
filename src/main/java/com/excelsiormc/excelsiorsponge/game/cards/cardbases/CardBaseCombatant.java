@@ -37,6 +37,19 @@ public class CardBaseCombatant extends CardBase {
     }
 
     @Override
+    public void remove(){
+        if(stand != null){
+            stand.remove();
+        }
+        if(name != null){
+            name.remove();
+        }
+        if(human != null){
+            human.remove();
+        }
+    }
+
+    @Override
     public void spawn(Location center) {
         if(owner.isPlayer()) {
             human = (Human) center.getExtent().createEntity(EntityTypes.HUMAN, center.getPosition());
@@ -80,5 +93,12 @@ public class CardBaseCombatant extends CardBase {
         cardMovement.setCanMoveThisTurn(false);
 
         Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
+    }
+
+    @Override
+    public void subtractHealth(double damage) {
+        super.subtractHealth(damage);
+
+        stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth()));
     }
 }

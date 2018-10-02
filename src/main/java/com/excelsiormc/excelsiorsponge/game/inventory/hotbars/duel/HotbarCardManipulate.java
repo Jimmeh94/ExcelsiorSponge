@@ -9,7 +9,6 @@ import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
-import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -99,7 +98,7 @@ public class HotbarCardManipulate extends Hotbar {
 
             private void loadMenu(Player player){
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
+                DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
             }
         });
         addPair(8, card);
@@ -113,7 +112,7 @@ public class HotbarCardManipulate extends Hotbar {
     @Override
     public void handleEmptyLeftClick(Player player) {
         //If aiming at appropriate cell for the card to move to, move card
-        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+        CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
         Optional<Cell> aim = cpp.getCurrentAim();
         CardBase card = cpp.getCurrentlyMovingCard();
 
@@ -122,7 +121,7 @@ public class HotbarCardManipulate extends Hotbar {
                 if(card.getMovement().isAvailableSpace(aim.get())){
                     card.getMovement().handle(aim.get());
                     Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                    PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
+                    DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
                 }
             }
         }

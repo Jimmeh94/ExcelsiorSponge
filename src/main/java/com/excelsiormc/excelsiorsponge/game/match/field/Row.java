@@ -87,9 +87,7 @@ public class Row {
 
     public void resetCells() {
         for(Cell cell: cells){
-            cell.setAvailable(true);
-            cell.setCellType(null);
-            cell.eraseBuild();
+            cell.reset();
         }
     }
 

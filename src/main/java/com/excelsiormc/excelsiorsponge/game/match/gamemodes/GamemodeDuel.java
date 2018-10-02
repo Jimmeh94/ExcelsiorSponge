@@ -8,7 +8,8 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 
@@ -84,23 +85,26 @@ public class GamemodeDuel extends Gamemode {
 
         Sponge.getEventManager().post(new DuelEvent.BattleBeginning(ExcelsiorSponge.getServerCause(), one, two));
 
+        CombatantProfilePlayer cppOne = DuelUtils.getCombatProfilePlayer(one.getOwner()).get();
+        CombatantProfilePlayer cppTwo = DuelUtils.getCombatProfilePlayer(two.getOwner()).get();
+        
         if(aOne > aTwo){
             /**
              * ===== Pre damage events and dealing damage =====
              */
 
             DuelEvent.CombatantDealDamage.Pre deal = new DuelEvent.CombatantDealDamage.Pre(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(two.getOwner()).get());
+                    cppOne, cppTwo);
 
             DuelEvent.CombatantDealtDamage.Pre dealt = new DuelEvent.CombatantDealtDamage.Pre(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(two.getOwner()).get());
+                    cppOne, cppTwo);
 
             Sponge.getEventManager().post(deal);
             Sponge.getEventManager().post(dealt);
 
             if(!deal.isCancelled() && !dealt.isCancelled()){
-                result.setVictor(PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), one);
-                result.setLoser(PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), two);
+                result.setVictor(cppOne, one);
+                result.setLoser(cppTwo, two);
             }
 
             /**
@@ -108,10 +112,10 @@ public class GamemodeDuel extends Gamemode {
              */
 
             DuelEvent.CombatantDealDamage.Post dealP = new DuelEvent.CombatantDealDamage.Post(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(two.getOwner()).get());
+                    cppOne, cppTwo);
 
             DuelEvent.CombatantDealtDamage.Post dealtP = new DuelEvent.CombatantDealtDamage.Post(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(two.getOwner()).get());
+                    cppOne, cppTwo);
 
             Sponge.getEventManager().post(dealP);
             Sponge.getEventManager().post(dealtP);
@@ -133,17 +137,17 @@ public class GamemodeDuel extends Gamemode {
              */
 
             DuelEvent.CombatantDealDamage.Pre deal = new DuelEvent.CombatantDealDamage.Pre(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(one.getOwner()).get());
+                    cppTwo, cppOne);
 
             DuelEvent.CombatantDealtDamage.Pre dealt = new DuelEvent.CombatantDealtDamage.Pre(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(one.getOwner()).get());
+                    cppTwo, cppOne);
 
             Sponge.getEventManager().post(deal);
             Sponge.getEventManager().post(dealt);
 
             if(!deal.isCancelled() && !dealt.isCancelled()){
-                result.setLoser(PlayerUtils.getCombatProfilePlayer(one.getOwner()).get(), one);
-                result.setVictor(PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), two);
+                result.setLoser(cppOne, one);
+                result.setVictor(cppTwo, two);
             }
 
             /**
@@ -151,10 +155,10 @@ public class GamemodeDuel extends Gamemode {
              */
 
             DuelEvent.CombatantDealDamage.Post dealP = new DuelEvent.CombatantDealDamage.Post(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(one.getOwner()).get());
+                    cppTwo, cppOne);
 
             DuelEvent.CombatantDealtDamage.Post dealtP = new DuelEvent.CombatantDealtDamage.Post(ExcelsiorSponge.getServerCause(),
-                    PlayerUtils.getCombatProfilePlayer(two.getOwner()).get(), PlayerUtils.getCombatProfilePlayer(one.getOwner()).get());
+                    cppTwo, cppOne);
 
             Sponge.getEventManager().post(dealP);
             Sponge.getEventManager().post(dealtP);

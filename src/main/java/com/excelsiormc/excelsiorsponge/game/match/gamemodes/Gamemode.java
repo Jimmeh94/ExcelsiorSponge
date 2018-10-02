@@ -15,6 +15,7 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -83,9 +84,10 @@ public abstract class Gamemode {
     }
 
     public void endGame(){
+        arena.broadcastMessage(Text.of("GAME OVER"), Messager.Prefix.DUEL);
         arena.getGrid().resetCells();
-        arena.end();
         endingGame();
+        arena.end();
         arena = null;
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
@@ -289,7 +291,7 @@ public abstract class Gamemode {
         /**
          * Should bring up info about that cell and the occupying card if there
          */
-        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+        CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
         if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable() && cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseMonster){
             ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
         }

@@ -26,7 +26,7 @@ public abstract class CombatantProfile {
         graveyard = new DeckGraveyard(owner);
 
         hand = new Hand(owner);
-        card = new CardBaseCombatant(owner, this, 0, 8000, new CardMovementSquare(1, new FilterIncludeEmptyCell()));
+        card = new CardBaseCombatant(owner, this, 0, 1000, new CardMovementSquare(1, new FilterIncludeEmptyCell()));
     }
 
     public void addToGraveyard(CardBase cardBase){

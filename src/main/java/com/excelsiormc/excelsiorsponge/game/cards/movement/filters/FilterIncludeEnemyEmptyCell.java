@@ -22,7 +22,7 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
     public void filter(List<Cell> cells) {
         super.filter(cells);
 
-        Team team = PlayerUtils.getTeam(owner.getOwner());
+        Team team = DuelUtils.getTeam(owner.getOwner());
         for(Cell cell: cells){
             if(!cell.isAvailable() && !team.isCombatant(cell.getOccupyingCard().getOwner())){
                 addCell(cell);
@@ -63,7 +63,7 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
             Row row = arena.getGrid().getRowBetweenCells(owner.getCurrentCell(), target);
             DuelUtils.moveCardToCell(row.getCells().get(row.getCells().size() - 2), player);
 
-            CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(owner.getOwner()).get();
+            CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
             cpp.stopMovingCard();
 
             arena.getGamemode().setTimePaused(true);
@@ -86,7 +86,7 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
 
         if(battleResult.getVictorCard().isPresent()){
             if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseCombatant)){
-                CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(owner.getOwner()).get();
+                CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
                 cpp.setCurrentlyMovingCard(owner);
                 DuelUtils.moveCardToCell(target, player);
             }
@@ -103,23 +103,4 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
             }
         }
     }
-
-    /*@Override
-    public boolean hasCell(Cell cell) {
-        if(super.hasCell(cell)){
-            Arena arena = DuelUtils.getArena(owner.getOwner()).get();
-            Row row = arena.getGrid().getRowBetweenCells(owner.getCurrentCell(), cell);
-            int index = -1;
-
-            for(Cell c: row.getCells()){
-                if(index == -1 && DuelUtils.isCellEnemyOccupied(c, arena.getGamemode().getTeamWithCombatant(owner.getOwner()))){
-                    index = row.getCells().indexOf(c);
-                }
-            }
-
-            return index == -1 ? true : row.getCells().subList(0, index).contains(cell);
-        }
-
-        return false;
-    }*/
 }

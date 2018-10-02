@@ -72,8 +72,10 @@ public class PlayerEvents {
 
     @Listener
     public void onModeChange(PlayerModeChangeEvent event){
-        if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()){
+        if(event.getChangeTo() != UserPlayer.PlayerMode.NORMAL) {
+            if (ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()) {
 
+            }
         }
     }
 

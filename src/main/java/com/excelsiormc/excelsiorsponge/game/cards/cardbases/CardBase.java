@@ -8,6 +8,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -29,7 +30,9 @@ import java.util.UUID;
 
 public abstract class CardBase {
 
-    private double level, attack, health;
+    private double level;
+    private double attack;
+    protected double health;
     private Text name;
     private List<Text> lore;
     private UUID owner;
@@ -166,7 +169,7 @@ public abstract class CardBase {
         center.getExtent().spawnEntity(stand);
     }
 
-    private void remove(){
+    public void remove(){
         if(stand != null){
             stand.remove();
         }
@@ -204,7 +207,7 @@ public abstract class CardBase {
                     Text.builder().append(getName(), Text.of(TextColors.RED, " has been destroyed!")).build(), Messager.Prefix.DUEL);
         }
 
-        PlayerUtils.getCombatProfilePlayer(owner).get().addToGraveyard(this);
+        DuelUtils.getCombatProfilePlayer(owner).get().addToGraveyard(this);
 
         Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
     }
@@ -219,6 +222,9 @@ public abstract class CardBase {
 
     public void subtractHealth(double damage) {
         health -= damage;
+        if(health < 0){
+            health = 0;
+        }
     }
 
     public enum CardRarity {

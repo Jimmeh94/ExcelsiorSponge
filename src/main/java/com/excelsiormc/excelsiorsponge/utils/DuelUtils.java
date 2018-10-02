@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
+import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -20,12 +21,12 @@ public class DuelUtils {
     }
 
     public static void moveCardToCell(Player player){
-        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+        CombatantProfilePlayer cpp = getCombatProfilePlayer(player.getUniqueId()).get();
         moveCardToCell(cpp.getCurrentAim().get(), player);
     }
 
     public static void moveCardToCell(Cell target, Player owner){
-        CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(owner.getUniqueId()).get();
+        CombatantProfilePlayer cpp = getCombatProfilePlayer(owner.getUniqueId()).get();
         CardBase card = cpp.getCurrentlyMovingCard();
 
         if(target != null && card != null){
@@ -52,6 +53,20 @@ public class DuelUtils {
 
     public static boolean isCellEnemyOccupied(Cell cell, Team ally){
         return !cell.isAvailable() && !ally.isCombatant(cell.getOccupyingCard().getOwner());
+    }
+
+    public static Team getTeam(UUID combatant){
+        return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(combatant).get().getGamemode().getTeamWithCombatant(combatant);
+    }
+
+    public static Optional<Arena> findArenaWithPlayer(Player player){
+        return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player);
+    }
+
+    public static Optional<CombatantProfilePlayer> getCombatProfilePlayer(UUID uuid){
+        Optional<CombatantProfile> c = ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(uuid).get().getCombatantProfile(uuid);
+
+        return c.isPresent() && c.get().isPlayer() ? Optional.of((CombatantProfilePlayer)c.get()) : Optional.empty();
     }
 
 }

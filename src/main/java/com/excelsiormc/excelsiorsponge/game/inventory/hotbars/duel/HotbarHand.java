@@ -1,11 +1,11 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
-import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
@@ -14,7 +14,6 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
-import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -62,11 +61,11 @@ public class HotbarHand extends Hotbar {
 
                     int index = InventoryUtils.getHeldItemSlot(player, action).get().getValue();
                     //Lay card on field
-                    Optional<Cell> currentAim = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
+                    Optional<Cell> currentAim = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
 
                     if (currentAim.isPresent() && currentAim.get().isAvailable() && profile.getHand().hasCardAt(index)) {
 
-                        if(PlayerUtils.getTeam(player.getUniqueId()).isPlaceable(currentAim.get())) {
+                        if(DuelUtils.getTeam(player.getUniqueId()).isPlaceable(currentAim.get())) {
                             currentAim.get().setOccupyingCard(profile.getHand().getCard(index), true);
 
                             Optional<Slot> op = InventoryUtils.getSlot(index, player);
@@ -86,7 +85,7 @@ public class HotbarHand extends Hotbar {
 
                         CardBase card = profile.getHand().viewCard(index);
                         if(card instanceof CardBaseMonster){
-                            CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                            CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                             if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().get().isAvailable()){
                                 cpp.getCurrentAim().get().getOccupyingCard().displayStats(player);
                             }
@@ -142,10 +141,10 @@ public class HotbarHand extends Hotbar {
             }
 
             private void action(Player player){
-                Arena arena = PlayerUtils.findArenaWithPlayer(player).get();
+                Arena arena = DuelUtils.findArenaWithPlayer(player).get();
                 if(arena.isPlayersTurn(player)){
                     Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                    PlayerUtils.getTeam(player.getUniqueId()).eraseAsPlaceableRows(player);
+                    DuelUtils.getTeam(player.getUniqueId()).eraseAsPlaceableRows(player);
                 } else {
                     Hotbars.HOTBAR_WAITING_TURN.setHotbar(player);
                 }

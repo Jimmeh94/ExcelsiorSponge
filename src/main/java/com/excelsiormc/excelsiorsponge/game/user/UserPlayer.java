@@ -68,7 +68,6 @@ public class UserPlayer extends PlayerBase {
      * This just makes it easier for dividing up the interact events
      */
     public enum PlayerMode{
-        ARENA_ADD,
         ARENA_DUEL_DEFAULT,
         ARENA_MOVING_CARD,
 

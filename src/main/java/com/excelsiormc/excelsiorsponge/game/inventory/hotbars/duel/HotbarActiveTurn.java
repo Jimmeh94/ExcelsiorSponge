@@ -65,7 +65,7 @@ public class HotbarActiveTurn extends Hotbar {
             public void actionLeftClick(Player player, HandType action) {
                 //Needs to be aiming at a cell with a card owned by this player
                 //Brings up hotbar about that card
-                CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                 if(!cpp.getCurrentAim().isPresent() || cpp.getCurrentAim().get().getOccupyingCard() == null ||
                     !cpp.getCurrentAim().get().getOccupyingCard().isOwner(player.getUniqueId())){
                     return;
@@ -106,13 +106,13 @@ public class HotbarActiveTurn extends Hotbar {
             }
 
             private void displayhand(Player player){
-                CombatantProfilePlayer temp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                CombatantProfilePlayer temp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                 UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
                 userPlayer.setCurrentHotbar(new HotbarHand(temp));
                 userPlayer.getCurrentHotbar().setHotbar(player);
 
-                if(PlayerUtils.findArenaWithPlayer(player).get().isPlayersTurn(player)) {
-                    PlayerUtils.getTeam(player.getUniqueId()).highlightPlaceableRows(player);
+                if(DuelUtils.findArenaWithPlayer(player).get().isPlayersTurn(player)) {
+                    DuelUtils.getTeam(player.getUniqueId()).highlightPlaceableRows(player);
                 }
             }
         });

@@ -133,22 +133,27 @@ public class Cell {
     public void setAvailable(boolean b) {
         this.isAvailable = b;
 
-        if(this.isAvailable){
-            eraseClient(PlayerUtils.getPlayer(occupyingCard.getOwner()).get());
+        if(this.isAvailable) {
+            if (occupyingCard != null){
+                Optional<Player> player = PlayerUtils.getPlayer(occupyingCard.getOwner());
+                if(player.isPresent()) {
+                    eraseClient(player.get());
 
-            Gamemode gamemode = DuelUtils.getArena(occupyingCard.getOwner()).get().getGamemode();
+                    Gamemode gamemode = DuelUtils.getArena(occupyingCard.getOwner()).get().getGamemode();
 
-            for(Team team: gamemode.getTeams()){
-                for(CombatantProfile c: team.getCombatants()){
-                    if(c.getUUID().compareTo(occupyingCard.getOwner()) == 0){
-                        continue;
-                    }
+                    for (Team team : gamemode.getTeams()) {
+                        for (CombatantProfile c : team.getCombatants()) {
+                            if (c.getUUID().compareTo(occupyingCard.getOwner()) == 0) {
+                                continue;
+                            }
 
-                    if(c.isPlayer()){
-                        if(team.isCombatant(occupyingCard.getOwner())){
-                            eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
-                        } else {
-                            eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
+                            if (c.isPlayer()) {
+                                if (team.isCombatant(occupyingCard.getOwner())) {
+                                    eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
+                                } else {
+                                    eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
+                                }
+                            }
                         }
                     }
                 }
@@ -163,6 +168,10 @@ public class Cell {
     }
 
     public void setOccupyingCard(CardBase card, boolean spawn) {
+        if(card == null){
+            return;
+        }
+
         setAvailable(false);
         occupyingCard = card;
         if(spawn) {
@@ -209,23 +218,44 @@ public class Cell {
         this.build.destroy(locations.get(0));
     }
 
+    public void eraseAll(){
+        eraseBuild();
+        eraseCeiling();
+    }
+
+    public void eraseCeiling(){
+        World world = Sponge.getServer().getWorld(getWorld()).get();
+        for (Vector3d v : ceiling) {
+            world.getLocation(v).setBlockType(material);
+        }
+    }
+
     public void eraseClient(Player player) {
         if(isAvailable) {
             for (Vector3d v : ceiling) {
                 player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
             }
-        } else if(DuelUtils.isCellEnemyOccupied(this, PlayerUtils.getTeam(player.getUniqueId()))){
+        } else if(DuelUtils.isCellEnemyOccupied(this, DuelUtils.getTeam(player.getUniqueId()))){
             drawCustom(player, BlockStateColors.ENEMY_NO_CURRENT_THREAT);
         }
     }
 
     public Vector3d getCenterCeiling() {
-        return centerCeiling;
+        return centerCeiling.clone().add(0, 1, 0);
     }
 
     public void drawCustom(Player player, BlockState state) {
         for(Vector3d v: ceiling){
             player.sendBlockChange(v.toInt(), state);
         }
+    }
+
+    public void reset() {
+        if(occupyingCard != null){
+            occupyingCard.remove();
+        }
+        setAvailable(true);
+        eraseAll();
+        setCellType(null);
     }
 }
