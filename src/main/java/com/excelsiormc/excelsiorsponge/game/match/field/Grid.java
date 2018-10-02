@@ -424,4 +424,16 @@ public abstract class Grid {
         Row first = rows.get(0), last = rows.get(rows.size() - 1);
         return getCell(LocationUtils.getMiddleLocation(first.getCells().get(0).getCenter(), last.getCells().get(last.getCells().size() - 1).getCenter())).get();
     }
+
+    public boolean isAimInCell(Vector3d pos) {
+        Vector3i temp = pos.toInt();
+        for(Row row: rows){
+            for(Cell cell: row.getCells()){
+                if(cell.isAimWithinCell(temp)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

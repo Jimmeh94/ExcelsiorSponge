@@ -2,8 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementBigCross;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEnemyCell;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEnemyEmptyCell;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -15,7 +14,7 @@ public class CardDummyTwo extends CardBaseMonster {
 
     public CardDummyTwo(UUID owner) {
         super(owner, 1, "Dummy 2 Card", CardRarity.ENHANCED, 25, 150, ItemTypes.STONE, (short)1.0,
-                new CardMovementBigCross(4, new FilterIncludeEmptyCell(), new FilterIncludeEnemyCell()));
+                new CardMovementBigCross(4, new FilterIncludeEnemyEmptyCell()));
     }
 
     @Override

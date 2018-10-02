@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.game.match.cards;
+package com.excelsiormc.excelsiorsponge.game.cards;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 
 import java.util.List;

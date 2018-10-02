@@ -12,8 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CardMovementDiagonal extends CardMovementNormal {
 
-    public CardMovementDiagonal(int distanceInCells, MovementFilter... filters) {
-        super(distanceInCells, filters);
+    public CardMovementDiagonal(int distanceInCells, MovementFilter filter) {
+        super(distanceInCells, filter);
     }
 
     @Override

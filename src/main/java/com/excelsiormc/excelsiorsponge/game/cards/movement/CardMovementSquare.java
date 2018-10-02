@@ -9,8 +9,8 @@ import java.util.List;
 
 public class CardMovementSquare extends CardMovement{
 
-    public CardMovementSquare(int distanceInCells, MovementFilter... filters) {
-        super(distanceInCells, filters);
+    public CardMovementSquare(int distanceInCells, MovementFilter filter) {
+        super(distanceInCells, filter);
     }
 
     @Override

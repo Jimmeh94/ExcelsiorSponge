@@ -88,7 +88,7 @@ public class HotbarHand extends Hotbar {
                         if(card instanceof CardBaseMonster){
                             CombatantProfilePlayer cpp = PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get();
                             if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().get().isAvailable()){
-                                ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
+                                cpp.getCurrentAim().get().getOccupyingCard().displayStats(player);
                             }
                         }
                     }

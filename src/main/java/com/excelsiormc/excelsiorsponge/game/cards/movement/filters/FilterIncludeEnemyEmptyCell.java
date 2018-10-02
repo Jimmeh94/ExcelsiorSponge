@@ -16,20 +16,45 @@ import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.List;
 
-public class FilterIncludeEnemyCell extends MovementFilter {
+public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
 
     @Override
     public void filter(List<Cell> cells) {
+        super.filter(cells);
+
         Team team = PlayerUtils.getTeam(owner.getOwner());
         for(Cell cell: cells){
             if(!cell.isAvailable() && !team.isCombatant(cell.getOccupyingCard().getOwner())){
                 addCell(cell);
             }
         }
+
+        Arena arena = DuelUtils.getArena(owner.getOwner()).get();
+        for(Cell cell: applicableCells){
+            Row row = arena.getGrid().getRowBetweenCells(owner.getCurrentCell(), cell);
+            int index = -1;
+
+            for(Cell c: row.getCells()){
+                if(index == -1 && DuelUtils.isCellEnemyOccupied(c, arena.getGamemode().getTeamWithCombatant(owner.getOwner()))){
+                    index = row.getCells().indexOf(c);
+                }
+            }
+
+            if(index != -1) {
+                if (!row.getCells().subList(0, index + 1).contains(cell)) {
+                    applicableCells.remove(cell);
+                }
+            }
+        }
     }
 
     @Override
     public void action(Cell target) {
+        if(target.isAvailable()){
+            super.action(target);
+            return;
+        }
+
         Arena arena = DuelUtils.getArena(owner.getOwner()).get();
         Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
 
@@ -71,7 +96,30 @@ public class FilterIncludeEnemyCell extends MovementFilter {
     @Override
     public void drawCells(Player player) {
         for(Cell cell: getApplicableCells()){
-            cell.drawCustom(player, BlockStateColors.ENEMY_THREAT);
+            if(cell.isAvailable()){
+                cell.drawCustom(player, BlockStateColors.EMPTY);
+            } else {
+                cell.drawCustom(player, BlockStateColors.ENEMY_THREAT);
+            }
         }
     }
+
+    /*@Override
+    public boolean hasCell(Cell cell) {
+        if(super.hasCell(cell)){
+            Arena arena = DuelUtils.getArena(owner.getOwner()).get();
+            Row row = arena.getGrid().getRowBetweenCells(owner.getCurrentCell(), cell);
+            int index = -1;
+
+            for(Cell c: row.getCells()){
+                if(index == -1 && DuelUtils.isCellEnemyOccupied(c, arena.getGamemode().getTeamWithCombatant(owner.getOwner()))){
+                    index = row.getCells().indexOf(c);
+                }
+            }
+
+            return index == -1 ? true : row.getCells().subList(0, index).contains(cell);
+        }
+
+        return false;
+    }*/
 }

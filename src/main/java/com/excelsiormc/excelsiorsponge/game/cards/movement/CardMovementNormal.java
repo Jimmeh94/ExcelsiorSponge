@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class CardMovementNormal extends CardMovement {
 
-    public CardMovementNormal(int distanceInCells, MovementFilter... filters) {
-        super(distanceInCells, filters);
+    public CardMovementNormal(int distanceInCells, MovementFilter filter) {
+        super(distanceInCells, filter);
     }
 
     @Override

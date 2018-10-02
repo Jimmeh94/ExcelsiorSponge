@@ -29,7 +29,6 @@ import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public abstract class Gamemode {
@@ -222,13 +221,17 @@ public abstract class Gamemode {
                     BlockRay<World> ray = BlockRay.from(player).distanceLimit(100)
                             .stopFilter(BlockRay.continueAfterFilter(BlockRay.onlyAirFilter(), 1)).build();
 
-                    Optional<BlockRayHit<World>> hitOpt = ray.end();
                     Cell newAim = null;
-                    if(hitOpt.isPresent()){
-                        Vector3d pos = hitOpt.get().getPosition();
 
-                        if (grid.isCell(pos)) {
+                    boolean shouldContinue = true;
+                    while(ray.hasNext() && shouldContinue){
+                        BlockRayHit<World> hit = ray.next();
+
+                        Vector3d pos = hit.getPosition();
+
+                        if (grid.isAimInCell(pos)) {
                             newAim = grid.getCell(pos).get();
+                            shouldContinue = false;
                         }
                     }
 
@@ -236,20 +239,7 @@ public abstract class Gamemode {
                         continue;
                     }
 
-                    if(mode == UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT) {
-                        if (cpp.getCurrentAim().isPresent()) {
-                            //cpp.getCurrentAim().get().clearAimForPlayer(player);
-                        }
-                        cpp.setCurrentAim(newAim);
-
-                        if(cpp.getCurrentAim().isPresent()) {
-                            //cpp.getCurrentAim().get().drawAimForPlayer(player);
-                        }
-
-                    } else if(mode == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                        cpp.setCurrentAim(newAim);
-
-                    }
+                    cpp.setCurrentAim(newAim);
 
                     Sponge.getEventManager().post(new DuelEvent.AimUpdated(ExcelsiorSponge.getServerCause(), cpp));
                 }

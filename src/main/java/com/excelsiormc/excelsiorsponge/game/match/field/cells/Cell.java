@@ -76,9 +76,19 @@ public class Cell {
     }
 
     public boolean isWithinCell(Vector3i check){
-        for(Vector3d v: locations){
-            Vector3i temp = v.toInt();
-            if(temp.getX() == check.getX() && (temp.getY() == check.getY() || Math.abs(temp.getY() - check.getY()) <= 15) && temp.getZ() == check.getZ()){
+        Vector3d temp = check.toDouble();
+        for(int i = 0; i < locations.size(); i++){
+            if(LocationUtils.isBetween(locations.get(i), ceiling.get(i).clone().add(0, 1, 0), temp,false)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isAimWithinCell(Vector3i check){
+        Vector3d temp = check.toDouble();
+        for(int i = 0; i < ceiling.size(); i++){
+            if(LocationUtils.isBetween(ceiling.get(i), ceiling.get(i).clone().add(0, 1, 0), temp,false)){
                 return true;
             }
         }
@@ -124,7 +134,7 @@ public class Cell {
         this.isAvailable = b;
 
         if(this.isAvailable){
-            eraseAsPlaceable(PlayerUtils.getPlayer(occupyingCard.getOwner()).get());
+            eraseClient(PlayerUtils.getPlayer(occupyingCard.getOwner()).get());
 
             Gamemode gamemode = DuelUtils.getArena(occupyingCard.getOwner()).get().getGamemode();
 
@@ -136,9 +146,9 @@ public class Cell {
 
                     if(c.isPlayer()){
                         if(team.isCombatant(occupyingCard.getOwner())){
-                            eraseAsPlaceable(PlayerUtils.getPlayer(c.getUUID()).get());
+                            eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
                         } else {
-                            eraseAsPlaceable(PlayerUtils.getPlayer(c.getUUID()).get());
+                            eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
                         }
                     }
                 }
@@ -163,7 +173,7 @@ public class Cell {
 
         Optional<UserPlayer> up = PlayerUtils.getUserPlayer(card.getOwner());
         if(up.isPresent()){
-            eraseAsPlaceable(up.get().getPlayer());
+            eraseClient(up.get().getPlayer());
         }
 
         drawCustom(PlayerUtils.getPlayer(card.getOwner()).get(), BlockStateColors.OWNER);
@@ -199,11 +209,13 @@ public class Cell {
         this.build.destroy(locations.get(0));
     }
 
-    public void eraseAsPlaceable(Player player) {
+    public void eraseClient(Player player) {
         if(isAvailable) {
             for (Vector3d v : ceiling) {
                 player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
             }
+        } else if(DuelUtils.isCellEnemyOccupied(this, PlayerUtils.getTeam(player.getUniqueId()))){
+            drawCustom(player, BlockStateColors.ENEMY_NO_CURRENT_THREAT);
         }
     }
 

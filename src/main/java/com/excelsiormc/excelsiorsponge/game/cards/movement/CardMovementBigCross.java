@@ -9,8 +9,8 @@ import java.util.List;
 
 public class CardMovementBigCross extends CardMovement {
 
-    public CardMovementBigCross(int distance, MovementFilter... filters) {
-        super(distance, filters);
+    public CardMovementBigCross(int distance, MovementFilter filter) {
+        super(distance, filter);
     }
 
     @Override

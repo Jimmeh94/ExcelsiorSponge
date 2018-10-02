@@ -121,10 +121,9 @@ public class HotbarCardManipulate extends Hotbar {
             if(card != null){
                 if(card.getMovement().isAvailableSpace(aim.get())){
                     card.getMovement().handle(aim.get());
+                    Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
+                    PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
                 }
-
-                Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                PlayerUtils.getCombatProfilePlayer(player.getUniqueId()).get().stopMovingCard();
             }
         }
     }

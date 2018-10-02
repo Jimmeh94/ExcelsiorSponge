@@ -1,13 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,7 +19,7 @@ public class Row {
     private List<Cell> cells;
 
     public Row(){
-        cells = new ArrayList<>();
+        cells = new CopyOnWriteArrayList<>();
     }
 
     public void addCell(Cell cell){
@@ -64,7 +63,7 @@ public class Row {
 
     public void eraseAsPlaceableRow(Player player){
         for(Cell cell: cells){
-            cell.eraseAsPlaceable(player);
+            cell.eraseClient(player);
         }
     }
 

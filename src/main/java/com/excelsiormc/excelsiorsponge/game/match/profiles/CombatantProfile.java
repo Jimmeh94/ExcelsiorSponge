@@ -6,7 +6,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementSquare;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
-import com.excelsiormc.excelsiorsponge.game.match.cards.Hand;
+import com.excelsiormc.excelsiorsponge.game.cards.Hand;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
 

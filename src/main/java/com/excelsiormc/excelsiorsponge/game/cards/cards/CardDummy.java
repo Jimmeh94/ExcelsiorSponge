@@ -2,8 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.cards;
 
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseSpell;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementNormal;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
-import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEnemyCell;
+import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEnemyEmptyCell;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -15,7 +14,7 @@ public class CardDummy extends CardBaseSpell {
 
     public CardDummy(UUID owner) {
         super(owner, 1, "Dummy Card", CardRarity.COMMON, ItemTypes.MAP, (short)1.0,
-                new CardMovementNormal(1, new FilterIncludeEmptyCell(), new FilterIncludeEnemyCell()));
+                new CardMovementNormal(1, new FilterIncludeEnemyEmptyCell()));
     }
 
     @Override

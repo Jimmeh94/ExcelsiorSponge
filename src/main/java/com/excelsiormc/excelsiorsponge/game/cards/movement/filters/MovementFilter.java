@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class MovementFilter {
 
-    private List<Cell> applicableCells;
+    protected List<Cell> applicableCells;
     protected CardBase owner;
 
     public MovementFilter() {

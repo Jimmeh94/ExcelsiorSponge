@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.utils;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
+import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
@@ -47,6 +48,10 @@ public class DuelUtils {
 
     public static Optional<Arena> getArena(UUID uuid){
         return ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithCombatant(uuid);
+    }
+
+    public static boolean isCellEnemyOccupied(Cell cell, Team ally){
+        return !cell.isAvailable() && !ally.isCombatant(cell.getOccupyingCard().getOwner());
     }
 
 }
