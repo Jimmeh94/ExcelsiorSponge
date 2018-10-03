@@ -181,22 +181,21 @@ public class Cell {
         occupyingCard.setCurrentCell(this);
 
         Optional<UserPlayer> up = PlayerUtils.getUserPlayer(card.getOwner());
-        if(up.isPresent()){
+        if (up.isPresent()) {
             eraseClient(up.get().getPlayer());
+            drawCustom(PlayerUtils.getPlayer(card.getOwner()).get(), BlockStateColors.OWNER);
         }
-
-        drawCustom(PlayerUtils.getPlayer(card.getOwner()).get(), BlockStateColors.OWNER);
 
         Gamemode gamemode = DuelUtils.getArena(card.getOwner()).get().getGamemode();
 
-        for(Team team: gamemode.getTeams()){
-            for(CombatantProfile c: team.getCombatants()){
-                if(c.getUUID().compareTo(card.getOwner()) == 0){
+        for (Team team : gamemode.getTeams()) {
+            for (CombatantProfile c : team.getCombatants()) {
+                if (c.getUUID().compareTo(card.getOwner()) == 0) {
                     continue;
                 }
 
-                if(c.isPlayer()){
-                    if(team.isCombatant(card.getOwner())){
+                if (c.isPlayer()) {
+                    if (team.isCombatant(card.getOwner())) {
                         drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.TEAMMATE);
                     } else {
                         drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.ENEMY_NO_CURRENT_THREAT);

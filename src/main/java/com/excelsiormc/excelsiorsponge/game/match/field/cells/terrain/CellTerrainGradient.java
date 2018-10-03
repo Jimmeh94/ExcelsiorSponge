@@ -1,34 +1,21 @@
 package com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain;
 
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CellTerrainGradient {
 
-    private List<CellTerrains> types;
+    private Map<CellTerrains, Integer> types;
 
-    public CellTerrainGradient(CellTerrains... types){
-        this.types = Arrays.asList(types);
+    public CellTerrainGradient(){this.types = new HashMap<>();}
+
+    public void addType(CellTerrains type, int percentage){
+        types.put(type, percentage);
     }
 
-    public CellTerrainGradient(){this.types = new CopyOnWriteArrayList<>();
-    }
-
-    public void addType(CellTerrains type){
-        types.add(type);
-    }
-
-    public List<CellTerrains> getTypes() {
+    public Map<CellTerrains, Integer> getTypes() {
         return types;
-    }
-
-    public CellTerrain getType() {
-        Random random = new Random();
-        return types.get(random.nextInt(types.size())).getCellType();
     }
 }

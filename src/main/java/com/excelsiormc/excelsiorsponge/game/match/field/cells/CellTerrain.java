@@ -32,8 +32,8 @@ public abstract class CellTerrain {
     }
 
     protected void setCells(List<Cell> cells){
-        for(Cell cell: cells){
-            if(cell.getCellType() == null){
+        if(cells.size() > 0) {
+            for (Cell cell : cells) {
                 cell.setCellType(CellTerrains.getTerrainTypesFromTerrain(this));
             }
         }
@@ -47,12 +47,6 @@ public abstract class CellTerrain {
         }
 
         setCells(cells);
-
-        if(cells.size() > 0) {
-            for (Cell cell : cells) {
-                build.draw(cell, cell.getVector3ds().get(0).clone().add(0, 1, 0));
-            }
-        }
     }
 
     public void setBuild(TerrainBuild terrainBuild) {

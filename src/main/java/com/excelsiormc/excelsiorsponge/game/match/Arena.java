@@ -1,14 +1,14 @@
 package com.excelsiormc.excelsiorsponge.game.match;
 
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
-import org.spongepowered.api.Sponge;
+import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.world.Location;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -78,7 +78,13 @@ public class Arena {
         this.gamemode = gamemode;
         this.gamemode.setArena(this);
         grid.generateTerrain();
-        gamemode.start();
+
+        ExcelsiorSponge.INSTANCE.getArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
+            @Override
+            public void doTask() {
+                gamemode.start();
+            }
+        });
     }
 
     public boolean isPlayerCombatant(Player player) {

@@ -436,4 +436,14 @@ public abstract class Grid {
         }
         return false;
     }
+
+    public List<Cell> getCellsWithoutType() {
+        List<Cell> give = new CopyOnWriteArrayList<>();
+        for(Cell cell: getAllCells()){
+            if(cell.getCellType() == null){
+                give.add(cell);
+            }
+        }
+        return give;
+    }
 }

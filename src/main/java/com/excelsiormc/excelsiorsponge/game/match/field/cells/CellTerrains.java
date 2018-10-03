@@ -11,11 +11,13 @@ public enum CellTerrains {
 
     FOREST(new TerrainForest(CellTerrain.GenerationPriority.LOW)),
     OCEAN(new TerrainOcean(CellTerrain.GenerationPriority.LOW)),
-    CITY(new TerrainCity(CellTerrain.GenerationPriority.LOW)),
     DESERT(new TerrainDesert(CellTerrain.GenerationPriority.LOW)),
     PLAINS(new TerrainPlains(CellTerrain.GenerationPriority.LOW)),
+
+    CITY(new TerrainCity(CellTerrain.GenerationPriority.MEDIUM)),
     RIVER(new TerrainRiver(CellTerrain.GenerationPriority.MEDIUM)),
     ARCTIC(new TerrainArctic(CellTerrain.GenerationPriority.MEDIUM)),
+
     MOUNTAINS(new TerrainMountains(CellTerrain.GenerationPriority.HIGHEST)),
     LABYRINTH(new TerrainLabyrinth(CellTerrain.GenerationPriority.HIGHEST));
 
@@ -44,9 +46,12 @@ public enum CellTerrains {
         TerrainTemplate template = new TerrainTemplate(grid, getNewBaseGradient());
 
         int count = 0;
-        while(count < random.nextInt(3) + 4){
+        int max = 3 + random.nextInt(3);
+
+        while(count < max){
+
             CellTerrains temp = getRandomType();
-            if(!template.hasType(temp.getCellType())){
+            if(temp.getCellType().getPriority() != CellTerrain.GenerationPriority.LOW && !template.hasType(temp.getCellType())){
                 template.addType(temp.getCellType());
                 count++;
             }
@@ -58,14 +63,29 @@ public enum CellTerrains {
     private static CellTerrainGradient getNewBaseGradient() {
         List<CellTerrains> temp = getTypesOf(CellTerrain.GenerationPriority.LOW);
         Random random = new Random();
-        int amount = random.nextInt(temp.size());
-        if(amount == 0){
-            amount++;
-        }
+        int amount = 4;
+
         CellTerrainGradient gradient = new CellTerrainGradient();
 
+        int total = 100;
+        double percentage;
+
         for(int i = 0; i < amount; i++){
-            gradient.addType(temp.get(random.nextInt(temp.size())));
+            CellTerrains type = temp.get(random.nextInt(temp.size()));
+            temp.remove(type);
+
+            if(i < amount - 1){
+                double whole = ((random.nextInt(100) + 1));
+                percentage = total * (whole / 100);
+                if(percentage < 1){
+                    percentage = 1;
+                }
+
+                total -= percentage;
+                gradient.addType(type, (int) percentage);
+            } else {
+                gradient.addType(type, total < 1 ? 1 : total);
+            }
         }
 
         return gradient;
