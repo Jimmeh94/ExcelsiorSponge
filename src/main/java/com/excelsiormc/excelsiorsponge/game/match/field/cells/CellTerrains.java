@@ -28,6 +28,16 @@ public enum CellTerrains {
         this.cellType = cellType;
     }
 
+    public static CellTerrains getRandomTypeOfPriority(CellTerrain.GenerationPriority priority) {
+        CellTerrains t = CellTerrains.values()[random.nextInt(CellTerrains.values().length)];
+
+        while(t.getCellType().getPriority() != priority){
+            t = CellTerrains.values()[random.nextInt(CellTerrains.values().length)];
+        }
+
+        return t;
+    }
+
     public CellTerrain getCellType() {
         return cellType;
     }

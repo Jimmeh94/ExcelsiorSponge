@@ -56,20 +56,29 @@ public class TerrainTemplate {
 
         int amount;
 
-        for(Map.Entry<CellTerrains, Integer> entry: entries){
-            int whole = entry.getValue();
-            double decimal = (whole / 100);
-            amount = (int) (startSize * decimal);
-            System.out.println("Type: " + entry.getKey().toString() + ", decimal: " + decimal + ", start size: " + startSize);
+        if(leftOvers.size() > 0) {
+            for (Map.Entry<CellTerrains, Integer> entry : entries) {
+                double whole = entry.getValue();
+                double decimal = (whole / 100);
+                amount = (int) (startSize * decimal);
+                if (amount < 1) {
+                    amount = 1;
+                }
 
-            for(int i = 0; i < amount; i++){
-                int index = random.nextInt(leftOvers.size());
-                leftOvers.get(index).setCellType(entry.getKey());
-                leftOvers.remove(index);
+                for (int i = 0; i < amount; i++) {
+                    if(leftOvers.size() > 0) {
+                        int index = random.nextInt(leftOvers.size());
+                        leftOvers.get(index).setCellType(entry.getKey());
+                        leftOvers.remove(index);
+                    }
+                }
+            }
+
+            for (Cell cell : leftOvers) {
+                cell.setCellType(CellTerrains.getRandomTypeOfPriority(CellTerrain.GenerationPriority.LOW));
+                leftOvers.remove(cell);
             }
         }
-
-        System.out.println("LEFT OVERS: " + leftOvers.size());
     }
 
     private List<CellTerrain> getPriority(CellTerrain.GenerationPriority priority){
