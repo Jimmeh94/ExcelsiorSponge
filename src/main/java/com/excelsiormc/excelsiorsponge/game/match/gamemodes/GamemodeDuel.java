@@ -78,8 +78,8 @@ public class GamemodeDuel extends Gamemode {
     public BattleResult battle(Cell first, Cell second) {
         CardBase one = first.getOccupyingCard(), two = second.getOccupyingCard();
 
-        double aOne = one.getAttack();
-        double aTwo = two.getAttack();
+        double aOne = one.getPower().getCurrent();
+        double aTwo = two.getPower().getCurrent();
 
         BattleResult.BattleResultBuilder result = BattleResult.builder();
 

@@ -1,8 +1,11 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.StatEvent;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 
-public class StatBase {
+public abstract class StatBase {
 
     private double current, max;
     private Text displayName;
@@ -39,11 +42,13 @@ public class StatBase {
     public void subtract(double amount){
         current -= amount;
         validate();
+        Sponge.getEventManager().post(new StatEvent.StatDecreaseEvent(ExcelsiorSponge.getServerCause(), this));
     }
 
     public void add(double amount){
         current += amount;
         validate();
+        Sponge.getEventManager().post(new StatEvent.StatIncreaseEvent(ExcelsiorSponge.getServerCause(), this));
     }
 
     protected void validate(){
@@ -54,9 +59,9 @@ public class StatBase {
         }
     }
 
-    public void generateRestorePoint(){
-        restorePoint = new StatBase(this);
-    }
+    //public void generateRestorePoint(){
+        //restorePoint = new StatBase(this);
+    //}
 
     public void restore(){
         if(restorePoint != null){
@@ -64,6 +69,7 @@ public class StatBase {
             this.max = restorePoint.max;
             this.displayName = restorePoint.displayName;
             restorePoint = null;
+            Sponge.getEventManager().post(new StatEvent.StatRestoreEvent(ExcelsiorSponge.getServerCause(), this));
         }
     }
 }

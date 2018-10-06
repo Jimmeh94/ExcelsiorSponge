@@ -53,7 +53,7 @@ public class Team {
             alive = false;
         } else {
             for (CombatantProfile combatantProfile : combatants) {
-                if (combatantProfile.getCard().getHealth() <= 0) {
+                if (combatantProfile.getCard().getHealth().getCurrent() <= 0) {
                     temp = false;
                 } else {
                     temp = true;

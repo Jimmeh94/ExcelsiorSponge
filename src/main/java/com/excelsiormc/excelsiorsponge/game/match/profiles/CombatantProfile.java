@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementSquare;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
 import com.excelsiormc.excelsiorsponge.game.cards.Hand;
+import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -19,6 +20,7 @@ public abstract class CombatantProfile {
     private Deck deck;
     private DeckGraveyard graveyard;
     private CardBaseCombatant card;
+    protected int summonEnergy;
 
     public CombatantProfile(UUID owner, Deck deck) {
         this.owner = owner;
@@ -26,7 +28,21 @@ public abstract class CombatantProfile {
         graveyard = new DeckGraveyard(owner);
 
         hand = new Hand(owner);
-        card = new CardBaseCombatant(owner, this, 0, 1000, new CardMovementSquare(1, new FilterIncludeEmptyCell()));
+        card = new CardBaseCombatant(owner, this, 0, new StatHealth(1000, 1000), new CardMovementSquare(1, new FilterIncludeEmptyCell()));
+
+        summonEnergy = 1;
+    }
+
+    public void increaseSummonEnergy(int amount){
+        summonEnergy += amount;
+    }
+
+    public void decreaseSummonEnergy(int amount){
+        summonEnergy -= amount;
+    }
+
+    public int getSummonEnergy() {
+        return summonEnergy;
     }
 
     public void addToGraveyard(CardBase cardBase){

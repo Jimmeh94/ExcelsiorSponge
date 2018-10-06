@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.events;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
@@ -10,6 +11,8 @@ import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlaye
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
 
@@ -23,6 +26,14 @@ public class DuelEvents {
                 .getGrid().getActiveCardsOnFieldForTeam(team);
         for(CardBase c: cards){
             c.getMovement().setCanMoveThisTurn(true);
+        }
+
+        for(CombatantProfile c: team.getCombatants()){
+            c.increaseSummonEnergy(2);
+
+            if(c.isPlayer()){
+                Messager.sendMessage(c.getPlayer(), Text.of(TextColors.GREEN, "+2 Summon Energy"), Messager.Prefix.DUEL);
+            }
         }
     }
 
@@ -53,7 +64,6 @@ public class DuelEvents {
                 PlayerUtils.sendCardToChat(cpp.getCurrentAim().get().getOccupyingCard(), cpp.getPlayer());
             }
         }
-
     }
 
 }

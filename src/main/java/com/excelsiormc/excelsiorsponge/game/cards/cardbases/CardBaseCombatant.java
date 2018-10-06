@@ -3,6 +3,8 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
+import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
+import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
@@ -25,8 +27,8 @@ public class CardBaseCombatant extends CardBase {
     private CombatantProfile owner;
     private ArmorStand name;
 
-    public CardBaseCombatant(UUID owner, CombatantProfile profile, double level, double health, CardMovement cardMovement) {
-        super(owner, level, "", CardRarity.LEGENDARY, 0, health, null, 0, cardMovement);
+    public CardBaseCombatant(UUID owner, CombatantProfile profile, double level, StatHealth health, CardMovement cardMovement) {
+        super(owner, level, "", CardRarity.LEGENDARY, new StatPower(0, 0), health, null, 0, cardMovement, null);
 
         this.owner = profile;
     }
@@ -58,7 +60,7 @@ public class CardBaseCombatant extends CardBase {
             center.getExtent().spawnEntity(human);
 
             stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
-            stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth()));
+            stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth().getCurrent()));
             stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
             stand.offer(Keys.INVISIBLE, true);
             stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
@@ -99,6 +101,6 @@ public class CardBaseCombatant extends CardBase {
     public void subtractHealth(double damage) {
         super.subtractHealth(damage);
 
-        stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth()));
+        stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth().getCurrent()));
     }
 }

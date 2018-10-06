@@ -1,6 +1,5 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
-import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
@@ -10,8 +9,6 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
-import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import org.spongepowered.api.data.key.Keys;
@@ -19,7 +16,6 @@ import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -54,7 +50,11 @@ public class HotbarHand extends Hotbar {
             card = new Pair<ItemStack, Callback>(profile.getHand().viewCard(i).getMesh(), new Callback() {
                 @Override
                 public void actionLeftClick(Player player, HandType action) {
-                    if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().getGamemode().getStage()
+                    Optional<CardBase> card = profile.getHand().getHeldCard();
+                    if(card.isPresent()){
+                        card.get().handleSummon();
+                    }
+                    /*if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().getGamemode().getStage()
                             != Gamemode.Stage.IN_GAME){
                         return;
                     }
@@ -74,7 +74,7 @@ public class HotbarHand extends Hotbar {
                             }
                             setHotbar(player);
                         }
-                    }
+                    }*/
                 }
 
                 @Override

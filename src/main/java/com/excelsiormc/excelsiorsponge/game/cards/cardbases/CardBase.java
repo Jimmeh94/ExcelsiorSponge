@@ -5,7 +5,11 @@ import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
+import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
+import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
+import com.excelsiormc.excelsiorsponge.game.cards.summon.SummonType;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
@@ -31,8 +35,8 @@ import java.util.UUID;
 public abstract class CardBase {
 
     private double level;
-    private double attack;
-    protected double health;
+    protected StatHealth health;
+    protected StatPower power;
     private Text name;
     private List<Text> lore;
     private UUID owner;
@@ -42,20 +46,23 @@ public abstract class CardBase {
     private ItemStack mesh;
     protected Cell currentCell;
     protected CardMovement cardMovement;
-    //protected Stats<CardBase> stats;
     protected CardRarity rarity;
+    protected SummonType summonType;
 
-    public CardBase(UUID owner, double level, String name, CardRarity rarity, double attack, double health, ItemType material, int materialDamageValue, CardMovement cardMovement) {
+    public CardBase(UUID owner, double level, String name, CardRarity rarity, StatPower power, StatHealth health,
+                    ItemType material, int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
         this.owner = owner;
         this.level = level;
         this.name = Text.of(rarity.getColor(), name);
         this.rarity = rarity;
-        this.attack = attack;
+        this.power = power;
         this.health = health;
         this.material = material;
         this.materialDamageValue = materialDamageValue;
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
+        this.summonType = summonType;
+        this.summonType.setOwner(this);
 
         //stats = new Stats<>(this);
 
@@ -63,6 +70,12 @@ public abstract class CardBase {
 
         if(material != null) {
             generateItemStack();
+        }
+    }
+
+    public void handleSummon(){
+        if(summonType != null && summonType.canSummon()){
+            summonType.summon();
         }
     }
 
@@ -93,24 +106,20 @@ public abstract class CardBase {
         builder.addMessage(getName());
         builder.append(getLoreAsMessage());
         builder.addMessage(Text.of(" "));
-        builder.addMessage(Text.of(TextColors.RED, "Health: " + health));
-        builder.addMessage(Text.of(TextColors.GRAY, "Attack: " + attack));
+        builder.addMessage(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
+        builder.addMessage(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
         //builder.append(Message.from(stats, getName(), displayTo));
         builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
         Messager.sendMessage(builder.build());
     }
 
-    public double getAttack() {
-        return attack;
+    public StatBase getPower() {
+        return power;
     }
 
-    public double getHealth() {
+    public StatBase getHealth() {
         return health;
     }
-
-    /*public Stats<CardBase> getStats() {
-        return stats;
-    }*/
 
     protected Message getLoreAsMessage(){
         Message.Builder builder = Message.builder();
@@ -221,10 +230,7 @@ public abstract class CardBase {
     }
 
     public void subtractHealth(double damage) {
-        health -= damage;
-        if(health < 0){
-            health = 0;
-        }
+        health.subtract(damage);
     }
 
     public enum CardRarity {
