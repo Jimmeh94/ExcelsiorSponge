@@ -6,7 +6,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
-import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHandDummy;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
@@ -15,6 +15,7 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
+import com.excelsiormc.excelsiorsponge.game.user.scoreboard.ArenaDefaultPreset;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
@@ -76,6 +77,10 @@ public abstract class Gamemode {
                     Player player = p.getPlayer();
                     player.setLocation(new Location<World>(player.getWorld(), team.getSpawn()));
                     team.getPlaceableRows().get(0).getCenterCell().setOccupyingCard(p.getCard(), true);
+
+                    UserPlayer user = PlayerUtils.getUserPlayer(p.getUUID()).get();
+                    user.changeScoreboardPreset(new ArenaDefaultPreset(user,
+                            ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get()));
                 }
             }
         }
@@ -116,7 +121,7 @@ public abstract class Gamemode {
                         c.drawHand();
                         if(c.isPlayer()){
                             UserPlayer userPlayer = PlayerUtils.getUserPlayer(c.getPlayer()).get();
-                            userPlayer.setCurrentHotbar(new HotbarHand((CombatantProfilePlayer) c));
+                            userPlayer.setCurrentHotbar(new HotbarHandDummy((CombatantProfilePlayer) c));
                             userPlayer.getCurrentHotbar().setHotbar(userPlayer.getPlayer());
                         }
                     }
@@ -292,8 +297,9 @@ public abstract class Gamemode {
          * Should bring up info about that cell and the occupying card if there
          */
         CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-        if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable() && cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseMonster){
-            ((CardBaseMonster)cpp.getCurrentAim().get().getOccupyingCard()).displayStats(player);
+        if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable()
+                && cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseMonster){
+            cpp.getCurrentAim().get().getOccupyingCard().displayStats(player);
         }
     }
 

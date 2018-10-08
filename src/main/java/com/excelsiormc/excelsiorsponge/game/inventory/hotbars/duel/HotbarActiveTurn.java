@@ -2,11 +2,9 @@ package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
-import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
-import com.excelsiormc.excelsiorsponge.game.user.scoreboard.ArenaDefaultPreset;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
@@ -18,14 +16,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class HotbarActiveTurn extends Hotbar {
-
-    @Override
-    public void setHotbar(Player player) {
-        super.setHotbar(player);
-
-        UserPlayer user = PlayerUtils.getUserPlayer(player).get();
-        user.changeScoreboardPreset(new ArenaDefaultPreset(user, ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get()));
-    }
 
     @Override
     protected void setupItems() {

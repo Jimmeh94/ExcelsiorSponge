@@ -50,6 +50,7 @@ public class SummonTypeEnergy extends SummonType {
                 cpp.getHand().removeCard(owner);
                 cpp.getUserPlayer().getCurrentHotbar().setHotbar(player);
                 cpp.decreaseSummonEnergy(cost);
+                owner.clearCurrentlyHighlighted();
             }
         }
     }

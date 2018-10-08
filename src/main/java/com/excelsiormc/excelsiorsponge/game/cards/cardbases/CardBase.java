@@ -89,7 +89,14 @@ public abstract class CardBase {
         give.add(Text.of(TextColors.GRAY, "Level: 1"));
         give.add(Text.of( " "));
         give.add(getCardDescription());
+        give.add(Text.of( " "));
+        give.add(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
+        give.add(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
         return give;
+    }
+
+    public void updateLore(){
+        mesh.offer(Keys.ITEM_LORE, generateLore());
     }
 
     public void setCardFacePosition(CardFacePosition cardFacePosition) {
@@ -290,6 +297,10 @@ public abstract class CardBase {
 
     public boolean isFaceDown() {
         return cardFacePosition == CardFacePosition.FACE_DOWN;
+    }
+
+    public boolean hasStat(StatBase stat) {
+        return stat == health || stat == power;
     }
 
     public enum CardRarity {

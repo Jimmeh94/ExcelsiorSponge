@@ -15,7 +15,9 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 public class PlayerEvents {
@@ -38,6 +40,22 @@ public class PlayerEvents {
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().remove(userPlayer);
         ExcelsiorCore.INSTANCE.getChannelManager().removePlayerFromAllChannels(userPlayer);
         ExcelsiorSponge.INSTANCE.getMatchMaker().playerLeave(event.getTargetEntity());
+    }
+
+    @Listener
+    public void onOpenInventory(ClickInventoryEvent event, @First Player player){
+        if(event instanceof ClickInventoryEvent.Primary){
+            if(event.getTargetInventory() == player.getInventory()){
+                event.setCancelled(true);
+            }
+        } else if(event instanceof ClickInventoryEvent.Secondary){
+            if(event.getTargetInventory() == player.getInventory()){
+                event.setCancelled(true);
+            }
+
+        } else {
+            event.setCancelled(true);
+        }
     }
 
     @Listener
