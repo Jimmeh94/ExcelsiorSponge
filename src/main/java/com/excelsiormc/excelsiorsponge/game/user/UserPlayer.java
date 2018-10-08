@@ -25,6 +25,8 @@ public class UserPlayer extends PlayerBase {
     public UserPlayer(Player player){
         super(player.getUniqueId(), new ChatPlayerProfile(ChatColorTemplate.GRAY, ChatPlayerTitle.TEST, player.getUniqueId()));
 
+        getChatProfile().setToDefault();
+
         playerMode = PlayerMode.NORMAL;
         deck = new DeckDummy(getOwner());
 

@@ -11,6 +11,7 @@ import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -52,29 +53,9 @@ public class HotbarHand extends Hotbar {
                 public void actionLeftClick(Player player, HandType action) {
                     Optional<CardBase> card = profile.getHand().getHeldCard();
                     if(card.isPresent()){
-                        card.get().handleSummon();
+                        (new HotbarCardFaceChoice(card.get())).setHotbar(PlayerUtils.getPlayer(card.get().getOwner()).get());
+                        //card.get().handleSummon();
                     }
-                    /*if(ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(player).get().getGamemode().getStage()
-                            != Gamemode.Stage.IN_GAME){
-                        return;
-                    }
-
-                    int index = InventoryUtils.getHeldItemSlot(player, action).get().getValue();
-                    //Lay card on field
-                    Optional<Cell> currentAim = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
-
-                    if (currentAim.isPresent() && currentAim.get().isAvailable() && profile.getHand().hasCardAt(index)) {
-
-                        if(DuelUtils.getTeam(player.getUniqueId()).isPlaceable(currentAim.get())) {
-                            currentAim.get().setOccupyingCard(profile.getHand().getCard(index), true);
-
-                            Optional<Slot> op = InventoryUtils.getSlot(index, player);
-                            if (op.isPresent()) {
-                                op.get().clear();
-                            }
-                            setHotbar(player);
-                        }
-                    }*/
                 }
 
                 @Override

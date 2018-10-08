@@ -3,10 +3,8 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
@@ -55,4 +53,13 @@ public class InventoryUtils {
         return slot == null ? Optional.empty() : Optional.of(slot);
     }
 
+    public static void removeItem(ItemStack item, Player player) {
+        Iterator<Slot> it = player.getInventory().<Slot>slots().iterator();
+        while(it.hasNext()){
+            Slot slot = it.next();
+            if(slot.contains(item)){
+                slot.clear();
+            }
+        }
+    }
 }

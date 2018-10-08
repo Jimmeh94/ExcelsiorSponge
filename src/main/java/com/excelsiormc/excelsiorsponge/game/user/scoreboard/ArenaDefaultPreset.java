@@ -43,6 +43,9 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
             strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + StringUtils.enumToString(cpp.getCurrentAim().get().getCellType(), true)));
         }
 
+        strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.AQUA));
+        strings.add(Text.of(TextColors.YELLOW, "Energy: " + cpp.getSummonEnergy()));
+
         setScores(strings);
     }
 }

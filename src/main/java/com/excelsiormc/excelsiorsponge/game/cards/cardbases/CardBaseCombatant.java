@@ -52,6 +52,11 @@ public class CardBaseCombatant extends CardBase {
     }
 
     @Override
+    public void toggleCardPosition() {
+
+    }
+
+    @Override
     public void spawn(Location center) {
         if(owner.isPlayer()) {
             human = (Human) center.getExtent().createEntity(EntityTypes.HUMAN, center.getPosition());

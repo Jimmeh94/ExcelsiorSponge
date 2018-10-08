@@ -97,6 +97,20 @@ public class DuelEvent extends CustomEvent {
         }
     }
 
+    public static class CardFlipped extends DuelEvent {
+
+        private CardBase cardBase;
+
+        public CardFlipped(Cause cause, CardBase cardBase) {
+            super(cause);
+            this.cardBase = cardBase;
+        }
+
+        public CardBase getCardBase() {
+            return cardBase;
+        }
+    }
+
     public static class AimUpdated extends DuelEvent {
 
         private CombatantProfilePlayer cpp;

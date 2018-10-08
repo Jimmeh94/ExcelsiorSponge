@@ -35,10 +35,18 @@ public abstract class CombatantProfile {
 
     public void increaseSummonEnergy(int amount){
         summonEnergy += amount;
+
+        if(isPlayer()){
+            PlayerUtils.getUserPlayer(owner).get().updateScoreboard();
+        }
     }
 
     public void decreaseSummonEnergy(int amount){
         summonEnergy -= amount;
+
+        if(isPlayer()){
+            PlayerUtils.getUserPlayer(owner).get().updateScoreboard();
+        }
     }
 
     public int getSummonEnergy() {

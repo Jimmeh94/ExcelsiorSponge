@@ -1,5 +1,6 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat;
 
+import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.channel.ChatChannel;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.channel.ChatChannelReceiver;
 import org.spongepowered.api.Sponge;
@@ -52,5 +53,9 @@ public class ChatPlayerProfile {
 
     public ChatChannel getChatChannel() {
         return currentChatChannel;
+    }
+
+    public void setToDefault() {
+        ExcelsiorCore.INSTANCE.getChannelManager().setToDefault(this);
     }
 }

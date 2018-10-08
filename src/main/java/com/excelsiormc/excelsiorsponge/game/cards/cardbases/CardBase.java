@@ -25,6 +25,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -40,7 +41,7 @@ public abstract class CardBase {
     private Text name;
     private List<Text> lore;
     private UUID owner;
-    protected ArmorStand stand;
+    protected ArmorStand stand, position, cardFace;
     private ItemType material;
     private int materialDamageValue;
     private ItemStack mesh;
@@ -48,6 +49,8 @@ public abstract class CardBase {
     protected CardMovement cardMovement;
     protected CardRarity rarity;
     protected SummonType summonType;
+    protected CardPosition cardPosition;
+    protected CardFacePosition cardFacePosition = CardFacePosition.FACE_DOWN;
 
     public CardBase(UUID owner, double level, String name, CardRarity rarity, StatPower power, StatHealth health,
                     ItemType material, int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
@@ -61,12 +64,11 @@ public abstract class CardBase {
         this.materialDamageValue = materialDamageValue;
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
-        this.summonType = summonType;
-        this.summonType.setOwner(this);
 
-        //stats = new Stats<>(this);
-
-        //generateStats();
+        if(summonType != null) {
+            this.summonType = summonType;
+            this.summonType.setOwner(this);
+        }
 
         if(material != null) {
             generateItemStack();
@@ -79,7 +81,6 @@ public abstract class CardBase {
         }
     }
 
-    //protected abstract void generateStats();
     protected abstract Text getCardDescription();
 
     protected List<Text> generateLore() {
@@ -89,6 +90,23 @@ public abstract class CardBase {
         give.add(Text.of( " "));
         give.add(getCardDescription());
         return give;
+    }
+
+    public void setCardFacePosition(CardFacePosition cardFacePosition) {
+        this.cardFacePosition = cardFacePosition;
+    }
+
+    public CardFacePosition getCardFacePosition() {
+        return cardFacePosition;
+    }
+
+    public void flipCard(){
+        if(cardFacePosition == CardFacePosition.FACE_DOWN){
+            cardFacePosition = CardFacePosition.FACE_UP;
+            cardFace.offer(Keys.DISPLAY_NAME, cardFacePosition.getText());
+
+            Sponge.getEventManager().post(new DuelEvent.CardFlipped(ExcelsiorSponge.getServerCause(), this));
+        }
     }
 
     public void displayAvailableSpotsToMoveTo(){
@@ -101,6 +119,7 @@ public abstract class CardBase {
 
     public void displayStats(Player displayTo){
         Message.Builder builder = Message.builder();
+        builder.addReceiver(displayTo);
 
         builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
         builder.addMessage(getName());
@@ -108,7 +127,6 @@ public abstract class CardBase {
         builder.addMessage(Text.of(" "));
         builder.addMessage(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
         builder.addMessage(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
-        //builder.append(Message.from(stats, getName(), displayTo));
         builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
         Messager.sendMessage(builder.build());
     }
@@ -168,6 +186,8 @@ public abstract class CardBase {
     }
 
     public void spawn(Location center) {
+        cardPosition = CardPosition.ATTACK;
+
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
         stand.offer(Keys.DISPLAY_NAME, Text.of(name));
         stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
@@ -176,12 +196,39 @@ public abstract class CardBase {
         stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
         stand.offer(Keys.HAS_GRAVITY, false);
         center.getExtent().spawnEntity(stand);
+
+        cardFace = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition().add(0, 1, 0));
+        cardFace.offer(Keys.DISPLAY_NAME, cardFacePosition.getText());
+        cardFace.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
+        cardFace.offer(Keys.INVISIBLE, true);
+        cardFace.offer(Keys.CUSTOM_NAME_VISIBLE, true);
+        cardFace.offer(Keys.HAS_GRAVITY, false);
+        center.getExtent().spawnEntity(cardFace);
+        stand.addPassenger(cardFace);
+
+        position = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition().add(0, 1, 0));
+        position.offer(Keys.DISPLAY_NAME, cardPosition.getText());
+        position.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
+        position.offer(Keys.INVISIBLE, true);
+        position.offer(Keys.CUSTOM_NAME_VISIBLE, true);
+        position.offer(Keys.HAS_GRAVITY, false);
+        position.offer(Keys.ARMOR_STAND_IS_SMALL, true);
+        center.getExtent().spawnEntity(position);
+        cardFace.addPassenger(position);
     }
 
     public void remove(){
         if(stand != null){
             stand.remove();
         }
+        if(position != null){
+            position.remove();
+        }
+    }
+
+    public void changePosition(CardPosition cardPosition){
+        this.cardPosition = cardPosition;
+        position.offer(Keys.DISPLAY_NAME, cardPosition.getText());
     }
 
     public void move(Vector3d destination, Cell old){
@@ -233,6 +280,18 @@ public abstract class CardBase {
         health.subtract(damage);
     }
 
+    public void toggleCardPosition() {
+        if(cardPosition == CardPosition.ATTACK){
+            changePosition(CardPosition.DEFENSE);
+        } else {
+            flipCard();
+        }
+    }
+
+    public boolean isFaceDown() {
+        return cardFacePosition == CardFacePosition.FACE_DOWN;
+    }
+
     public enum CardRarity {
         LEGENDARY(TextColors.GOLD),
         RARE(TextColors.LIGHT_PURPLE),
@@ -252,6 +311,36 @@ public abstract class CardBase {
 
         public TextColor getColor() {
             return color;
+        }
+    }
+
+    public enum CardPosition {
+        ATTACK(Text.of(TextColors.RED, TextStyles.BOLD, "Attacking")),
+        DEFENSE(Text.of(TextColors.GRAY, TextStyles.BOLD, "Defending"));
+
+        private Text text;
+
+        CardPosition(Text text) {
+            this.text = text;
+        }
+
+        public Text getText() {
+            return text;
+        }
+    }
+
+    public enum CardFacePosition {
+        FACE_DOWN(Text.of(TextColors.YELLOW, TextStyles.BOLD, "Face Down")),
+        FACE_UP(Text.of(TextColors.YELLOW, TextStyles.BOLD, "Face Up"));
+
+        private Text text;
+
+        CardFacePosition(Text text) {
+            this.text = text;
+        }
+
+        public Text getText() {
+            return text;
         }
     }
 }

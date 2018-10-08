@@ -25,8 +25,15 @@ public class Hand {
         Player player = PlayerUtils.getPlayer(owner).get();
         Optional<SlotIndex> slot = InventoryUtils.getHeldItemSlot(player, HandTypes.MAIN_HAND);
         if(slot.isPresent()){
-            if(cards.size() - 1 <= slot.get().getValue()){
+            if(cards.size() - 1 >= slot.get().getValue()){
                 return Optional.of(cards.get(slot.get().getValue()));
+            }
+        } else {
+            slot = InventoryUtils.getHeldItemSlot(player, HandTypes.OFF_HAND);
+            if(slot.isPresent()){
+                if(cards.size() - 1 >= slot.get().getValue()){
+                    return Optional.of(cards.get(slot.get().getValue()));
+                }
             }
         }
         return Optional.empty();

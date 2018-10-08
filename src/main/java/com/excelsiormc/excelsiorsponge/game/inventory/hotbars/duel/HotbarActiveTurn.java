@@ -33,7 +33,9 @@ public class HotbarActiveTurn extends Hotbar {
 
         /**
          * Need a free-cam mode to look around field, look at hand, look at discard pile
-         * 2 = use passive
+         * 0 = use ability
+         * 2 = move card
+         * 3 = change card position
          * 4 = look at hand
          * 6 = discard pile
          * 8 = options menu (skip turn, leave game)
@@ -92,6 +94,31 @@ public class HotbarActiveTurn extends Hotbar {
         });
         addPair(2, action);
 
+        item = ItemStack.builder().itemType(ItemTypes.IRON_SWORD).build();
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Change Card Stance"));
+        action = new Pair(item, new Callback() {
+            @Override
+            public void actionLeftClick(Player player, HandType action) {
+                changeStance(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                changeStance(player);
+            }
+
+            private void changeStance(Player player){
+                CombatantProfilePlayer temp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+
+                if(temp.getCurrentAim().isPresent()){
+                    if(!temp.getCurrentAim().get().isAvailable() && temp.getCurrentAim().get().getOccupyingCard().isOwner(temp.getUUID())){
+                        temp.getCurrentAim().get().getOccupyingCard().toggleCardPosition();
+                    }
+                }
+            }
+        });
+        addPair(3, action);
+
         item = ItemStack.builder().itemType(ItemTypes.MAP).build();
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Hand"));
         action = new Pair(item, new Callback() {
@@ -111,12 +138,39 @@ public class HotbarActiveTurn extends Hotbar {
                 userPlayer.setCurrentHotbar(new HotbarHand(temp));
                 userPlayer.getCurrentHotbar().setHotbar(player);
 
-                if(DuelUtils.findArenaWithPlayer(player).get().isPlayersTurn(player)) {
-                    DuelUtils.getTeam(player.getUniqueId()).highlightPlaceableRows(player);
-                }
+                DuelUtils.getTeam(player.getUniqueId()).highlightPlaceableRows(player);
             }
         });
         addPair(4, action);
+
+        item = ItemStack.builder().itemType(ItemTypes.SHIELD).build();
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Flip Face Down Card"));
+        action = new Pair(item, new Callback() {
+            @Override
+            public void actionLeftClick(Player player, HandType action) {
+                flip(player);
+            }
+
+            @Override
+            public void actionRightClick(Player player, HandType hand){
+                flip(player);
+            }
+
+            private void flip(Player player){
+                CombatantProfilePlayer temp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+
+                if(temp.getCurrentAim().isPresent()){
+                    if(!temp.getCurrentAim().get().isAvailable() && temp.getCurrentAim().get().getOccupyingCard().isOwner(player.getUniqueId())){
+                        if(temp.getCurrentAim().get().getOccupyingCard().isFaceDown()){
+                            temp.getCurrentAim().get().getOccupyingCard().flipCard();
+                        } else {
+                            Messager.sendMessage(player, Text.of(TextColors.RED, "This card is already face up!"), Messager.Prefix.DUEL);
+                        }
+                    }
+                }
+            }
+        });
+        addPair(5, action);
 
         item = ItemStack.builder().itemType(ItemTypes.BARRIER).build();
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Discard Pile"));
