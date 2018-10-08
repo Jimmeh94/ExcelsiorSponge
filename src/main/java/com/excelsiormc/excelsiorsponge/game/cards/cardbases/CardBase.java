@@ -11,7 +11,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
 import com.excelsiormc.excelsiorsponge.game.cards.summon.SummonType;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
+import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
@@ -90,13 +90,15 @@ public abstract class CardBase {
         give.add(Text.of( " "));
         give.add(getCardDescription());
         give.add(Text.of( " "));
-        give.add(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
-        give.add(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
+        //give.add(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
+        //give.add(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
         return give;
     }
 
     public void updateLore(){
-        mesh.offer(Keys.ITEM_LORE, generateLore());
+        if(mesh != null) {
+            mesh.offer(Keys.ITEM_LORE, generateLore());
+        }
     }
 
     public void setCardFacePosition(CardFacePosition cardFacePosition) {
@@ -231,6 +233,9 @@ public abstract class CardBase {
         if(position != null){
             position.remove();
         }
+        if(cardFace != null){
+            cardFace.remove();
+        }
     }
 
     public void changePosition(CardPosition cardPosition){
@@ -241,14 +246,14 @@ public abstract class CardBase {
     public void move(Vector3d destination, Cell old){
         stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
-        ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
+        new DelayedOneUseTimer(10L) {
             @Override
-            public void doTask() {
+            protected void runTask() {
                 cardMovement.clearCurrentlyHighlighted();
             }
-        });
-        cardMovement.setCanMoveThisTurn(false);
+        };
 
+        cardMovement.setCanMoveThisTurn(false);
         Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
     }
 
@@ -301,6 +306,10 @@ public abstract class CardBase {
 
     public boolean hasStat(StatBase stat) {
         return stat == health || stat == power;
+    }
+
+    public CardPosition getCardPosition() {
+        return cardPosition;
     }
 
     public enum CardRarity {

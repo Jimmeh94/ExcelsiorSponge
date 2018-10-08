@@ -1,15 +1,14 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement.filters;
 
-import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
-import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
+import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -68,14 +67,13 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
 
             arena.getGamemode().setTimePaused(true);
 
-            ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(6) {
+            new DelayedOneUseTimer(10L) {
                 @Override
-                public void doTask() {
-                    //battle
+                protected void runTask() {
                     battle(arena, target, player);
                     arena.getGamemode().setTimePaused(false);
                 }
-            });
+            };
         } else {
             battle(arena, target, player);
         }
@@ -85,7 +83,8 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
         BattleResult battleResult = arena.getGamemode().battle(owner.getCurrentCell(), target);
 
         if(battleResult.getVictorCard().isPresent()){
-            if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseCombatant)){
+            if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseCombatant)
+                && battleResult.isDefenderDestroyed()){
                 CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
                 cpp.setCurrentlyMovingCard(owner);
                 DuelUtils.moveCardToCell(target, player);

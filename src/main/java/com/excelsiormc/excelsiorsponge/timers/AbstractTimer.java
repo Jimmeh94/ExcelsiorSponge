@@ -4,15 +4,12 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public abstract class AbstractTimer implements Runnable {
 
     protected Task task;
     private int intervalsPassed = 0, cancelAt = -1;
     private long interval, delay;
-    private List<DelayedTask> delayedTasks;
+    //private List<DelayedTask> delayedTasks;
 
     protected abstract void runTask();
 
@@ -28,12 +25,12 @@ public abstract class AbstractTimer implements Runnable {
         this.interval = interval;
         this.delay = delay;
         this.cancelAt = cancelAt;
-        delayedTasks = new CopyOnWriteArrayList<>();
+        //delayedTasks = new CopyOnWriteArrayList<>();
     }
 
-    public void addDelayedTask(DelayedTask task){
+    /*public void addDelayedTask(DelayedTask task){
         delayedTasks.add(task);
-    }
+    }*/
 
     public void start(){
         Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
@@ -52,24 +49,24 @@ public abstract class AbstractTimer implements Runnable {
 
     @Override
     public void run() {
-        intervalsPassed++;
-        if(cancelAt != -1 && intervalsPassed >= cancelAt / interval){
+        if(cancelAt != -1 && intervalsPassed >= cancelAt){
             stop();
         }
         runTask();
 
-        for(DelayedTask task: delayedTasks){
+        /*for(DelayedTask task: delayedTasks){
             if(task.tick()){
                 delayedTasks.remove(task);
             }
-        }
+        }*/
+        intervalsPassed++;
     }
 
     public Task getTask() {
         return task;
     }
 
-    public static abstract class DelayedTask{
+    /*public static abstract class DelayedTask{
 
         protected int delayPeriods;
 
@@ -87,5 +84,5 @@ public abstract class AbstractTimer implements Runnable {
             delayPeriods--;
             return false;
         }
-    }
+    }*/
 }

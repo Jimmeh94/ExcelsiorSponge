@@ -57,7 +57,7 @@ public abstract class Gamemode {
     protected abstract void endingGame();
     protected abstract void startingGame();
     protected abstract void generateSpawnPoints();
-    public abstract BattleResult battle(Cell one, Cell two);
+    public abstract BattleResult battle(Cell attacker, Cell defender);
     public abstract String getName();
 
     /**

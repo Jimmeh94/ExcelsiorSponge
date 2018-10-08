@@ -2,12 +2,13 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
-import com.excelsiormc.excelsiorsponge.timers.AbstractTimer;
+import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -91,14 +92,22 @@ public class CardBaseCombatant extends CardBase {
     public void move(Vector3d destination, Cell old){
         human.setLocation(new Location<World>(human.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
-        ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
+        /*ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
             @Override
             public void doTask() {
                 cardMovement.clearCurrentlyHighlighted();
             }
         });
-        cardMovement.setCanMoveThisTurn(false);
+        cardMovement.setCanMoveThisTurn(false);*/
 
+        new DelayedOneUseTimer(10L) {
+            @Override
+            protected void runTask() {
+                cardMovement.clearCurrentlyHighlighted();
+            }
+        };
+
+        cardMovement.setCanMoveThisTurn(false);
         Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
     }
 
@@ -106,6 +115,11 @@ public class CardBaseCombatant extends CardBase {
     public void subtractHealth(double damage) {
         super.subtractHealth(damage);
 
+        stand.offer(Keys.DISPLAY_NAME, Text.of(""));
         stand.offer(Keys.DISPLAY_NAME, Text.of(TextColors.RED, (int)getHealth().getCurrent()));
+
+        if(owner.isPlayer()) {
+            Messager.sendMessage(owner.getPlayer(), Text.of(TextColors.RED, "Your avatar took " + damage + " damage!"), Messager.Prefix.DUEL);
+        }
     }
 }

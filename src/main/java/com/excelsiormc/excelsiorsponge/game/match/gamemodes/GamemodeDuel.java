@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
@@ -12,6 +13,8 @@ import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlaye
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class GamemodeDuel extends Gamemode {
 
@@ -75,11 +78,8 @@ public class GamemodeDuel extends Gamemode {
     }
 
     @Override
-    public BattleResult battle(Cell first, Cell second) {
-        CardBase one = first.getOccupyingCard(), two = second.getOccupyingCard();
-
-        double aOne = one.getPower().getCurrent();
-        double aTwo = two.getPower().getCurrent();
+    public BattleResult battle(Cell attacker, Cell defender) {
+        CardBase one = attacker.getOccupyingCard(), two = defender.getOccupyingCard();
 
         BattleResult.BattleResultBuilder result = BattleResult.builder();
 
@@ -87,8 +87,18 @@ public class GamemodeDuel extends Gamemode {
 
         CombatantProfilePlayer cppOne = DuelUtils.getCombatProfilePlayer(one.getOwner()).get();
         CombatantProfilePlayer cppTwo = DuelUtils.getCombatProfilePlayer(two.getOwner()).get();
-        
-        if(aOne > aTwo){
+
+        double statOne = one.getPower().getCurrent();
+        double statTwo = two.getCardPosition() == CardBase.CardPosition.ATTACK ? two.getPower().getCurrent() : two.getHealth().getCurrent();
+
+        if(one.getCardFacePosition() == CardBase.CardFacePosition.FACE_DOWN){
+            one.flipCard();
+        }
+        if(two.getCardFacePosition() == CardBase.CardFacePosition.FACE_DOWN){
+            two.flipCard();
+        }
+
+        if(statOne > statTwo){
             /**
              * ===== Pre damage events and dealing damage =====
              */
@@ -123,15 +133,24 @@ public class GamemodeDuel extends Gamemode {
             if(!dealP.isCancelled() && !dealtP.isCancelled()){
 
                 if(!(two instanceof CardBaseCombatant)){
-                    two.cardEliminated();
+                    double difference = statOne - statTwo;
+
+                    cppTwo.getCard().subtractHealth(difference);
+                    Messager.sendMessage(cppOne.getPlayer(),
+                            Text.of(TextColors.GREEN, "Dealt " + difference + " damage to enemy avatar"), Messager.Prefix.DUEL);
+
+                    if(two.getCardPosition() == CardBase.CardPosition.ATTACK) {
+                        two.cardEliminated();
+                        result.setDefenderDestroyed(true);
+                    }
                 } else {
-                    two.subtractHealth(aOne);
+                    two.subtractHealth(statOne);
                 }
             }
 
 
 
-        } else if(aOne < aTwo){
+        } else if(statOne < statTwo){
             /**
              * ===== Pre damage events and dealing damage =====
              */
@@ -164,7 +183,15 @@ public class GamemodeDuel extends Gamemode {
             Sponge.getEventManager().post(dealtP);
 
             if(!dealP.isCancelled() && !dealtP.isCancelled()){
-                one.cardEliminated();
+
+                double difference = statTwo - statOne;
+                cppOne.getCard().subtractHealth(difference);
+                Messager.sendMessage(cppTwo.getPlayer(),
+                        Text.of(TextColors.GREEN, "Dealt " + difference + " damage to enemy avatar"), Messager.Prefix.DUEL);
+
+                if(two.getCardPosition() == CardBase.CardPosition.ATTACK){
+                    one.cardEliminated();
+                }
             }
         }
 

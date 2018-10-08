@@ -6,6 +6,7 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -50,7 +51,10 @@ public class SummonTypeEnergy extends SummonType {
                 cpp.getHand().removeCard(owner);
                 cpp.getUserPlayer().getCurrentHotbar().setHotbar(player);
                 cpp.decreaseSummonEnergy(cost);
-                owner.clearCurrentlyHighlighted();
+
+                if(owner.isOwnerPlayer()) {
+                    DuelUtils.getTeam(owner.getOwner()).eraseAsPlaceableRows(PlayerUtils.getPlayer(owner.getOwner()).get());
+                }
             }
         }
     }
