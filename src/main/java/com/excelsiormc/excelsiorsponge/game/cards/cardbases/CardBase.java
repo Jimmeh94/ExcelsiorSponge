@@ -21,6 +21,7 @@ import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
@@ -35,6 +36,8 @@ import java.util.UUID;
 
 public abstract class CardBase {
 
+    public static final ItemType FACE_DOWN_CARD_MAT = ItemTypes.OBSIDIAN;
+
     private double level;
     protected StatHealth health;
     protected StatPower power;
@@ -44,7 +47,7 @@ public abstract class CardBase {
     protected ArmorStand stand, position, cardFace;
     private ItemType material;
     private int materialDamageValue;
-    private ItemStack mesh;
+    private ItemStack facedownItem, faceupItem;
     protected Cell currentCell;
     protected CardMovement cardMovement;
     protected CardRarity rarity;
@@ -96,8 +99,11 @@ public abstract class CardBase {
     }
 
     public void updateLore(){
-        if(mesh != null) {
-            mesh.offer(Keys.ITEM_LORE, generateLore());
+        if(facedownItem != null) {
+            facedownItem.offer(Keys.ITEM_LORE, generateLore());
+        }
+        if(faceupItem != null) {
+            faceupItem.offer(Keys.ITEM_LORE, generateLore());
         }
     }
 
@@ -113,6 +119,8 @@ public abstract class CardBase {
         if(cardFacePosition == CardFacePosition.FACE_DOWN){
             cardFacePosition = CardFacePosition.FACE_UP;
             cardFace.offer(Keys.DISPLAY_NAME, cardFacePosition.getText());
+            stand.setHelmet(faceupItem);
+            stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
 
             Sponge.getEventManager().post(new DuelEvent.CardFlipped(ExcelsiorSponge.getServerCause(), this));
         }
@@ -165,17 +173,25 @@ public abstract class CardBase {
     }
 
     public void generateItemStack(){
-        mesh = ItemStack.builder().itemType(material).build();
-        mesh.offer(Keys.ITEM_DURABILITY, materialDamageValue);
-
         lore = generateLore();
-        mesh.offer(Keys.ITEM_LORE, lore);
 
-        mesh.offer(Keys.DISPLAY_NAME, Text.of(name));
+        faceupItem = ItemStack.builder().itemType(material).build();
+        faceupItem.offer(Keys.ITEM_DURABILITY, materialDamageValue);
+        faceupItem.offer(Keys.ITEM_LORE, lore);
+        faceupItem.offer(Keys.DISPLAY_NAME, Text.of(name));
+
+        facedownItem = ItemStack.builder().itemType(FACE_DOWN_CARD_MAT).build();
+        facedownItem.offer(Keys.ITEM_DURABILITY, materialDamageValue);
+        facedownItem.offer(Keys.ITEM_LORE, lore);
+        facedownItem.offer(Keys.DISPLAY_NAME, Text.of(""));
     }
 
-    public ItemStack getMesh() {
-        return mesh;
+    public ItemStack getFacedownItem() {
+        return facedownItem;
+    }
+
+    public ItemStack getFaceupItem() {
+        return faceupItem;
     }
 
     public UUID getOwner() {
@@ -200,9 +216,9 @@ public abstract class CardBase {
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
         stand.offer(Keys.DISPLAY_NAME, Text.of(name));
         stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
-        stand.setHelmet(ItemStack.builder().itemType(material).build());
+        stand.setHelmet(cardFacePosition == CardFacePosition.FACE_UP ? faceupItem : facedownItem);
         stand.offer(Keys.INVISIBLE, true);
-        stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
+        stand.offer(Keys.CUSTOM_NAME_VISIBLE, cardFacePosition == CardFacePosition.FACE_UP);
         stand.offer(Keys.HAS_GRAVITY, false);
         center.getExtent().spawnEntity(stand);
 
@@ -310,6 +326,10 @@ public abstract class CardBase {
 
     public CardPosition getCardPosition() {
         return cardPosition;
+    }
+
+    public List<Text> getLore() {
+        return faceupItem.get(Keys.ITEM_LORE).get();
     }
 
     public enum CardRarity {

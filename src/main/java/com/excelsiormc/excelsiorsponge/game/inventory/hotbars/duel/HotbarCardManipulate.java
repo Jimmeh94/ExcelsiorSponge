@@ -72,7 +72,7 @@ public class HotbarCardManipulate extends Hotbar {
                 builder.addMessage(Text.of(TextColors.GRAY + "[===== " + cardBase.getName() + TextColors.GRAY + " =====]"));
                 builder.addMessage(Text.of(" "));
 
-                for(Text s: cardBase.getMesh().getValue(Keys.ITEM_LORE).get()){
+                for(Text s: cardBase.getLore()){
                     builder.addAsChild(s, TextColors.GOLD);
                 }
                 builder.addMessage(Text.of(" "));

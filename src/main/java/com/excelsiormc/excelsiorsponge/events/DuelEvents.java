@@ -5,13 +5,11 @@ import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.StatEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
-import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -59,13 +57,6 @@ public class DuelEvents {
 
         //Update scoreboard with cell info
         cpp.getUserPlayer().updateScoreboard();
-
-        //If occupied cell, send json chat link that when clicked shows details of card
-        if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable()){
-            if(!(cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseCombatant)) {
-                PlayerUtils.sendCardToChat(cpp.getCurrentAim().get().getOccupyingCard(), cpp.getPlayer());
-            }
-        }
     }
 
     @Listener

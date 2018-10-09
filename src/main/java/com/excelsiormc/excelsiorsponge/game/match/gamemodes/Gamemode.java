@@ -20,6 +20,9 @@ import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.boss.BossBarColors;
+import org.spongepowered.api.boss.BossBarOverlays;
+import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
@@ -36,21 +39,36 @@ import java.util.UUID;
 public abstract class Gamemode {
 
     protected List<Team> teams;
-    private int timeLimit; //in seconds
+    private int timeLeft;
+    private final int totalTime; //in seconds
     private TurnManager turnManager;
     protected String world;
     protected Arena arena;
     protected Stage gameStage = Stage.PRE_GAME;
     private int preGameTimeLimit = 5;
+    protected ServerBossBar gameTime, turnTime;
 
     protected boolean timePaused = false;
 
     public Gamemode(int timeLimit, int timeLimitForEachTurn, String world){
         teams = new ArrayList<>();
 
-        this.timeLimit = timeLimit;
+        this.timeLeft = timeLimit;
+        this.totalTime = timeLimit;
         turnManager = new TurnManager(timeLimitForEachTurn);
         this.world = world;
+
+        gameTime = ServerBossBar.builder()
+                .color(BossBarColors.YELLOW)
+                .name(Text.of(TextColors.YELLOW, ""))
+                .overlay(BossBarOverlays.PROGRESS)
+                .build();
+
+        turnTime = ServerBossBar.builder()
+                .color(BossBarColors.RED)
+                .name(Text.of(TextColors.RED, ""))
+                .overlay(BossBarOverlays.PROGRESS)
+                .build();
     }
 
     protected abstract void tick();
@@ -163,13 +181,42 @@ public abstract class Gamemode {
             return;
         }
 
-        if(!timePaused) {
-            timeLimit--;
+        if(timePaused) {
+            return;
         }
 
-        if(timeLimit == 0){
+        //display boss bar for when the game first starts
+        if(timeLeft == totalTime){
+            for(Team team: teams){
+                for(CombatantProfile c: team.getCombatants()){
+                    if(c.isPlayer()){
+                        gameTime.addPlayer(c.getPlayer());
+                        turnTime.addPlayer(c.getPlayer());
+                    }
+                }
+            }
+        }
+
+        if(timeLeft == 0){
             endGame();
         } else {
+            if(turnManager.needToStartNextTurn()){
+                turnManager.startNextTurn(teams);
+            }
+
+            timeLeft--;
+            gameTime.setPercent(1.0f * (((float)timeLeft / (float)totalTime)));
+            if(gameTime.getPercent() >= 0.66f){
+                gameTime.setColor(BossBarColors.GREEN);
+            } else if(gameTime.getPercent() >= 0.33f){
+                gameTime.setColor(BossBarColors.YELLOW);
+            } else {
+                gameTime.setColor(BossBarColors.RED);
+            }
+            gameTime.setName(Text.of(TextColors.YELLOW, "Game Time Left: " + TimeFormatter.getFormattedTime(timeLeft)));
+            turnManager.updateBossBar(turnTime);
+            turnManager.tick();
+
             for(Team team: teams){
                 team.checkAlive();
 
@@ -180,14 +227,9 @@ public abstract class Gamemode {
                     }
                 }
             }
-
             if(getTotalAliveTeams() == 1){
                 endGame();
                 return;
-            }
-
-            if(turnManager.needToStartNextTurn()){
-                turnManager.startNextTurn(teams);
             }
         }
         tick();
@@ -273,7 +315,7 @@ public abstract class Gamemode {
     }
 
     public String getTimeLeftFormatted() {
-        return TimeFormatter.getFormattedTime(timeLimit);
+        return TimeFormatter.getFormattedTime(timeLeft);
     }
 
     public boolean isPlayersTurn(Player owner) {
@@ -316,11 +358,12 @@ public abstract class Gamemode {
     protected class TurnManager {
 
         private Team currentTurn;
-        private int timeLimitForEachTurn;
-        private int elapsedTime;
+        private final int timeLimitForEachTurn;
+        private int timeLeft;
 
         public TurnManager(int timeLimitForEachTurn) {
             this.timeLimitForEachTurn = timeLimitForEachTurn;
+            this.timeLeft = timeLimitForEachTurn;
         }
 
         public void startNextTurn(List<Team> teams){
@@ -340,7 +383,7 @@ public abstract class Gamemode {
 
             Sponge.getEventManager().post(new DuelEvent.BeginTurn(ExcelsiorSponge.getServerCause(), currentTurn));
 
-            elapsedTime = 0;
+            timeLeft = timeLimitForEachTurn;
             currentTurn.drawCard();
             currentTurn.broadcastStartTurnMessage();
 
@@ -363,9 +406,12 @@ public abstract class Gamemode {
             }
         }
 
+        public void tick(){
+            timeLeft--;
+        }
+
         public boolean needToStartNextTurn(){
-            elapsedTime++;
-            if(elapsedTime >= timeLimitForEachTurn || currentTurn == null){
+            if(timeLeft == 0 || currentTurn == null){
                 return true;
             }
             return false;
@@ -381,7 +427,19 @@ public abstract class Gamemode {
         }
 
         public String getTimeLeftInCurrentTurn() {
-            return TimeFormatter.getFormattedTime(timeLimitForEachTurn - elapsedTime);
+            return TimeFormatter.getFormattedTime(timeLeft);
+        }
+
+        public void updateBossBar(ServerBossBar turnTime) {
+            turnTime.setName(Text.of(TextColors.RED, "Time Remaining for Turn: " + TimeFormatter.getFormattedTime(timeLeft - 1)));
+            turnTime.setPercent(1.0f * (((float)timeLeft / (float)timeLimitForEachTurn)));
+            if(turnTime.getPercent() >= 0.66f){
+                turnTime.setColor(BossBarColors.GREEN);
+            } else if(turnTime.getPercent() >= 0.33f){
+                turnTime.setColor(BossBarColors.YELLOW);
+            } else {
+                turnTime.setColor(BossBarColors.RED);
+            }
         }
     }
 

@@ -45,7 +45,7 @@ public class HotbarHandDummy extends Hotbar {
         Pair<ItemStack, Callback> card;
 
         for(int i = 0; i < profile.getHand().getSize(); i++){
-            card = new Pair<ItemStack, Callback>(profile.getHand().viewCard(i).getMesh(), new Callback() {
+            card = new Pair<ItemStack, Callback>(profile.getHand().viewCard(i).getFaceupItem(), new Callback() {
                 @Override
                 public void actionLeftClick(Player player, HandType action) {
 
