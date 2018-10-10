@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.inventory;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.mcsimonflash.sponge.teslalibs.inventory.Action;
@@ -39,15 +40,31 @@ public class SummonSacrificeInventory {
             builder.set(Element.of(cards.get(i).getFaceupItem()), i + 9);
         }
 
-        builder.set(Element.of(ItemStack.of(ItemTypes.CLAY_BALL)), 27 + 3);
-        builder.set(Element.of(ItemStack.of(ItemTypes.CLAY_BALL)), 35 - 3);
+        builder.set(Element.of(ItemStack.of(ItemTypes.CLAY_BALL), new Consumer<Action.Click>() {
+            @Override
+            public void accept(Action.Click click) {
+
+            }
+        }), 27 + 3);
+
+        builder.set(Element.of(ItemStack.of(ItemTypes.CLAY_BALL), new Consumer<Action.Click>() {
+                        @Override
+                        public void accept(Action.Click click) {
+                            (new HotbarHand(DuelUtils.getCombatProfilePlayer(card.getOwner()).get()))
+                                    .setHotbar(PlayerUtils.getPlayer(card.getOwner()).get());
+                        }
+                    }),
+                35 - 3);
 
         View view = View.builder().archetype(InventoryArchetypes.CHEST)
                                     .property(InventoryTitle.of(Text.of("Choose cards to sacrifice")))
                                     .onClose(new Consumer<Action<InteractInventoryEvent.Close>>() {
                                         @Override
                                         public void accept(Action<InteractInventoryEvent.Close> closeAction) {
-
+                                            if(card.isOwnerPlayer()){
+                                                (new HotbarHand(DuelUtils.getCombatProfilePlayer(card.getOwner()).get()))
+                                                        .setHotbar(PlayerUtils.getPlayer(card.getOwner()).get());
+                                            }
                                         }
                                     })
                                     .build(ExcelsiorSponge.PLUGIN_CONTAINER);
