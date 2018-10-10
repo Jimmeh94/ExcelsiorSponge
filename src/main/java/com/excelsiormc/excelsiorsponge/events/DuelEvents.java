@@ -9,7 +9,6 @@ import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
-import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -41,14 +40,7 @@ public class DuelEvents {
     public void onTurnEnd(DuelEvent.EndTurn event){
         Team team = event.getTeam();
 
-        for(CombatantProfile c: team.getCombatants()){
-            if(c.isPlayer()){
-                CombatantProfilePlayer cpp = (CombatantProfilePlayer) c;
-                if(cpp.getUserPlayer().getPlayerMode() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
-                    cpp.stopMovingCard();
-                }
-            }
-        }
+
     }
 
     @Listener

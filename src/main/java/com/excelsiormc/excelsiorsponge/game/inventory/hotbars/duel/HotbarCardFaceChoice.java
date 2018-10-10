@@ -48,7 +48,6 @@ public class HotbarCardFaceChoice extends Hotbar {
             private void placeCardFaceUp(){
                 cardBase.setCardFacePosition(CardBase.CardFacePosition.FACE_UP);
                 cardBase.handleSummon();
-                Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(PlayerUtils.getPlayer(cardBase.getOwner()).get());
             }
         });
         addPair(2, card);

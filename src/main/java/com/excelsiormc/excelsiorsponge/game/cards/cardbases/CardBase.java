@@ -332,6 +332,10 @@ public abstract class CardBase {
         return faceupItem.get(Keys.ITEM_LORE).get();
     }
 
+    public boolean canSummon() {
+        return summonType.canSummon();
+    }
+
     public enum CardRarity {
         LEGENDARY(TextColors.GOLD),
         RARE(TextColors.LIGHT_PURPLE),

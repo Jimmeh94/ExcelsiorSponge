@@ -69,7 +69,6 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
                     }
                     strings.addAll(texts);
                 } else {
-                    //TODO display different info based on facing up or down
                     if(card.getCardFacePosition() == CardBase.CardFacePosition.FACE_UP) {
                         List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
                         for (Text text : texts) {

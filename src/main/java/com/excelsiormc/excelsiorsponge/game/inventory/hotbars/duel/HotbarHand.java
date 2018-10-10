@@ -53,8 +53,10 @@ public class HotbarHand extends Hotbar {
                 public void actionLeftClick(Player player, HandType action) {
                     Optional<CardBase> card = profile.getHand().getHeldCard();
                     if(card.isPresent()){
-                        (new HotbarCardFaceChoice(card.get())).setHotbar(PlayerUtils.getPlayer(card.get().getOwner()).get());
-                        //card.get().handleSummon();
+                        if(card.get().canSummon()) {
+                            (new HotbarCardFaceChoice(card.get())).setHotbar(PlayerUtils.getPlayer(card.get().getOwner()).get());
+                            //card.get().handleSummon();
+                        }
                     }
                 }
 

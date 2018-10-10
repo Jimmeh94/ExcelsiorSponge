@@ -7,16 +7,16 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -445,5 +445,36 @@ public abstract class Grid {
             }
         }
         return give;
+    }
+
+    public void redrawGridForPlayer(Player player) {
+        for(Cell cell: getAllCells()){
+            if(cell.isAvailable()){
+                cell.eraseClient(player);
+            } else {
+                Team team = DuelUtils.getTeam(player.getUniqueId());
+                if(team.isCombatant(cell.getOccupyingCard().getOwner())){
+                    if(cell.getOccupyingCard().isOwner(player.getUniqueId())){
+                        cell.drawCustom(player, BlockStateColors.OWNER);
+                    } else {
+                        cell.drawCustom(player, BlockStateColors.TEAMMATE);
+                    }
+                } else {
+                    cell.drawCustom(player, BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+                }
+            }
+        }
+    }
+
+    public List<CardBase> getActiveCardsOnFieldFor(UUID owner) {
+        List<CardBase> cards = new CopyOnWriteArrayList<>();
+        for(Cell cell: getAllCells()){
+            if(!cell.isAvailable()){
+                if(cell.getOccupyingCard().isOwner(owner)){
+                    cards.add(cell.getOccupyingCard());
+                }
+            }
+        }
+        return cards;
     }
 }

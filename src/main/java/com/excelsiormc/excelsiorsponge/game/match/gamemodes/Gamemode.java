@@ -110,15 +110,20 @@ public abstract class Gamemode {
         arena.broadcastMessage(Text.of("GAME OVER"), Messager.Prefix.DUEL);
         arena.getGrid().resetCells();
         endingGame();
-        arena.end();
-        arena = null;
+
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
                 if(p.isPlayer()){
-                    PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.NORMAL);
+                    Player player = p.getPlayer();
+                    gameTime.removePlayer(player);
+                    turnTime.removePlayer(player);
+                    PlayerUtils.getUserPlayer(player).get().setPlayerMode(UserPlayer.PlayerMode.NORMAL);
                 }
             }
         }
+
+        arena.end();
+        arena = null;
     }
 
     public void setArena(Arena arena) {
@@ -371,6 +376,18 @@ public abstract class Gamemode {
                 currentTurn = teams.get(0);
             } else {
                 int index = teams.indexOf(currentTurn);
+
+                for(CombatantProfile c: currentTurn.getCombatants()){
+                    if(c.isPlayer()){
+                        CombatantProfilePlayer cpp = (CombatantProfilePlayer) c;
+                        if(cpp.getUserPlayer().getPlayerMode() == UserPlayer.PlayerMode.ARENA_MOVING_CARD){
+                            cpp.stopMovingCard();
+                        } else {
+                            cpp.getPlayer().closeInventory();
+                            arena.getGrid().redrawGridForPlayer(cpp.getPlayer());
+                        }
+                    }
+                }
 
                 Sponge.getEventManager().post(new DuelEvent.EndTurn(ExcelsiorSponge.getServerCause(), currentTurn));
 
