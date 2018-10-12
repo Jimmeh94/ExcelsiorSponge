@@ -4,6 +4,7 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.StatEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public abstract class StatBase {
 
@@ -38,6 +39,8 @@ public abstract class StatBase {
     public Text getDisplayName() {
         return displayName;
     }
+
+    public Text getFullDisplay(){ return Text.builder().append(displayName).append(Text.of(TextColors.GRAY, " " + getCurrent())).build();}
 
     public void subtract(double amount){
         current -= amount;

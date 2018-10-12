@@ -38,7 +38,6 @@ public abstract class CardBase {
 
     public static final ItemType FACE_DOWN_CARD_MAT = ItemTypes.OBSIDIAN;
 
-    private double level;
     protected StatHealth health;
     protected StatPower power;
     private Text name;
@@ -55,10 +54,9 @@ public abstract class CardBase {
     protected CardPosition cardPosition;
     protected CardFacePosition cardFacePosition = CardFacePosition.FACE_DOWN;
 
-    public CardBase(UUID owner, double level, String name, CardRarity rarity, StatPower power, StatHealth health,
+    public CardBase(UUID owner, String name, CardRarity rarity, StatPower power, StatHealth health,
                     ItemType material, int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
         this.owner = owner;
-        this.level = level;
         this.name = Text.of(rarity.getColor(), name);
         this.rarity = rarity;
         this.power = power;
@@ -89,12 +87,11 @@ public abstract class CardBase {
     protected List<Text> generateLore() {
         List<Text> give = new ArrayList<>();
         give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), rarity.getText()).build());
-        give.add(Text.of(TextColors.GRAY, "Level: 1"));
         give.add(Text.of( " "));
         give.add(getCardDescription());
         give.add(Text.of( " "));
-        //give.add(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
-        //give.add(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
+        give.add(health.getFullDisplay());
+        give.add(power.getFullDisplay());
         return give;
     }
 
@@ -142,8 +139,8 @@ public abstract class CardBase {
         builder.addMessage(getName());
         builder.append(getLoreAsMessage());
         builder.addMessage(Text.of(" "));
-        builder.addMessage(Text.of(TextColors.RED, "Health: " + health.getCurrent()));
-        builder.addMessage(Text.of(TextColors.GRAY, "Power: " + power.getCurrent()));
+        builder.addMessage(health.getFullDisplay());
+        builder.addMessage(power.getFullDisplay());
         builder.addMessage(Text.of(TextColors.GRAY, "[-=======================================-]"));
         Messager.sendMessage(builder.build());
     }
@@ -200,10 +197,6 @@ public abstract class CardBase {
 
     public boolean isOwnerPlayer(){
         return PlayerUtils.getPlayer(owner).isPresent();
-    }
-
-    public double getLevel() {
-        return level;
     }
 
     public Text getName() {
