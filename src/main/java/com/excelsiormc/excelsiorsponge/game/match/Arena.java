@@ -78,13 +78,6 @@ public class Arena {
         this.gamemode.setArena(this);
         grid.generateTerrain();
 
-        /*ExcelsiorSponge.INSTANCE.getArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
-            @Override
-            public void doTask() {
-                gamemode.start();
-            }
-        });*/
-
         new DelayedOneUseTimer(10L) {
             @Override
             protected void runTask() {

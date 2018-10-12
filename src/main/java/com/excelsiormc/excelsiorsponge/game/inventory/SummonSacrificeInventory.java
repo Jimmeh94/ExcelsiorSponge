@@ -82,20 +82,7 @@ public class SummonSacrificeInventory {
                                     Messager.Prefix.DUEL);
                         }
 
-                        view.setElement(18 + 3, Element.of(accept, new Consumer<Action.Click>() {
-                            @Override
-                            public void accept(Action.Click click) {
-                                Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
-                                if(sacrifice.size() >= need){
-                                    sacrificed = true;
-                                    player.closeInventory();
-                                    player.getInventory().clear();
-                                    ((SummonSacrificeCards)owner.getSummonType()).finishSummon(sacrifice);
-                                } else {
-                                    Messager.sendMessage(player, Text.of(TextColors.RED, "You need to sacrifice " + (need - sacrifice.size()) + " more cards!"), Messager.Prefix.DUEL);
-                                }
-                            }
-                        }));
+                        view.setElement(18 + 3, getAcceptButton());
                     }
                 }), index);
 
@@ -106,20 +93,7 @@ public class SummonSacrificeInventory {
         //Continue with sacrifice
         accept = ItemStack.builder().itemType(ItemTypes.CLAY_BALL).build();
         accept.offer(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Sacrifice Cards and Finish Summon"));
-        builder.set(Element.of(accept, new Consumer<Action.Click>() {
-            @Override
-            public void accept(Action.Click click) {
-                Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
-                if(sacrifice.size() >= need){
-                    sacrificed = true;
-                    player.closeInventory();
-                    player.getInventory().clear();
-                    ((SummonSacrificeCards)owner.getSummonType()).finishSummon(sacrifice);
-                } else {
-                    Messager.sendMessage(player, Text.of(TextColors.RED, "You need to sacrifice " + (need - sacrifice.size()) + " more cards!"), Messager.Prefix.DUEL);
-                }
-            }
-        }), 18 + 3);
+        builder.set(getAcceptButton(), 18 + 3);
 
         //cancel
         ItemStack cancel = ItemStack.builder().itemType(ItemTypes.CLAY_BALL).build();
@@ -154,6 +128,23 @@ public class SummonSacrificeInventory {
         view.update(layout);
         view.open(PlayerUtils.getPlayer(owner.getOwner()).get());
         this.view = view;
+    }
+
+    private Element getAcceptButton(){
+        return Element.of(accept, new Consumer<Action.Click>() {
+            @Override
+            public void accept(Action.Click click) {
+                Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
+                if(sacrifice.size() >= need){
+                    sacrificed = true;
+                    player.closeInventory();
+                    player.getInventory().clear();
+                    ((SummonSacrificeCards)owner.getSummonType()).finishSummon(sacrifice);
+                } else {
+                    Messager.sendMessage(player, Text.of(TextColors.RED, "You need to sacrifice " + (need - sacrifice.size()) + " more cards!"), Messager.Prefix.DUEL);
+                }
+            }
+        });
     }
 
 

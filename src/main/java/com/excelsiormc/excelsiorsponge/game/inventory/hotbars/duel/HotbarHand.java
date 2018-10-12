@@ -55,7 +55,6 @@ public class HotbarHand extends Hotbar {
                     if(card.isPresent()){
                         if(card.get().canSummon()) {
                             (new HotbarCardFaceChoice(card.get())).setHotbar(PlayerUtils.getPlayer(card.get().getOwner()).get());
-                            //card.get().handleSummon();
                         }
                     }
                 }
