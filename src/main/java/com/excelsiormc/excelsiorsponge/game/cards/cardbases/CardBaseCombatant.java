@@ -17,6 +17,7 @@ import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -28,8 +29,8 @@ public class CardBaseCombatant extends CardBase {
     private CombatantProfile owner;
     private ArmorStand name;
 
-    public CardBaseCombatant(UUID owner, CombatantProfile profile, double level, StatHealth health, CardMovement cardMovement) {
-        super(owner, level, "", CardRarity.LEGENDARY, new StatPower(0, 0), health, null, 0, cardMovement, null);
+    public CardBaseCombatant(UUID owner, CombatantProfile profile, StatHealth health, CardMovement cardMovement) {
+        super(owner, "", CardRarity.LEGENDARY, new StatPower(0, 0), health, null, 0, cardMovement, null);
 
         this.owner = profile;
     }
@@ -37,6 +38,11 @@ public class CardBaseCombatant extends CardBase {
     @Override
     protected Text getCardDescription() {
         return Text.of();
+    }
+
+    @Override
+    protected Text getCardBaseType() {
+        return Text.of(TextColors.GRAY, TextStyles.BOLD, "Avatar");
     }
 
     @Override

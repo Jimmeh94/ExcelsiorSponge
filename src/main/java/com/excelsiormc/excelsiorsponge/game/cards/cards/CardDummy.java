@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CardDummy extends CardBaseSpell {
 
     public CardDummy(UUID owner) {
-        super(owner, 1, "Dummy Card", CardRarity.COMMON, ItemTypes.MAP, (short)1.0,
+        super(owner, "Dummy Card", CardRarity.COMMON, ItemTypes.MAP, (short)1.0,
                 new CardMovementNormal(1, new FilterIncludeEnemyEmptyCell()), new SummonSacrificeCards(1));
     }
 

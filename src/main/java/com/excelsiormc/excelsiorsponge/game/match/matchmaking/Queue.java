@@ -54,4 +54,8 @@ public class Queue {
     public void clear() {
         players.clear();
     }
+
+    public boolean hasPlayer(UserPlayer userPlayer) {
+        return players.contains(userPlayer);
+    }
 }

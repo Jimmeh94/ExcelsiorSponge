@@ -51,9 +51,12 @@ public class SummonSacrificeCards extends SummonType {
         inventory = null;
     }
 
-    public void finishSummon(){
+    public void finishSummon(List<CardBase> sacrifice){
         if(layCardOnField()) {
             Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(PlayerUtils.getPlayer(owner.getOwner()).get());
+            for(CardBase cardBase: sacrifice){
+                cardBase.cardEliminated();
+            }
         }
     }
 }

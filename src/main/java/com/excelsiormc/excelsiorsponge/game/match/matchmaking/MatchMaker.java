@@ -6,7 +6,6 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemode;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.GamemodeDuel;
 import com.excelsiormc.excelsiorsponge.game.match.gamemodes.Gamemodes;
-import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.managers.ManagerArena;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
@@ -48,6 +47,12 @@ public class MatchMaker {
 
     public void playerJoinQueue(Player player, Queues queue){
         UserPlayer userPlayer = PlayerUtils.getUserPlayer(player.getUniqueId()).get();
+
+        if(queue.getQueue().hasPlayer(userPlayer)){
+            Messager.sendMessage(player, Text.of(TextColors.RED, "You're already in the queue!"), Messager.Prefix.ERROR);
+            return;
+        }
+
         queue.getQueue().addPlayer(userPlayer);
 
         Messager.sendMessage(player, queue.getJoinMessage(), Messager.Prefix.SUCCESS);

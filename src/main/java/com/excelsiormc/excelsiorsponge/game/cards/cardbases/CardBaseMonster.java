@@ -5,13 +5,21 @@ import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
 import com.excelsiormc.excelsiorsponge.game.cards.summon.SummonType;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.UUID;
 
 public abstract class CardBaseMonster extends CardBase {
 
-    public CardBaseMonster(UUID owner, double level, String name, CardRarity rarity, StatPower power, StatHealth health,
+    public CardBaseMonster(UUID owner, String name, CardRarity rarity, StatPower power, StatHealth health,
                            ItemType material, int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
-        super(owner, level, name, rarity, power, health, material, materialDamageValue, cardMovement, summonType);
+        super(owner, name, rarity, power, health, material, materialDamageValue, cardMovement, summonType);
+    }
+
+    @Override
+    protected Text getCardBaseType() {
+        return Text.of(TextColors.GRAY, TextStyles.BOLD, "Monster");
     }
 }

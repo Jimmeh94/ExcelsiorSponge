@@ -7,7 +7,7 @@ import java.util.UUID;
 public class DeckGraveyard extends Deck {
 
     public DeckGraveyard(UUID uuid) {
-        super(uuid);
+        super(uuid, null, null);
     }
 
     @Override

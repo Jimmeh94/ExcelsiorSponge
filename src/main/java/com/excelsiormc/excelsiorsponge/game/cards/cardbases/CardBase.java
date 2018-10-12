@@ -76,16 +76,18 @@ public abstract class CardBase {
         }
     }
 
+    protected abstract Text getCardDescription();
+    protected abstract Text getCardBaseType();
+
     public void handleSummon(){
         if(summonType != null && summonType.canSummon()){
             summonType.summon();
         }
     }
 
-    protected abstract Text getCardDescription();
-
     protected List<Text> generateLore() {
         List<Text> give = new ArrayList<>();
+        give.add(getCardBaseType());
         give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), rarity.getText()).build());
         give.add(Text.of( " "));
         give.add(getCardDescription());
@@ -305,7 +307,7 @@ public abstract class CardBase {
         if(cardPosition == CardPosition.ATTACK){
             changePosition(CardPosition.DEFENSE);
         } else {
-            flipCard();
+            changePosition(CardPosition.ATTACK);
         }
     }
 

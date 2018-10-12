@@ -5,14 +5,22 @@ import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
 import com.excelsiormc.excelsiorsponge.game.cards.summon.SummonType;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.UUID;
 
 public abstract class CardBaseSpell extends CardBase {
 
-    public CardBaseSpell(UUID owner, double level, String name, CardRarity rarity, ItemType material,
+    public CardBaseSpell(UUID owner, String name, CardRarity rarity, ItemType material,
                          int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
-        super(owner, level, name, rarity, new StatPower(0, 0), new StatHealth(0, 0),
+        super(owner, name, rarity, new StatPower(0, 0), new StatHealth(0, 0),
                 material, materialDamageValue, cardMovement, summonType);
+    }
+
+    @Override
+    protected Text getCardBaseType() {
+        return Text.of(TextColors.GRAY, TextStyles.BOLD, "Spell");
     }
 }
