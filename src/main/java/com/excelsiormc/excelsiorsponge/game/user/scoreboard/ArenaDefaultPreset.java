@@ -4,11 +4,14 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.scoreboard.presets
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.AltCodes;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
+import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +43,25 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
             strings.add(Text.of(TextColors.GOLD, "Cell terrain: " + StringUtils.enumToString(cpp.getCurrentAim().get().getCellType(),
                     true)));
 
-            strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
-
-            if(!cpp.getCurrentAim().get().isAvailable()){
+            //Show card info
+            if(!cpp.getCurrentAim().get().isAvailable() && !(cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseCombatant)){
                 CardBase card = cpp.getCurrentAim().get().getOccupyingCard();
 
-                strings.add(card.getName());
-                strings.add(Text.of("------------------"));
-
                 if(card.isOwner(getOwner().getOwner())){
+
+                    Deck deck = cpp.getDeck();
+                    if(deck.isAdvantageousTerrain(cpp.getCurrentAim().get().getCellType())){
+                        strings.add(Text.builder().append(Text.of(TextColors.GOLD, "Terrain Effect: ")).append(Text.of(TextColors.GREEN, "^^")).build());
+                    } else if(deck.isHinderingTerrain(cpp.getCurrentAim().get().getCellType())){
+                        strings.add(Text.builder().append(Text.of(TextColors.GOLD, "Terrain Effect: ")).append(Text.of(TextColors.RED, "vv")).build());
+                    } else {
+                        strings.add(Text.builder().append(Text.of(TextColors.GOLD, "Terrain Effect: ")).append(Text.of(TextColors.GRAY, "--")).build());
+                    }
+                    strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
+
+                    strings.add(Text.of(TextStyles.BOLD, card.getName()));
+                    strings.add(Text.of("------------------"));
+
                     List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
                     for(Text text: texts){
                         if(text.toPlain().length() > 40){
@@ -70,6 +83,10 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
                     strings.addAll(texts);
                 } else {
                     if(card.getCardFacePosition() == CardBase.CardFacePosition.FACE_UP) {
+                        strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
+                        strings.add(card.getName());
+                        strings.add(Text.of("------------------"));
+
                         List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
                         for (Text text : texts) {
                             if (text.toPlain().length() > 40) {

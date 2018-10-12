@@ -60,7 +60,7 @@ public class HotbarHandDummy extends Hotbar {
                         CardBase card = profile.getHand().viewCard(index);
                         if(card instanceof CardBaseMonster){
                             CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                            if(cpp.getCurrentAim() != null && !cpp.getCurrentAim().get().isAvailable()){
+                            if(cpp.getCurrentAim().isPresent() && !cpp.getCurrentAim().get().isAvailable()){
                                 cpp.getCurrentAim().get().getOccupyingCard().displayStats(player);
                             }
                         }

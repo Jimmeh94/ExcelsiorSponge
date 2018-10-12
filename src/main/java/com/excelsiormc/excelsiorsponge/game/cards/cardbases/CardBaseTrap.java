@@ -7,7 +7,6 @@ import com.excelsiormc.excelsiorsponge.game.cards.summon.SummonType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.UUID;
 
@@ -20,6 +19,6 @@ public abstract class CardBaseTrap extends CardBase {
 
     @Override
     protected Text getCardBaseType() {
-        return Text.of(TextColors.GRAY, TextStyles.BOLD, "Trap");
+        return Text.of(TextColors.GRAY, "Trap");
     }
 }

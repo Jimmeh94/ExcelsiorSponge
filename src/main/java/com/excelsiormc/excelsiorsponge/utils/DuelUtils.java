@@ -1,6 +1,7 @@
 package com.excelsiormc.excelsiorsponge.utils;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
+import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
@@ -69,4 +70,7 @@ public class DuelUtils {
         return c.isPresent() && c.get().isPlayer() ? Optional.of((CombatantProfilePlayer)c.get()) : Optional.empty();
     }
 
+    public static Deck getDeck(UUID owner) {
+        return getCombatProfilePlayer(owner).get().getDeck();
+    }
 }

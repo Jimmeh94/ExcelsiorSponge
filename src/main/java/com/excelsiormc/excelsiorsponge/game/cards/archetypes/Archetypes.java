@@ -28,7 +28,7 @@ public enum Archetypes {
     VIRGO(new Virgo()),
     LIBRA(new Libra()),
     SCORPIO(new Scorpio()),
-    SAGGITARIUS(new Sagittarius()),
+    SAGITTARIUS(new Sagittarius()),
     CAPRICORN(new Capricorn());
 
     private Archetype archetype;
