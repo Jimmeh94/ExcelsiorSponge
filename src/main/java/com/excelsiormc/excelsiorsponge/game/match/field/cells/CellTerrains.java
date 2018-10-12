@@ -17,6 +17,7 @@ public enum CellTerrains {
     CITY(new TerrainCity(CellTerrain.GenerationPriority.MEDIUM)),
     RIVER(new TerrainRiver(CellTerrain.GenerationPriority.MEDIUM)),
     ARCTIC(new TerrainArctic(CellTerrain.GenerationPriority.MEDIUM)),
+    SCORCHED(new TerrainScorched(CellTerrain.GenerationPriority.MEDIUM)),
 
     MOUNTAINS(new TerrainMountains(CellTerrain.GenerationPriority.HIGHEST)),
     LABYRINTH(new TerrainLabyrinth(CellTerrain.GenerationPriority.HIGHEST));
