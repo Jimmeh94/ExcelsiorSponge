@@ -27,6 +27,12 @@ public class Deck {
         cards.add(cardBase);
     }
 
+    public void addCard(CardBase cardBase, int amount){
+        for(int i = 0; i < amount; i++){
+            addCard(cardBase);
+        }
+    }
+
     public List<CardBase> getCards() {
         return cards;
     }

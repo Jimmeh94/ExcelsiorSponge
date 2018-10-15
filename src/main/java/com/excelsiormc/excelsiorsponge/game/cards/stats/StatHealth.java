@@ -6,6 +6,10 @@ import org.spongepowered.api.text.format.TextColors;
 
 public class StatHealth extends StatBase {
 
+    public StatHealth(double amount){
+        this(amount, amount);
+    }
+
     public StatHealth(double current, double max) {
         super(current, max, Text.of(TextColors.RED, "Health: "));
     }

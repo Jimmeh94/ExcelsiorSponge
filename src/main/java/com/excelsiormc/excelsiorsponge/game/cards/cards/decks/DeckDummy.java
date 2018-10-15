@@ -1,4 +1,4 @@
-package com.excelsiormc.excelsiorsponge.game.cards.decks;
+package com.excelsiormc.excelsiorsponge.game.cards.cards.decks;
 
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.archetypes.Archetypes;

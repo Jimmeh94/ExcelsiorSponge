@@ -10,7 +10,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.PlayerEvents;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
-import com.excelsiormc.excelsiorsponge.game.cards.decks.DeckDummy;
+import com.excelsiormc.excelsiorsponge.game.cards.cards.decks.DeckDummy;
 import com.excelsiormc.excelsiorsponge.game.user.scoreboard.DefaultPreset;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

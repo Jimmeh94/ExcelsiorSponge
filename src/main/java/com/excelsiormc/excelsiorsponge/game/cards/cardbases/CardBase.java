@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcards.CardDescriptor;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
@@ -38,31 +39,25 @@ public abstract class CardBase {
 
     public static final ItemType FACE_DOWN_CARD_MAT = ItemTypes.OBSIDIAN;
 
+    protected CardDescriptor descriptor;
     protected StatHealth health;
     protected StatPower power;
-    private Text name;
     private List<Text> lore;
     private UUID owner;
     protected ArmorStand stand, position, cardFace;
-    private ItemType material;
-    private int materialDamageValue;
     private ItemStack facedownItem, faceupItem;
     protected Cell currentCell;
     protected CardMovement cardMovement;
-    protected CardRarity rarity;
     protected SummonType summonType;
     protected CardPosition cardPosition;
     protected CardFacePosition cardFacePosition = CardFacePosition.FACE_DOWN;
 
-    public CardBase(UUID owner, String name, CardRarity rarity, StatPower power, StatHealth health,
-                    ItemType material, int materialDamageValue, CardMovement cardMovement, SummonType summonType) {
+    public CardBase(UUID owner, CardDescriptor description, StatPower power, StatHealth health, CardMovement cardMovement,
+                    SummonType summonType) {
         this.owner = owner;
-        this.name = Text.of(rarity.getColor(), name);
-        this.rarity = rarity;
+        this.descriptor = description;
         this.power = power;
         this.health = health;
-        this.material = material;
-        this.materialDamageValue = materialDamageValue;
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
 
@@ -70,14 +65,7 @@ public abstract class CardBase {
             this.summonType = summonType;
             this.summonType.setOwner(this);
         }
-
-        if(material != null) {
-            generateItemStack();
-        }
     }
-
-    protected abstract Text getCardDescription();
-    protected abstract Text getCardBaseType();
 
     public void handleSummon(){
         if(summonType != null && summonType.canSummon()){
@@ -85,12 +73,16 @@ public abstract class CardBase {
         }
     }
 
+    public CardDescriptor getDescriptor() {
+        return descriptor;
+    }
+
     protected List<Text> generateLore() {
         List<Text> give = new ArrayList<>();
-        give.add(getCardBaseType());
-        give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), rarity.getText()).build());
+        give.add(descriptor.getType());
+        give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), descriptor.getRarity().getText()).build());
         give.add(Text.of( " "));
-        give.add(getCardDescription());
+        give.add(descriptor.getDescription());
         give.add(Text.of( " "));
         give.add(health.getFullDisplay());
         give.add(power.getFullDisplay());
@@ -127,10 +119,6 @@ public abstract class CardBase {
 
     public void displayAvailableSpotsToMoveTo(){
         cardMovement.displayAvailableSpotsToMoveTo();
-    }
-
-    public CardRarity getRarity() {
-        return rarity;
     }
 
     public void displayStats(Player displayTo){
@@ -174,13 +162,13 @@ public abstract class CardBase {
     public void generateItemStack(){
         lore = generateLore();
 
-        faceupItem = ItemStack.builder().itemType(material).build();
-        faceupItem.offer(Keys.ITEM_DURABILITY, materialDamageValue);
+        faceupItem = ItemStack.builder().itemType(descriptor.getMat()).build();
+        faceupItem.offer(Keys.ITEM_DURABILITY, descriptor.getMatDamageValue());
         faceupItem.offer(Keys.ITEM_LORE, lore);
-        faceupItem.offer(Keys.DISPLAY_NAME, Text.of(name));
+        faceupItem.offer(Keys.DISPLAY_NAME, descriptor.getName());
 
         facedownItem = ItemStack.builder().itemType(FACE_DOWN_CARD_MAT).build();
-        facedownItem.offer(Keys.ITEM_DURABILITY, materialDamageValue);
+        facedownItem.offer(Keys.ITEM_DURABILITY, descriptor.getMatDamageValue());
         facedownItem.offer(Keys.ITEM_LORE, lore);
         facedownItem.offer(Keys.DISPLAY_NAME, Text.of(""));
     }
@@ -202,14 +190,14 @@ public abstract class CardBase {
     }
 
     public Text getName() {
-        return name;
+        return descriptor.getName();
     }
 
     public void spawn(Location center) {
         cardPosition = CardPosition.ATTACK;
 
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
-        stand.offer(Keys.DISPLAY_NAME, Text.of(name));
+        stand.offer(Keys.DISPLAY_NAME, descriptor.getName());
         stand.offer(Keys.ARMOR_STAND_HAS_BASE_PLATE, false);
         stand.setHelmet(cardFacePosition == CardFacePosition.FACE_UP ? faceupItem : facedownItem);
         stand.offer(Keys.INVISIBLE, true);
@@ -336,10 +324,9 @@ public abstract class CardBase {
     }
 
     public enum CardRarity {
-        LEGENDARY(TextColors.GOLD),
-        RARE(TextColors.LIGHT_PURPLE),
-        UNCOMMON(TextColors.AQUA),
-        ENHANCED(TextColors.GREEN),
+        ULTRA_RARE(TextColors.GOLD),
+        SUPER_RARE(TextColors.LIGHT_PURPLE),
+        RARE(TextColors.GREEN),
         COMMON(TextColors.GRAY);
 
         private TextColor color;
@@ -349,7 +336,7 @@ public abstract class CardBase {
         }
 
         public Text getText(){
-            return Text.of(color, StringUtils.capitalizeFirstLetter(this.toString()));
+            return Text.of(color, StringUtils.enumToString(this, true));
         }
 
         public TextColor getColor() {
