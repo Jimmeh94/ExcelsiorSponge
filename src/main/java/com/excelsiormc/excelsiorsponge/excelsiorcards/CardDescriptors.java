@@ -24,7 +24,23 @@ public enum CardDescriptors {
     CHANGE_SLIME(new CardDescriptor("Change Slime", "Effect: A slime that can adopt the shape and stats" +
             " of any other monster in play (chooses at random)",
             CardDescriptor.CardType.DRAGON, "Cross, 1 Cell","1 Energy", 300, 400,
-            CardDescriptor.CardRarity.COMMON, ItemTypes.SLIME_BALL, 100));
+            CardDescriptor.CardRarity.COMMON, ItemTypes.SLIME_BALL, 100)),
+
+    CHARUBIN_THE_FIRE_KNIGHT(new CardDescriptor("Charubin the Fire Knight", "A fearless knight of ancient flames",
+                 CardDescriptor.CardType.PYRO, "Cross, 1 Cell","Fusion: Monster Egg, Hinotama Soul", 800, 1100,
+                 CardDescriptor.CardRarity.COMMON, ItemTypes.BLAZE_POWDER, 100)),
+
+    DARK_PRISONER(new CardDescriptor("Dark Prisoner", "Effect: This monster can hide its movements for 3 turns from the enemy",
+            CardDescriptor.CardType.FIEND, "Cross, 1 Cell","3 Energy", 1000, 600,
+            CardDescriptor.CardRarity.COMMON, ItemTypes.NETHER_WART, 100)),
+
+    HINOTAMA_SOUL(new CardDescriptor("Hinotama Soul", "An intensely hot flame creature that rams anything standing" +
+            "in its way", CardDescriptor.CardType.PYRO, "Cross, 1 Cell","2 Energy", 500, 600,
+            CardDescriptor.CardRarity.COMMON, ItemTypes.BLAZE_POWDER, 100)),
+
+    MONSTER_EGG(new CardDescriptor("Monster Egg", "A warrior hidden within an egg that attacks enemies by flinging eggshells",
+            CardDescriptor.CardType.WARRIOR, "Cross, 1 Cell","3 Energy", 900, 600,
+            CardDescriptor.CardRarity.COMMON, ItemTypes.EGG, 100));
 
     /**
      * ======== =======

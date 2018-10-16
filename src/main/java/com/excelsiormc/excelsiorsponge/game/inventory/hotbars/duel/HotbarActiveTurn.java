@@ -2,7 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
@@ -15,6 +15,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Optional;
+
 public class HotbarActiveTurn extends Hotbar {
 
     @Override
@@ -24,8 +26,7 @@ public class HotbarActiveTurn extends Hotbar {
         /**
          * Need a free-cam mode to look around field, look at hand, look at discard pile
          * 0 = use ability
-         * 2 = move card
-         * 3 = change card position
+         * 2 = edit card
          * 4 = look at hand
          * 6 = discard pile
          * 8 = options menu (skip turn, leave game)
@@ -51,63 +52,31 @@ public class HotbarActiveTurn extends Hotbar {
         addPair(0, action);
 
         item = ItemStack.builder().itemType(ItemTypes.IRON_BOOTS).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Move a CardEvent"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Use Card"));
+
         action = new Pair<>(item, new Callback() {
             @Override
-            public void actionLeftClick(Player player, HandType action) {
-                //Needs to be aiming at a cell with a card owned by this player
-                //Brings up hotbar about that card
-                CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-                if(!cpp.getCurrentAim().isPresent() || cpp.getCurrentAim().get().getOccupyingCard() == null ||
-                    !cpp.getCurrentAim().get().getOccupyingCard().isOwner(player.getUniqueId())){
-                    return;
-                }
-
-                if(!cpp.getCurrentAim().get().getOccupyingCard().getMovement().canMoveThisTurn()){
-                    Messager.sendMessage(player, Text.of(TextColors.RED, "That card can't move this turn"), Messager.Prefix.ERROR);
-                    return;
-                }
-
-                if(!cpp.getCurrentAim().get().getOccupyingCard().generateSpots()){
-                    Messager.sendMessage(player, Text.of(TextColors.RED, "That card can't move anywhere"), Messager.Prefix.ERROR);
-                    return;
-                }
-
-                (new HotbarCardManipulate(cpp.getCurrentAim().get().getOccupyingCard())).setHotbar(player);
-                cpp.startMovingCard(cpp.getCurrentAim().get().getOccupyingCard());
+            public void actionLeftClick(Player player, HandType hand) {
+                display(player);
             }
 
             @Override
             public void actionRightClick(Player player, HandType hand){
+                display(player);
+            }
 
+            private void display(Player player){
+                CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
+                Optional<Cell> aim = cpp.getCurrentAim();
+                if(aim.isPresent() && aim.get().getOccupyingCard() != null &&
+                    aim.get().getOccupyingCard().isOwner(player.getUniqueId())){
+                    (new HotbarCardEdit(aim.get().getOccupyingCard())).setHotbar(player);
+                }
             }
         });
         addPair(2, action);
 
-        item = ItemStack.builder().itemType(ItemTypes.IRON_SWORD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Change CardEvent Stance"));
-        action = new Pair(item, new Callback() {
-            @Override
-            public void actionLeftClick(Player player, HandType action) {
-                changeStance(player);
-            }
 
-            @Override
-            public void actionRightClick(Player player, HandType hand){
-                changeStance(player);
-            }
-
-            private void changeStance(Player player){
-                CombatantProfilePlayer temp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-
-                if(temp.getCurrentAim().isPresent()){
-                    if(!temp.getCurrentAim().get().isAvailable() && temp.getCurrentAim().get().getOccupyingCard().isOwner(temp.getUUID())){
-                        temp.getCurrentAim().get().getOccupyingCard().toggleCardPosition();
-                    }
-                }
-            }
-        });
-        addPair(3, action);
 
         item = ItemStack.builder().itemType(ItemTypes.MAP).build();
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Hand"));
@@ -133,34 +102,7 @@ public class HotbarActiveTurn extends Hotbar {
         });
         addPair(4, action);
 
-        item = ItemStack.builder().itemType(ItemTypes.SHIELD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Flip Face Down CardEvent"));
-        action = new Pair(item, new Callback() {
-            @Override
-            public void actionLeftClick(Player player, HandType action) {
-                flip(player);
-            }
 
-            @Override
-            public void actionRightClick(Player player, HandType hand){
-                flip(player);
-            }
-
-            private void flip(Player player){
-                CombatantProfilePlayer temp = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get();
-
-                if(temp.getCurrentAim().isPresent()){
-                    if(!temp.getCurrentAim().get().isAvailable() && temp.getCurrentAim().get().getOccupyingCard().isOwner(player.getUniqueId())){
-                        if(temp.getCurrentAim().get().getOccupyingCard().isFaceDown()){
-                            temp.getCurrentAim().get().getOccupyingCard().flipCard();
-                        } else {
-                            Messager.sendMessage(player, Text.of(TextColors.RED, "This card is already face up!"), Messager.Prefix.DUEL);
-                        }
-                    }
-                }
-            }
-        });
-        addPair(5, action);
 
         item = ItemStack.builder().itemType(ItemTypes.BARRIER).build();
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Discard Pile"));

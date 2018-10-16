@@ -5,6 +5,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.archetypes.Archetypes;
 import com.excelsiormc.excelsiorsponge.managers.CardManager;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class DeckStarter extends Deck {
@@ -15,7 +16,10 @@ public class DeckStarter extends Deck {
         for(CardDescriptors c: CardDescriptors.values()){
             addCard(c);
         }
-        //addCard(CardDescriptors.ANCIENT_TREE_OF_ENLIGHTENMENT);
+
+        for(int i = 0; i < 50 - cards.size(); i++){
+            addCard(CardDescriptors.values()[(new Random()).nextInt(CardDescriptors.values().length)]);
+        }
     }
 
     public void addCard(CardDescriptors descriptor){

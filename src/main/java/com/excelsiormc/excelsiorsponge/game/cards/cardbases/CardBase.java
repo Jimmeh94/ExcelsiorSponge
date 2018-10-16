@@ -7,6 +7,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.stats.StatBase;
+import com.excelsiormc.excelsiorsponge.game.cards.components.actives.Active;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
@@ -31,9 +32,7 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class CardBase {
 
@@ -52,6 +51,8 @@ public abstract class CardBase {
     protected SummonType summonType;
     protected CardPosition cardPosition;
     protected CardFacePosition cardFacePosition = CardFacePosition.FACE_DOWN;
+    protected Map<String, Text> extraDisplayInfo;
+    protected Optional<Active> active = Optional.empty();
 
     public CardBase(UUID owner, CardDescriptor description, StatPower power, StatHealth health, CardMovement cardMovement,
                     SummonType summonType) {
@@ -66,6 +67,8 @@ public abstract class CardBase {
             this.summonType = summonType;
             this.summonType.setOwner(this);
         }
+
+        extraDisplayInfo = new HashMap<>();
     }
 
     //This is for effects on summon
@@ -83,6 +86,22 @@ public abstract class CardBase {
 
             Sponge.getEventManager().post(new DuelEvent.CardEvent.CardPlacePost(ExcelsiorSponge.getServerCause(), this));
         }
+    }
+
+    public Optional<Active> getActive() {
+        return active;
+    }
+
+    public void addExtraDisplayInfo(String id, Text text){
+        extraDisplayInfo.put(id, text);
+    }
+
+    public void removeExtraDisplayInfo(String id){
+        extraDisplayInfo.remove(id);
+    }
+
+    public Map<String, Text> getExtraDisplayInfo() {
+        return extraDisplayInfo;
     }
 
     public CardDescriptor getDescriptor() {
@@ -206,7 +225,6 @@ public abstract class CardBase {
     }
 
     public void spawn(Location center) {
-        cardPosition = CardPosition.ATTACK;
 
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
         stand.offer(Keys.DISPLAY_NAME, descriptor.getName());
@@ -235,6 +253,12 @@ public abstract class CardBase {
         position.offer(Keys.ARMOR_STAND_IS_SMALL, true);
         center.getExtent().spawnEntity(position);
         cardFace.addPassenger(position);
+    }
+
+    public void spawn(){
+        if(currentCell != null) {
+            spawn(new Location(Sponge.getServer().getWorld(currentCell.getWorld()).get(), currentCell.getCenterCeiling()));
+        }
     }
 
     public void remove(){

@@ -3,7 +3,7 @@ package com.excelsiormc.excelsiorsponge.game.match.profiles;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.DeckGraveyard;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovementSquare;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.FilterIncludeEmptyCell;
 import com.excelsiormc.excelsiorsponge.game.cards.Hand;
@@ -19,7 +19,7 @@ public abstract class CombatantProfile {
     private Hand hand;
     private Deck deck;
     private DeckGraveyard graveyard;
-    private CardBaseCombatant card;
+    private CardBaseAvatar card;
     protected int summonEnergy;
 
     public CombatantProfile(UUID owner, Deck deck) {
@@ -28,7 +28,7 @@ public abstract class CombatantProfile {
         graveyard = new DeckGraveyard(owner);
 
         hand = new Hand(owner);
-        card = new CardBaseCombatant(owner, this, new StatHealth(1000, 1000), new CardMovementSquare(1, new FilterIncludeEmptyCell()));
+        card = new CardBaseAvatar(owner, this, new StatHealth(1000, 1000), new CardMovementSquare(1, new FilterIncludeEmptyCell()));
 
         summonEnergy = 1;
     }
@@ -76,7 +76,7 @@ public abstract class CombatantProfile {
         return false;
     }
 
-    public CardBaseCombatant getCard() {
+    public CardBaseAvatar getCard() {
         return card;
     }
 

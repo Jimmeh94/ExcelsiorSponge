@@ -5,7 +5,7 @@ import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
@@ -132,7 +132,7 @@ public class GamemodeDuel extends Gamemode {
 
             if(!dealP.isCancelled() && !dealtP.isCancelled()){
 
-                if(!(two instanceof CardBaseCombatant)){
+                if(!(two instanceof CardBaseAvatar)){
                     double difference = statOne - statTwo;
 
                     cppTwo.getCard().subtractHealth(difference);

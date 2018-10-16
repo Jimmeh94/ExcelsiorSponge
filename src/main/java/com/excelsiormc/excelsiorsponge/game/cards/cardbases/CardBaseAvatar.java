@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.cardbases;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcards.CardDescriptor;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
@@ -22,26 +23,17 @@ import org.spongepowered.api.world.World;
 
 import java.util.UUID;
 
-public class CardBaseCombatant extends CardBase {
+public class CardBaseAvatar extends CardBase {
 
     private Human human;
     private CombatantProfile owner;
     private ArmorStand name;
 
-    public CardBaseCombatant(UUID owner, CombatantProfile profile, StatHealth health, CardMovement cardMovement) {
-        super(owner, "", CardRarity.LEGENDARY, new StatPower(0, 0), health, null, 0, cardMovement, null);
+    public CardBaseAvatar(UUID owner, CombatantProfile profile, StatHealth health, CardMovement cardMovement) {
+        super(owner, new AvatarCardDescriptor((int) health.getCurrent()), new StatPower(0, 0), health,
+                cardMovement, null);
 
         this.owner = profile;
-    }
-
-    @Override
-    protected Text getCardDescription() {
-        return Text.of();
-    }
-
-    @Override
-    protected Text getCardBaseType() {
-        return Text.of(TextColors.GRAY, "Avatar");
     }
 
     @Override
@@ -97,14 +89,6 @@ public class CardBaseCombatant extends CardBase {
     public void move(Vector3d destination, Cell old){
         human.setLocation(new Location<World>(human.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
-        /*ExcelsiorSponge.INSTANCE.getDirectionalAimArenaTimer().addDelayedTask(new AbstractTimer.DelayedTask(1) {
-            @Override
-            public void doTask() {
-                cardMovement.clearCurrentlyHighlighted();
-            }
-        });
-        cardMovement.setCanMoveThisTurn(false);*/
-
         new DelayedOneUseTimer(10L) {
             @Override
             protected void runTask() {
@@ -113,7 +97,7 @@ public class CardBaseCombatant extends CardBase {
         };
 
         cardMovement.setCanMoveThisTurn(false);
-        Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
+        Sponge.getEventManager().post(new DuelEvent.CardEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
     }
 
     @Override
@@ -125,6 +109,18 @@ public class CardBaseCombatant extends CardBase {
 
         if(owner.isPlayer()) {
             Messager.sendMessage(owner.getPlayer(), Text.of(TextColors.RED, "Your avatar took " + damage + " damage!"), Messager.Prefix.DUEL);
+        }
+    }
+
+    protected static class AvatarCardDescriptor extends CardDescriptor{
+
+        public AvatarCardDescriptor(int baseHealth) {
+            super("", "", null, "", "", baseHealth, 0, null, null, 0);
+        }
+
+        @Override
+        public Text getDescription() {
+            return Text.of();
         }
     }
 }

@@ -12,6 +12,7 @@ import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
 import com.excelsiormc.excelsiorsponge.game.match.matchmaking.MatchMaker;
 import com.excelsiormc.excelsiorsponge.timers.ArenaTimer;
+import com.excelsiormc.excelsiorsponge.timers.CardParticlesTimer;
 import com.excelsiormc.excelsiorsponge.timers.DirectionalAimArenaTimer;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
@@ -49,6 +50,7 @@ public class ExcelsiorSponge {
 
     private ArenaTimer arenaTimer;
     private DirectionalAimArenaTimer directionalAimArenaTimer;
+    private CardParticlesTimer cardParticlesTimer;
 
     @Listener
     public void onGameInit(GameInitializationEvent event){
@@ -100,6 +102,9 @@ public class ExcelsiorSponge {
 
         directionalAimArenaTimer = new DirectionalAimArenaTimer(3L);
         directionalAimArenaTimer.start();
+
+        cardParticlesTimer = new CardParticlesTimer(10L);
+        cardParticlesTimer.start();
     }
 
     private void registerListeners() {
@@ -134,5 +139,9 @@ public class ExcelsiorSponge {
 
     public DirectionalAimArenaTimer getDirectionalAimArenaTimer() {
         return directionalAimArenaTimer;
+    }
+
+    public CardParticlesTimer getCardParticlesTimer() {
+        return cardParticlesTimer;
     }
 }

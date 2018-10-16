@@ -127,6 +127,7 @@ public class CardDescriptor {
 
     public enum CardType {
         AQUA(Text.of(TextColors.AQUA, "Aqua")),
+        AVATAR(Text.of(TextColors.GOLD, "Avatar")),
         BEAST(Text.of(TextColors.GRAY, "Beast")),
         BEAST_WARRIOR(Text.of(TextColors.GRAY, "Beast-Warrior")),
         DINOSAUR(Text.of(TextColors.GRAY, "Dinosaur")),

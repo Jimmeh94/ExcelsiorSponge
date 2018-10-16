@@ -1,6 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement.filters;
 
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
@@ -83,7 +83,7 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
         BattleResult battleResult = arena.getGamemode().battle(owner.getCurrentCell(), target);
 
         if(battleResult.getVictorCard().isPresent()){
-            if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseCombatant)
+            if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseAvatar)
                 && battleResult.isDefenderDestroyed()){
                 CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
                 cpp.setCurrentlyMovingCard(owner);

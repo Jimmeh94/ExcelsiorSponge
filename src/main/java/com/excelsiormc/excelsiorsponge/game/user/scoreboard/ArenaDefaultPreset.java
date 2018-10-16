@@ -6,7 +6,7 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.StringUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
-import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseCombatant;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.text.Text;
@@ -44,7 +44,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
                     true)));
 
             //Show card info
-            if(!cpp.getCurrentAim().get().isAvailable() && !(cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseCombatant)){
+            if(!cpp.getCurrentAim().get().isAvailable() && !(cpp.getCurrentAim().get().getOccupyingCard() instanceof CardBaseAvatar)){
                 CardBase card = cpp.getCurrentAim().get().getOccupyingCard();
 
                 if(card.isOwner(getOwner().getOwner())){
@@ -61,6 +61,10 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
 
                     strings.add(Text.of(TextStyles.BOLD, card.getName()));
                     strings.add(Text.of("------------------"));
+
+                    for(Text text: cpp.getCurrentAim().get().getOccupyingCard().getExtraDisplayInfo().values()){
+                        strings.add(text);
+                    }
 
                     List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
                     for(Text text: texts){

@@ -13,6 +13,8 @@ import java.util.UUID;
 
 public class LocationUtils {
 
+    private static final Random random = new Random();
+
     public static Location getMiddleLocation(Location firstCorner, Location secondCorner){
         Vector3d temp = getMiddleLocation(firstCorner.getPosition(), secondCorner.getPosition());
         return new Location(firstCorner.getExtent(), temp.getX(), temp.getY(), temp.getZ());
@@ -235,5 +237,13 @@ public class LocationUtils {
             y = 0;
         
         return new Vector3i(x, y, z);
+    }
+
+    public static boolean isWithinDistance(Vector3d position, Vector3d target, double radius) {
+        return position.distance(target) <= radius;
+    }
+
+    public static double getRandomNegOrPos() {
+        return random.nextInt(2) == 0 ? -1 : 1;
     }
 }
