@@ -126,7 +126,8 @@ public class HotbarHand extends Hotbar {
                 Arena arena = DuelUtils.findArenaWithPlayer(player).get();
                 if(arena.isPlayersTurn(player)){
                     Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(player);
-                    DuelUtils.getTeam(player.getUniqueId()).eraseAsPlaceableRows(player);
+                    DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCard().removePlaceableCells(player);
+                    //DuelUtils.getTeam(player.getUniqueId()).eraseAsPlaceableRows(player);
                 } else {
                     Hotbars.HOTBAR_WAITING_TURN.setHotbar(player);
                 }

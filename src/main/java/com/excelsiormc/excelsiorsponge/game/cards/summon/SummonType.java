@@ -30,13 +30,13 @@ public abstract class SummonType {
         Optional<Cell> currentAim = DuelUtils.getCombatProfilePlayer(player.getUniqueId()).get().getCurrentAim();
 
         if (currentAim.isPresent() && currentAim.get().isAvailable()) {
-            if(DuelUtils.getTeam(player.getUniqueId()).isPlaceable(currentAim.get())) {
+            if(cpp.getCard().isPlaceable(currentAim.get())) {
                 currentAim.get().setOccupyingCard(owner, true);
                 cpp.getHand().removeCard(owner);
                 cpp.getUserPlayer().getCurrentHotbar().setHotbar(player);
 
                 if(owner.isOwnerPlayer()) {
-                    DuelUtils.getTeam(owner.getOwner()).eraseAsPlaceableRows(PlayerUtils.getPlayer(owner.getOwner()).get());
+                    cpp.getCard().removePlaceableCells(PlayerUtils.getPlayer(owner.getOwner()).get());
                 }
 
                 Hotbars.HOTBAR_ACTIVE_TURN.setHotbar(PlayerUtils.getPlayer(owner.getOwner()).get());

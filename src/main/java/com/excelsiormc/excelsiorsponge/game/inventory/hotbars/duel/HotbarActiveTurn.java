@@ -96,8 +96,7 @@ public class HotbarActiveTurn extends Hotbar {
                 UserPlayer userPlayer = PlayerUtils.getUserPlayer(player).get();
                 userPlayer.setCurrentHotbar(new HotbarHand(temp));
                 userPlayer.getCurrentHotbar().setHotbar(player);
-
-                DuelUtils.getTeam(player.getUniqueId()).highlightPlaceableRows(player);
+                temp.getCard().generateAndHighlightPlaceableCells(player);
             }
         });
         addPair(4, action);

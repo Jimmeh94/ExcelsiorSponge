@@ -2,10 +2,8 @@ package com.excelsiormc.excelsiorsponge.game.match.field;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
-import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,20 +48,6 @@ public class Row {
     public void drawCells() {
         for(Cell cell: cells){
             cell.drawCell();
-        }
-    }
-
-    public void highlightAsPlaceableRow(Player player){
-        for(Cell cell: cells){
-            if(cell.isAvailable()){
-                cell.drawCustom(player, BlockStateColors.EMPTY);
-            }
-        }
-    }
-
-    public void eraseAsPlaceableRow(Player player){
-        for(Cell cell: cells){
-            cell.eraseClient(player);
         }
     }
 

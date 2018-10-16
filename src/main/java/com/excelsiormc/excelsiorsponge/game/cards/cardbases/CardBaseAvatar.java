@@ -7,33 +7,65 @@ import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.CardMovement;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatHealth;
 import com.excelsiormc.excelsiorsponge.game.cards.stats.StatPower;
+import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
+import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
+import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Human;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CardBaseAvatar extends CardBase {
 
     private Human human;
     private CombatantProfile owner;
     private ArmorStand name;
+    private List<Cell> placeableCells;
 
     public CardBaseAvatar(UUID owner, CombatantProfile profile, StatHealth health, CardMovement cardMovement) {
         super(owner, new AvatarCardDescriptor((int) health.getCurrent()), new StatPower(0, 0), health,
                 cardMovement, null);
 
         this.owner = profile;
+        placeableCells = new CopyOnWriteArrayList<>();
+    }
+
+    public void generateAndHighlightPlaceableCells(Player player){
+        placeableCells.clear();
+        Grid grid = DuelUtils.getArena(owner.getUUID()).get().getGrid();
+        placeableCells = grid.getSquareGroupofCells(currentCell, 1);
+        for(Cell cell: placeableCells){
+            if(!cell.isAvailable()){
+                placeableCells.remove(cell);
+            } else {
+                cell.drawCustom(player, BlockStateColors.EMPTY);
+            }
+        }
+    }
+
+    public boolean isPlaceable(Cell target){
+        return placeableCells.contains(target);
+    }
+
+    public void removePlaceableCells(Player player){
+        for(Cell cell: placeableCells){
+            cell.eraseClient(player);
+        }
+        placeableCells.clear();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.excelsiormc.excelsiorsponge.game.match;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
-import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
@@ -21,9 +20,6 @@ public class Team {
     private List<CombatantProfile> combatants;
     private Vector3d spawn;
     private boolean alive = true;
-
-    //These are the rows in which a card can be laid on the field by this team
-    private List<Row> placeableRows = new CopyOnWriteArrayList<>();
 
     public Team() {
         combatants = new CopyOnWriteArrayList<>();
@@ -66,14 +62,6 @@ public class Team {
 
     public boolean isAlive() {
         return alive;
-    }
-
-    public void addPlaceableRow(Row row){
-        placeableRows.add(row);
-    }
-
-    public List<Row> getPlaceableRows() {
-        return placeableRows;
     }
 
     public Vector3d getSpawn() {
@@ -138,32 +126,11 @@ public class Team {
         }
     }
 
-    public void highlightPlaceableRows(Player player){
-        for(Row row: placeableRows){
-            row.highlightAsPlaceableRow(player);
-        }
-    }
-
-    public void eraseAsPlaceableRows(Player player){
-        for(Row row: placeableRows){
-            row.eraseAsPlaceableRow(player);
-        }
-    }
-
     public void setSpawn(Cell spawn) {
         setSpawn(spawn.getCenterCeiling().clone().add(0, 10, 0));
     }
 
     public void setSpawn(Vector3d spawn){
         this.spawn = spawn;
-    }
-
-    public boolean isPlaceable(Cell currentAim) {
-        for(Row row: placeableRows){
-            if(row.containsCell(currentAim)){
-                return true;
-            }
-        }
-        return false;
     }
 }
