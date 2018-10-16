@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.utils;
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
@@ -12,6 +13,7 @@ import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.entity.living.player.Player;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,5 +74,22 @@ public class DuelUtils {
 
     public static Deck getDeck(UUID owner) {
         return getCombatProfilePlayer(owner).get().getDeck();
+    }
+
+    public static List<CardBase> getCombatantsPlayedCards(UUID owner) {
+        return getArena(owner).get().getGrid().getActiveCardsOnFieldFor(owner);
+    }
+
+    public static List<CardBase> filterCardsForMonsters(List<CardBase> cards) {
+        for(CardBase c: cards){
+            if(!(c instanceof CardBaseMonster)){
+                cards.remove(c);
+            }
+        }
+        return cards;
+    }
+
+    public static List<CardBase> getAllActiveCards(UUID owner){
+        return getArena(owner).get().getGrid().getActiveCardsOnField();
     }
 }

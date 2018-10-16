@@ -64,10 +64,8 @@ public class Deck {
                     cards.set(j - 1, cards.get(j));
                     cards.set(j, temp);
                 }
-
             }
         }
-
     }
 
     public Deck clone(){

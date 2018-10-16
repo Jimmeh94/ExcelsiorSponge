@@ -359,6 +359,10 @@ public abstract class Gamemode {
         return null;
     }
 
+    public boolean isOnSameTeam(UUID one, UUID two) {
+        return DuelUtils.getTeam(one).isCombatant(two);
+    }
+
 
     protected class TurnManager {
 

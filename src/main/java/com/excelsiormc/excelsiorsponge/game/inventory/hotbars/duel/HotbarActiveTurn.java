@@ -51,7 +51,7 @@ public class HotbarActiveTurn extends Hotbar {
         addPair(0, action);
 
         item = ItemStack.builder().itemType(ItemTypes.IRON_BOOTS).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Move a Card"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Move a CardEvent"));
         action = new Pair<>(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {
@@ -85,7 +85,7 @@ public class HotbarActiveTurn extends Hotbar {
         addPair(2, action);
 
         item = ItemStack.builder().itemType(ItemTypes.IRON_SWORD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Change Card Stance"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Change CardEvent Stance"));
         action = new Pair(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {
@@ -134,7 +134,7 @@ public class HotbarActiveTurn extends Hotbar {
         addPair(4, action);
 
         item = ItemStack.builder().itemType(ItemTypes.SHIELD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Flip Face Down Card"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Flip Face Down CardEvent"));
         action = new Pair(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {

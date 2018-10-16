@@ -11,7 +11,6 @@ import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * This is a class that can be shared between the hub and arena plugins. Has all the basic info for a card.
@@ -19,7 +18,6 @@ import java.util.UUID;
  */
 public class CardDescriptor {
 
-    protected UUID id;
     protected Text name, description, type, movement, summon;
     protected int baseHealth, basePower;
     protected CardRarity rarity;
@@ -27,11 +25,14 @@ public class CardDescriptor {
     private ItemType mat;
     private int matDamageValue;
 
-    public CardDescriptor(UUID id, String name, String description, CardType cardType, String movement, String summon, int baseHealth,
+    public CardDescriptor(String name, String description, CardType cardType, String movement, String summon, int baseHealth,
                           int basePower, CardRarity rarity, ItemType mat, int matDamageValue) {
-        this.id = id;
         this.name = Text.of(rarity.getColor(), name);
-        this.description = Text.of(TextColors.GRAY, TextStyles.ITALIC, description);
+        if(description.contains("Effect")){
+            this.description = Text.of(TextColors.GRAY, description);
+        } else {
+            this.description = Text.of(TextColors.GRAY, TextStyles.ITALIC, description);
+        }
         this.type = cardType.getText();
         this.movement = Text.builder().append(Text.of(TextColors.GRAY, "Movement and Distance: ")).append(Text.of(TextColors.GRAY, movement)).build();
         this.summon = Text.builder().append(Text.of(TextColors.GRAY, "Summon Method: ")).append(Text.of(TextColors.GRAY, summon)).build();
@@ -69,10 +70,6 @@ public class CardDescriptor {
 
     public ItemStack getItem() {
         return item;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public Text getName() {

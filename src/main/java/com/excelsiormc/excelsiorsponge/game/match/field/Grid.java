@@ -477,4 +477,15 @@ public abstract class Grid {
         }
         return cards;
     }
+
+    public boolean containsCard(CardBase card) {
+        for(Cell cell: getAllCells()){
+            if(!cell.isAvailable()){
+                if(cell.getOccupyingCard() == card){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

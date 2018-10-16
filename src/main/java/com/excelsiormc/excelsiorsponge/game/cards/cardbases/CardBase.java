@@ -67,9 +67,20 @@ public abstract class CardBase {
         }
     }
 
+    //This is for effects on summon
+    protected void summoned(){}
+
     public void handleSummon(){
         if(summonType != null && summonType.canSummon()){
-            summonType.summon();
+            DuelEvent.CardEvent.CardPlacePre event = new DuelEvent.CardEvent.CardPlacePre(ExcelsiorSponge.getServerCause(), this);
+            Sponge.getEventManager().post(event);
+
+            if(!event.isCancelled()) {
+                summonType.summon();
+                summoned();
+            }
+
+            Sponge.getEventManager().post(new DuelEvent.CardEvent.CardPlacePost(ExcelsiorSponge.getServerCause(), this));
         }
     }
 
@@ -113,7 +124,7 @@ public abstract class CardBase {
             stand.setHelmet(faceupItem);
             stand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
 
-            Sponge.getEventManager().post(new DuelEvent.CardFlipped(ExcelsiorSponge.getServerCause(), this));
+            Sponge.getEventManager().post(new DuelEvent.CardEvent.CardFlipped(ExcelsiorSponge.getServerCause(), this));
         }
     }
 
@@ -253,7 +264,7 @@ public abstract class CardBase {
         };
 
         cardMovement.setCanMoveThisTurn(false);
-        Sponge.getEventManager().post(new DuelEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
+        Sponge.getEventManager().post(new DuelEvent.CardEvent.CardMoved(ExcelsiorSponge.getServerCause(), this, old, currentCell));
     }
 
     public CardMovement getMovement() {
@@ -276,7 +287,7 @@ public abstract class CardBase {
 
         DuelUtils.getCombatProfilePlayer(owner).get().addToGraveyard(this);
 
-        Sponge.getEventManager().post(new DuelEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
+        Sponge.getEventManager().post(new DuelEvent.CardEvent.CardDestroyed(ExcelsiorSponge.getServerCause(), this));
     }
 
     public void clearCurrentlyHighlighted() {

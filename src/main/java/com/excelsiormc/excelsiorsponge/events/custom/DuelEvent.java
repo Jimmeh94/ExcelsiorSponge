@@ -44,72 +44,82 @@ public class DuelEvent extends CustomEvent {
         }
     }
 
-    public static class CardPlaced extends DuelEvent {
+    public static abstract class CardEvent extends DuelEvent{
 
         private CardBase card;
 
-        public CardPlaced(Cause cause, CardBase card) {
+        public CardEvent(Cause cause, CardBase card) {
             super(cause);
+
             this.card = card;
         }
 
         public CardBase getCard() {
             return card;
         }
+
+        public static class CardPlacePre extends CardEvent implements Cancellable{
+
+            private boolean cancelled;
+
+            public CardPlacePre(Cause cause, CardBase card) {
+                super(cause, card);
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return cancelled;
+            }
+
+            @Override
+            public void setCancelled(boolean cancel) {
+                this.cancelled = cancel;
+            }
+        }
+
+        public static class CardPlacePost extends CardEvent {
+
+            public CardPlacePost(Cause cause, CardBase card) {
+                super(cause, card);
+            }
+        }
+
+        public static class CardDestroyed extends CardEvent {
+
+            public CardDestroyed(Cause cause, CardBase card) {
+                super(cause, card);
+            }
+        }
+
+        public static class CardMoved extends CardEvent {
+
+            private Cell old, current;
+
+            public CardMoved(Cause cause, CardBase card, Cell old, Cell current) {
+                super(cause, card);
+                this.old = old;
+                this.current = current;
+            }
+
+            public Cell getOld() {
+                return old;
+            }
+
+            public Cell getCurrent() {
+                return current;
+            }
+        }
+
+        public static class CardFlipped extends CardEvent {
+
+            public CardFlipped(Cause cause, CardBase card) {
+                super(cause, card);
+            }
+        }
+
     }
 
-    public static class CardDestroyed extends DuelEvent {
 
-        private CardBase card;
-
-        public CardDestroyed(Cause cause, CardBase card) {
-            super(cause);
-            this.card = card;
-        }
-
-        public CardBase getCard() {
-            return card;
-        }
-    }
-
-    public static class CardMoved extends DuelEvent {
-
-        private CardBase card;
-        private Cell old, current;
-
-        public CardMoved(Cause cause, CardBase card, Cell old, Cell current) {
-            super(cause);
-            this.card = card;
-            this.old = old;
-            this.current = current;
-        }
-
-        public CardBase getCard() {
-            return card;
-        }
-
-        public Cell getOld() {
-            return old;
-        }
-
-        public Cell getCurrent() {
-            return current;
-        }
-    }
-
-    public static class CardFlipped extends DuelEvent {
-
-        private CardBase cardBase;
-
-        public CardFlipped(Cause cause, CardBase cardBase) {
-            super(cause);
-            this.cardBase = cardBase;
-        }
-
-        public CardBase getCardBase() {
-            return cardBase;
-        }
-    }
 
     public static class AimUpdated extends DuelEvent {
 

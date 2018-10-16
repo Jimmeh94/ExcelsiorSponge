@@ -33,7 +33,7 @@ public class HotbarCardFaceChoice extends Hotbar {
 
         Pair<ItemStack, Callback> card;
         ItemStack item = ItemStack.builder().itemType(ItemTypes.IRON_SWORD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Place Card Face Up"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Place CardEvent Face Up"));
         card = new Pair<>(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {
@@ -53,7 +53,7 @@ public class HotbarCardFaceChoice extends Hotbar {
         addPair(2, card);
 
         item = ItemStack.builder().itemType(ItemTypes.SHIELD).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Place Card Face Down"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Place CardEvent Face Down"));
         card = new Pair<>(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {
