@@ -13,4 +13,8 @@ public class StatHealth extends StatBase {
     public StatHealth(double current, double max) {
         super(current, max, Text.of(TextColors.RED, "Health: "));
     }
+
+    public StatHealth(StatBase health) {
+        super(health);
+    }
 }

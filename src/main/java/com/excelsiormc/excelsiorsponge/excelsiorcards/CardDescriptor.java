@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class CardDescriptor {
 
-    protected Text name, description, type, movement, summon;
-    protected int baseHealth, basePower;
+    public Text name, description, type, movement, summon;
+    public int baseHealth, basePower;
     protected CardRarity rarity;
-    protected ItemStack item;
+    public ItemStack item;
     private ItemType mat;
     private int matDamageValue;
 

@@ -45,7 +45,8 @@ public abstract class CardBase {
     private List<Text> lore;
     private UUID owner;
     protected ArmorStand stand, position, cardFace;
-    private ItemStack facedownItem, faceupItem;
+    private ItemStack facedownItem;
+    protected ItemStack faceupItem;
     protected Cell currentCell;
     protected CardMovement cardMovement;
     protected SummonType summonType;

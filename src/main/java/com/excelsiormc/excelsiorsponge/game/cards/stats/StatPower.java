@@ -13,4 +13,8 @@ public class StatPower extends StatBase {
     public StatPower(double current, double max) {
         super(current, max, Text.of(TextColors.YELLOW, "Power: "));
     }
+
+    public StatPower(StatBase power) {
+        super(power);
+    }
 }

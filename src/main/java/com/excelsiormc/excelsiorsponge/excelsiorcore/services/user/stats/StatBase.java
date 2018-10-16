@@ -22,7 +22,7 @@ public abstract class StatBase {
         this.displayName = displayName;
     }
 
-    protected StatBase(StatBase statBase){
+    public StatBase(StatBase statBase){
         this.current = new Double(statBase.current);
         this.max = new Double(statBase.max);
         this.displayName = statBase.displayName;

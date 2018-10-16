@@ -4,6 +4,10 @@ import org.spongepowered.api.item.ItemTypes;
 
 public enum CardDescriptors {
 
+    /**
+     * ======== Starter Box 1 =======
+     */
+
     ANCIENT_TREE_OF_ENLIGHTENMENT(new CardDescriptor("Ancient Tree of Enlightenment", "Effect: While this card is face up" +
             " in defense position, enemy trap cards cannot be activated", CardDescriptor.CardType.PLANT, "Cross, 1 Cell",
             "3 Energy", 600, 1500, CardDescriptor.CardRarity.COMMON, ItemTypes.LOG, 100)),
@@ -17,11 +21,14 @@ public enum CardDescriptors {
             CardDescriptor.CardType.DRAGON, "Square, 2 Cells","8 Energy", 2500, 3000,
             CardDescriptor.CardRarity.ULTRA_RARE, ItemTypes.DIAMOND, 100)),
 
-    //TODO DECIDE IF THE DESCRIPTION IS AN EFFECT OR JUST CARD DESC. Original is just a desc, not effect
     CHANGE_SLIME(new CardDescriptor("Change Slime", "Effect: A slime that can adopt the shape and stats" +
             " of any other monster in play (chooses at random)",
             CardDescriptor.CardType.DRAGON, "Cross, 1 Cell","1 Energy", 300, 400,
             CardDescriptor.CardRarity.COMMON, ItemTypes.SLIME_BALL, 100));
+
+    /**
+     * ======== =======
+     */
 
     private CardDescriptor cardDescriptor;
 

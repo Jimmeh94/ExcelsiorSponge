@@ -5,6 +5,7 @@ import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cards.starterbox.CardAncientTreeofEnlightenment;
 import com.excelsiormc.excelsiorsponge.game.cards.cards.starterbox.CardBasicInsect;
 import com.excelsiormc.excelsiorsponge.game.cards.cards.starterbox.CardBlueEyesWhiteDragon;
+import com.excelsiormc.excelsiorsponge.game.cards.cards.starterbox.CardChangeSlime;
 
 import java.util.UUID;
 
@@ -15,8 +16,11 @@ public class CardManager {
             case ANCIENT_TREE_OF_ENLIGHTENMENT: return new CardAncientTreeofEnlightenment(owner, descriptor.getCardDescriptor());
             case BASIC_INSECT: return new CardBasicInsect(owner, descriptor.getCardDescriptor());
             case BLUE_EYES_WHITE_DRAGON: return new CardBlueEyesWhiteDragon(owner, descriptor.getCardDescriptor());
+            case CHANGE_SLIME: return new CardChangeSlime(owner, descriptor.getCardDescriptor());
+
+
+            default: return null;
         }
-        return null;
     }
 
 }
