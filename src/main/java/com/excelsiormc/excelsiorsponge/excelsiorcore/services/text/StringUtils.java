@@ -1,5 +1,10 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.text;
 
+import org.spongepowered.api.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringUtils {
 
     public static String capitalizeFirstLetter(String string){
@@ -43,4 +48,45 @@ public class StringUtils {
         return give;
     }
 
+    public static List<Text> getLongTextAsShort(Text text) {
+        List<Text> give = new ArrayList<>();
+
+        String string = text.toPlain();
+
+        if(string.length() > 50){
+            String temp;
+            int limit = (string.length() / 50) + (string.length() % 50 > 0 ? 1 : 0);
+            for(int i = 0; i < limit; i++){
+                if(i < limit - 1) {
+                    temp = string.substring(0 + (50 * i), 50 * (i + 1));
+                } else {
+                    temp = string.substring(0 + (50 * i));
+                }
+                give.add(Text.of(text.getFormat(), temp));
+            }
+        }
+
+        return give;
+    }
+
+    public static List<Text> getLongTextAsShortScoreboard(Text text) {
+        List<Text> give = new ArrayList<>();
+
+        String string = text.toPlain();
+
+        if(string.length() > 40){
+            String temp;
+            int limit = (string.length() / 40) + (string.length() % 40 > 0 ? 1 : 0);
+            for(int i = 0; i < limit; i++){
+                if(i < limit - 1) {
+                    temp = string.substring(0 + (40 * i), 40 * (i + 1));
+                } else {
+                    temp = string.substring(0 + (40 * i));
+                }
+                give.add(Text.of(text.getColor(), temp));
+            }
+        }
+
+        return give;
+    }
 }

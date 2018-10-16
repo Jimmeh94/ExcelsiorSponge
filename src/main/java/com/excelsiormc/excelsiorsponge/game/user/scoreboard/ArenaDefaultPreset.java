@@ -11,11 +11,9 @@ import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ArenaDefaultPreset extends ScoreboardPreset {
 
@@ -35,8 +33,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
 
         strings.add(Text.of(TextColors.RED, AltCodes.CROSSED_SWORDS.getSign() + " " + TextColors.GRAY 
                 + arena.getGamemode().getName() + " " + TextColors.RED + AltCodes.CROSSED_SWORDS.getSign()));
-        strings.add(Text.of("==============="));
-        strings.add(Text.of(TextColors.RED));
+        strings.add(Text.of(TextColors.GRAY, "==============="));
         strings.add(Text.of(TextColors.YELLOW, "Energy: " + cpp.getSummonEnergy()));
 
         if(cpp.getCurrentAim().isPresent() && cpp.getCurrentAim().get().getCellType() != null){
@@ -59,57 +56,39 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
                     }
                     strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
 
-                    strings.add(Text.of(TextStyles.BOLD, card.getName()));
-                    strings.add(Text.of("------------------"));
+                    strings.add(card.getName());
+                    strings.add(Text.of(TextColors.GRAY, "------------------"));
 
                     for(Text text: cpp.getCurrentAim().get().getOccupyingCard().getExtraDisplayInfo().values()){
                         strings.add(text);
                     }
 
-                    List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
-                    for(Text text: texts){
-                        if(text.toPlain().length() > 40){
-                            String t = text.toPlain();
-                            String[] temp = new String[t.length() % 30 > 0 ? t.length() / 30 + 1 : t.length() / 30];
-                            for(int i = 0; i < temp.length; i++){
-                                if(i < temp.length - 1) {
-                                    temp[i] = t.substring(i * 30, 30 + (30 * i));
-                                } else {
-                                    temp[i] = t.substring(i * 30);
-                                }
-                            }
-                            for(int i = 0; i < temp.length; i++){
-                                texts.add(texts.indexOf(text) + i, Text.of(text.getColor(), text.getFormat(), temp[i]));
-                            }
-                            texts.remove(text);
-                        }
+                    strings.add(Text.builder().append(card.getPower().getDisplayName())
+                            .append(Text.of(TextColors.GRAY, String.valueOf(card.getPower().getCurrent()))).build());
+                    strings.add(Text.builder().append(card.getHealth().getDisplayName())
+                            .append(Text.of(TextColors.GRAY, String.valueOf(card.getHealth().getCurrent()))).build());
+                    strings.add(card.getDescriptor().getMovement());
+
+                    strings.add(Text.of(TextColors.RED, TextColors.GREEN, TextColors.BLUE));
+                    if(card.getDescriptor().description.toPlain().contains("Effect:")){
+                        strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription()));
                     }
-                    strings.addAll(texts);
                 } else {
                     if(card.getCardFacePosition() == CardBase.CardFacePosition.FACE_UP) {
                         strings.add(Text.of(TextColors.RED, TextColors.GRAY, TextColors.BLUE));
                         strings.add(card.getName());
-                        strings.add(Text.of("------------------"));
+                        strings.add(Text.of(TextColors.GRAY, "------------------"));
 
-                        List<Text> texts = new CopyOnWriteArrayList<>(card.getLore());
-                        for (Text text : texts) {
-                            if (text.toPlain().length() > 40) {
-                                String t = text.toPlain();
-                                String[] temp = new String[t.length() % 30 > 0 ? t.length() / 30 + 1 : t.length() / 30];
-                                for (int i = 0; i < temp.length; i++) {
-                                    if (i < temp.length - 1) {
-                                        temp[i] = t.substring(i * 30, 30 + (30 * i));
-                                    } else {
-                                        temp[i] = t.substring(i * 30);
-                                    }
-                                }
-                                for (int i = 0; i < temp.length; i++) {
-                                    texts.add(texts.indexOf(text) + i, Text.of(text.getColor(), text.getFormat(), temp[i]));
-                                }
-                                texts.remove(text);
-                            }
+                        strings.add(Text.builder().append(card.getPower().getDisplayName())
+                                .append(Text.of(TextColors.GRAY, String.valueOf(card.getPower().getCurrent()))).build());
+                        strings.add(Text.builder().append(card.getHealth().getDisplayName())
+                                .append(Text.of(TextColors.GRAY, String.valueOf(card.getHealth().getCurrent()))).build());
+                        strings.add(card.getDescriptor().getMovement());
+
+                        strings.add(Text.of(TextColors.RED, TextColors.YELLOW, TextColors.BLUE));
+                        if(card.getDescriptor().description.toPlain().contains("Effect:")){
+                            strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription()));
                         }
-                        strings.addAll(texts);
                     }
                 }
             }

@@ -115,7 +115,7 @@ public class CardBaseAvatar extends CardBase {
     protected static class AvatarCardDescriptor extends CardDescriptor{
 
         public AvatarCardDescriptor(int baseHealth) {
-            super("", "", null, "", "", baseHealth, 0, null, null, 0);
+            super("", "", CardType.AVATAR, "", "", baseHealth, 0, null, null, 0);
         }
 
         @Override

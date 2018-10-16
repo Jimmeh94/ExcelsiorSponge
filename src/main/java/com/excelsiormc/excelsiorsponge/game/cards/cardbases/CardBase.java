@@ -63,6 +63,10 @@ public abstract class CardBase {
         this.cardMovement = cardMovement;
         this.cardMovement.setOwner(this);
 
+        if(descriptor.item != null){
+            generateItemStack();
+        }
+
         if(summonType != null) {
             this.summonType = summonType;
             this.summonType.setOwner(this);
@@ -111,9 +115,11 @@ public abstract class CardBase {
     protected List<Text> generateLore() {
         List<Text> give = new ArrayList<>();
         give.add(descriptor.getType());
-        give.add(Text.builder().append(Text.of(TextColors.GRAY, "Rarity: "), descriptor.getRarity().getText()).build());
+        give.add(descriptor.rarityText);
+        give.add(descriptor.getMovement());
+        give.add(descriptor.getSummon());
         give.add(Text.of( " "));
-        give.add(descriptor.getDescription());
+        give.addAll(StringUtils.getLongTextAsShort(descriptor.getDescription()));
         give.add(Text.of( " "));
         give.add(health.getFullDisplay());
         give.add(power.getFullDisplay());
@@ -225,6 +231,7 @@ public abstract class CardBase {
     }
 
     public void spawn(Location center) {
+        cardPosition = CardPosition.ATTACK;
 
         stand = (ArmorStand) center.getExtent().createEntity(EntityTypes.ARMOR_STAND, center.getPosition());
         stand.offer(Keys.DISPLAY_NAME, descriptor.getName());

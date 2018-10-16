@@ -59,7 +59,7 @@ public abstract class Hotbar {
 
         for (final Inventory temp : hotbar.slots()) {
             slot = (Slot) temp;
-            if(items.containsKey(i)){
+            if(items.containsKey(i) && items.get(i).getFirst() != null){
                 slot.set(items.get(i).getFirst());
             }
             i++;

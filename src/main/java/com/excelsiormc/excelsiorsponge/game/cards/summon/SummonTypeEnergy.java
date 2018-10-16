@@ -20,6 +20,11 @@ public class SummonTypeEnergy extends SummonType {
     @Override
     public boolean canSummon() {
         CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
+        if(!isCellEmpty(cpp)){
+            Messager.sendMessage(cpp.getPlayer(), Text.of(TextColors.RED, "This cell is occupied!"), Messager.Prefix.DUEL);
+            return false;
+        }
+
         if(cpp.getSummonEnergy() >= cost){
             return true;
         } else {

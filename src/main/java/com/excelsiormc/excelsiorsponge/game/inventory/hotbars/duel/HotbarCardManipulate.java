@@ -37,7 +37,7 @@ public class HotbarCardManipulate extends Hotbar {
 
         Pair<ItemStack, Callback> card;
         ItemStack item = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Right Click to use CardEvent Ability"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Right Click to use Card Ability"));
 
         card = new Pair<>(item, new Callback() {
             @Override
@@ -53,7 +53,7 @@ public class HotbarCardManipulate extends Hotbar {
         addPair(1, card);
 
         item = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).build();
-        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "CardEvent Description"));
+        item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "Card Description"));
         card = new Pair<>(item, new Callback() {
             @Override
             public void actionLeftClick(Player player, HandType action) {

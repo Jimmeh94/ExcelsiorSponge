@@ -27,6 +27,11 @@ public class SummonSacrificeCards extends SummonType {
         CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
         List<CardBase> cards = DuelUtils.getArena(owner.getOwner()).get().getGrid().getActiveCardsOnFieldFor(owner.getOwner());
 
+        if(!isCellEmpty(cpp)){
+            Messager.sendMessage(cpp.getPlayer(), Text.of(TextColors.RED, "This cell is occupied!"), Messager.Prefix.DUEL);
+            return false;
+        }
+
         double total = 0;
         for(CardBase cardBase: cards){
             if(cardBase instanceof CardBaseMonster){

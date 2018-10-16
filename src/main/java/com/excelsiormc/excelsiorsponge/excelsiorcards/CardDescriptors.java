@@ -5,6 +5,17 @@ import org.spongepowered.api.item.ItemTypes;
 public enum CardDescriptors {
 
     /**
+     * ======== Ultra Rares =======
+     */
+    /*FHYNA_FIREHEART(new CardDescriptor("Fhyna FireHeart", "Effect: Reincarnates once after being eliminated",
+            CardDescriptor.CardType.DIVINE, "Square, 2 Cells","8 Energy", 2300, 2700,
+            CardDescriptor.CardRarity.ULTRA_RARE, ItemTypes.BLAZE_POWDER, 100)),
+
+    ATLAS_THE_SOVEREIGN(new CardDescriptor("Atlas The Sovereign", "The great titan Sky-Bearer",
+            CardDescriptor.CardType.DIVINE, "Square, 2 Cells","8 Energy", 2400, 3000,
+            CardDescriptor.CardRarity.ULTRA_RARE, ItemTypes.BRICK, 100)),*/
+
+    /**
      * ======== Starter Box 1 =======
      */
 
@@ -41,7 +52,6 @@ public enum CardDescriptors {
     MONSTER_EGG(new CardDescriptor("Monster Egg", "A warrior hidden within an egg that attacks enemies by flinging eggshells",
             CardDescriptor.CardType.WARRIOR, "Cross, 1 Cell","3 Energy", 900, 600,
             CardDescriptor.CardRarity.COMMON, ItemTypes.EGG, 100));
-
     /**
      * ======== =======
      */

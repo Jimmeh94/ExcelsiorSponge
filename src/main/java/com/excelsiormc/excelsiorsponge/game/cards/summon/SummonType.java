@@ -45,4 +45,8 @@ public abstract class SummonType {
         }
         return false;
     }
+
+    protected boolean isCellEmpty(CombatantProfilePlayer cpp){
+        return cpp.getCurrentAim().isPresent() && cpp.getCurrentAim().get().isAvailable();
+    }
 }

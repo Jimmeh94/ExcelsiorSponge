@@ -21,10 +21,16 @@ public class HotbarCardEdit extends Hotbar {
 
     public HotbarCardEdit(CardBase card) {
         this.card = card;
+
+        setupItems();
     }
 
     @Override
     protected void setupItems() {
+        if(card == null){
+            return;
+        }
+
         Pair<ItemStack, Callback> action;
         ItemStack item;
 
