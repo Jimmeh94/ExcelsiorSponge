@@ -34,9 +34,12 @@ public class CardChangeSlime extends CardBaseMonster {
         if(cards.size() > 0){
             CardBase chosen = cards.get((new Random()).nextInt(cards.size()));
             this.descriptor.name = chosen.getDescriptor().getName();
+            this.descriptor.description = chosen.getDescriptor().getDescription();
             this.health = new StatHealth(chosen.getHealth());
             this.power = new StatPower(chosen.getPower());
             this.faceupItem = chosen.getFaceupItem();
+            stand.offer(Keys.DISPLAY_NAME, descriptor.getName());
+
             updateLore();
 
             if(cardFacePosition == CardFacePosition.FACE_UP){

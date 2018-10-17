@@ -3,9 +3,9 @@ package com.excelsiormc.excelsiorsponge.game.match.field.cells;
 import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.terrain.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public enum CellTerrains {
 
@@ -103,7 +103,7 @@ public enum CellTerrains {
     }
 
     private static List<CellTerrains> getTypesOf(CellTerrain.GenerationPriority priority){
-        List<CellTerrains> temp = new ArrayList<>();
+        List<CellTerrains> temp = new CopyOnWriteArrayList<>();
         for(CellTerrains t: CellTerrains.values()){
             if(t.getCellType().getPriority() == priority){
                 temp.add(t);

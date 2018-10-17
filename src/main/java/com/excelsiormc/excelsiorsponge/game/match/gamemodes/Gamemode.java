@@ -363,6 +363,12 @@ public abstract class Gamemode {
         return DuelUtils.getTeam(one).isCombatant(two);
     }
 
+    public void voteToEndTurn(Player player) {
+        if(turnManager.voteToEndTurn(player)){
+            turnManager.startNextTurn(teams);
+        }
+    }
+
 
     protected class TurnManager {
 
@@ -373,6 +379,13 @@ public abstract class Gamemode {
         public TurnManager(int timeLimitForEachTurn) {
             this.timeLimitForEachTurn = timeLimitForEachTurn;
             this.timeLeft = timeLimitForEachTurn;
+        }
+
+        public boolean voteToEndTurn(Player player){
+            if(currentTurn.isCombatant(player.getUniqueId())){
+                return currentTurn.voteToEndTurn(player.getUniqueId());
+            }
+            return false;
         }
 
         public void startNextTurn(List<Team> teams){
@@ -395,6 +408,7 @@ public abstract class Gamemode {
 
                 Sponge.getEventManager().post(new DuelEvent.EndTurn(ExcelsiorSponge.getServerCause(), currentTurn));
 
+                currentTurn.clearVotes();
                 if(index == teams.size() - 1){
                     currentTurn = teams.get(0);
                 } else {

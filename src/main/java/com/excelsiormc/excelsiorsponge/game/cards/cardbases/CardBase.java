@@ -33,6 +33,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class CardBase {
 
@@ -53,6 +54,7 @@ public abstract class CardBase {
     protected CardFacePosition cardFacePosition = CardFacePosition.FACE_DOWN;
     protected Map<String, Text> extraDisplayInfo;
     protected Optional<Active> active = Optional.empty();
+    protected List<CardKeys> cardKeys;
 
     public CardBase(UUID owner, CardDescriptor description, StatPower power, StatHealth health, CardMovement cardMovement,
                     SummonType summonType) {
@@ -73,6 +75,7 @@ public abstract class CardBase {
         }
 
         extraDisplayInfo = new HashMap<>();
+        cardKeys = new CopyOnWriteArrayList<>();
     }
 
     //This is for effects on summon
@@ -90,6 +93,20 @@ public abstract class CardBase {
 
             Sponge.getEventManager().post(new DuelEvent.CardEvent.CardPlacePost(ExcelsiorSponge.getServerCause(), this));
         }
+    }
+
+    public void addKey(CardKeys key){
+        if(!cardKeys.contains(key)){
+            cardKeys.add(key);
+        }
+    }
+
+    public boolean hasKey(CardKeys key){
+        return cardKeys.contains(key);
+    }
+
+    public void removeKey(CardKeys key){
+        cardKeys.remove(key);
     }
 
     public Optional<Active> getActive() {
@@ -415,5 +432,9 @@ public abstract class CardBase {
         public Text getText() {
             return text;
         }
+    }
+
+    public enum CardKeys {
+        DONT_DRAW_CELL_FOR_ENEMY;
     }
 }

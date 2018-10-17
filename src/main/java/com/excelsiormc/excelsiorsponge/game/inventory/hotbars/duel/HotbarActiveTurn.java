@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
@@ -136,7 +137,7 @@ public class HotbarActiveTurn extends Hotbar {
             }
 
             private void loadOptions(Player player){
-                //TODO load options hotbar
+                Hotbars.HOTBAR_DUEL_OPTIONS_CURRENT_TURN.setHotbar(player);
             }
         });
         addPair(8, action);

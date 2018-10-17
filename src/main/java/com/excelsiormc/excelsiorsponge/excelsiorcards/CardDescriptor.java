@@ -37,8 +37,8 @@ public class CardDescriptor {
                 this.description = Text.of(TextColors.GRAY, TextStyles.ITALIC, description);
             }
             this.type = cardType.getText();
-            this.movement = Text.builder().append(Text.of(TextColors.GOLD, "Movement and Distance: ")).append(Text.of(TextColors.GRAY, movement)).build();
-            this.summon = Text.builder().append(Text.of(TextColors.GOLD, "Summon Method: ")).append(Text.of(TextColors.GRAY, summon)).build();
+            this.movement = Text.builder().append(Text.of(TextColors.GOLD, "Movement: ")).append(Text.of(TextColors.GRAY, movement)).build();
+            this.summon = Text.builder().append(Text.of(TextColors.GOLD, "Summon: ")).append(Text.of(TextColors.GRAY, summon)).build();
             this.baseHealth = baseHealth;
             this.basePower = basePower;
             this.rarity = rarity;

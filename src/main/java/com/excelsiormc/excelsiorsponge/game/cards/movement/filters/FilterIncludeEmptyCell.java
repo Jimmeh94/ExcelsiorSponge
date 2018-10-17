@@ -1,6 +1,5 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement.filters;
 
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
@@ -27,7 +26,7 @@ public class FilterIncludeEmptyCell extends MovementFilter {
     @Override
     public void drawCells(Player player) {
         for(Cell cell: getApplicableCells()){
-            cell.drawCustom(player, BlockStateColors.EMPTY);
+            cell.drawCustomEmpty(player);
         }
     }
 }

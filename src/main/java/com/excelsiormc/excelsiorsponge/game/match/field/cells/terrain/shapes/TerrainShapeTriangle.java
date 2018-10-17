@@ -6,7 +6,6 @@ import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrain;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3i;
-import org.spongepowered.api.util.Direction;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +31,7 @@ public class TerrainShapeTriangle implements TerrainShape {
             cells.addAll(grid.getRowInDirectionForLength(start, temp, LocationUtils.rotateDirectionBy90(direction)).getCells());
             cells.addAll(grid.getRowInDirectionForLength(start, temp, LocationUtils.rotateDirectionBy270(direction)).getCells());
 
-            Optional<Cell> next = grid.getCellInDirection(start, direction.toDouble(), false);
+            Optional<Cell> next = grid.getCellInDirection(start, direction);
             if(!next.isPresent()){
                 temp = -1;
             } else {

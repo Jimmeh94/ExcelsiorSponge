@@ -137,7 +137,7 @@ public class Cell {
             if (occupyingCard != null){
                 Optional<Player> player = PlayerUtils.getPlayer(occupyingCard.getOwner());
                 if(player.isPresent()) {
-                    eraseClient(player.get());
+                    resetClientView(player.get());
 
                     Gamemode gamemode = DuelUtils.getArena(occupyingCard.getOwner()).get().getGamemode();
 
@@ -149,9 +149,9 @@ public class Cell {
 
                             if (c.isPlayer()) {
                                 if (team.isCombatant(occupyingCard.getOwner())) {
-                                    eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
+                                    resetClientView(PlayerUtils.getPlayer(c.getUUID()).get());
                                 } else {
-                                    eraseClient(PlayerUtils.getPlayer(c.getUUID()).get());
+                                    resetClientView(PlayerUtils.getPlayer(c.getUUID()).get());
                                 }
                             }
                         }
@@ -182,8 +182,8 @@ public class Cell {
 
         Optional<UserPlayer> up = PlayerUtils.getUserPlayer(card.getOwner());
         if (up.isPresent()) {
-            eraseClient(up.get().getPlayer());
-            drawCustom(PlayerUtils.getPlayer(card.getOwner()).get(), BlockStateColors.OWNER);
+            resetClientView(up.get().getPlayer());
+            drawCustomOwner(PlayerUtils.getPlayer(card.getOwner()).get());
         }
 
         Gamemode gamemode = DuelUtils.getArena(card.getOwner()).get().getGamemode();
@@ -196,9 +196,9 @@ public class Cell {
 
                 if (c.isPlayer()) {
                     if (team.isCombatant(card.getOwner())) {
-                        drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.TEAMMATE);
+                        drawCustomTeammate(PlayerUtils.getPlayer(c.getUUID()).get());
                     } else {
-                        drawCustom(PlayerUtils.getPlayer(c.getUUID()).get(), BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+                        drawCustomEnemyNoCurrentThreat(PlayerUtils.getPlayer(c.getUUID()).get());
                     }
                 }
             }
@@ -229,13 +229,19 @@ public class Cell {
         }
     }
 
-    public void eraseClient(Player player) {
+    public void resetClientView(Player player) {
         if(isAvailable) {
             for (Vector3d v : ceiling) {
                 player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
             }
         } else if(DuelUtils.isCellEnemyOccupied(this, DuelUtils.getTeam(player.getUniqueId()))){
-            drawCustom(player, BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+                drawCustomEnemyNoCurrentThreat(player);
+        }
+    }
+
+    public void eraseClient(Player player){
+        for (Vector3d v : ceiling) {
+            player.sendBlockChange(v.toInt(), BlockState.builder().blockType(BlockTypes.BARRIER).build());
         }
     }
 
@@ -243,9 +249,37 @@ public class Cell {
         return centerCeiling.clone().add(0, 1, 0);
     }
 
-    public void drawCustom(Player player, BlockState state) {
+    public void drawCustomEnemyNoCurrentThreat(Player player){
+        if(!occupyingCard.hasKey(CardBase.CardKeys.DONT_DRAW_CELL_FOR_ENEMY)) {
+            for (Vector3d v : ceiling) {
+                player.sendBlockChange(v.toInt(), BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+            }
+        }
+    }
+
+    public void drawCustomEnemyCurrentThreat(Player player){
+        if(!occupyingCard.hasKey(CardBase.CardKeys.DONT_DRAW_CELL_FOR_ENEMY)) {
+            for (Vector3d v : ceiling) {
+                player.sendBlockChange(v.toInt(), BlockStateColors.ENEMY_THREAT);
+            }
+        }
+    }
+
+    public void drawCustomOwner(Player player){
         for(Vector3d v: ceiling){
-            player.sendBlockChange(v.toInt(), state);
+            player.sendBlockChange(v.toInt(), BlockStateColors.OWNER);
+        }
+    }
+
+    public void drawCustomTeammate(Player player){
+        for(Vector3d v: ceiling){
+            player.sendBlockChange(v.toInt(), BlockStateColors.TEAMMATE);
+        }
+    }
+
+    public void drawCustomEmpty(Player player) {
+        for(Vector3d v: ceiling){
+            player.sendBlockChange(v.toInt(), BlockStateColors.EMPTY);
         }
     }
 

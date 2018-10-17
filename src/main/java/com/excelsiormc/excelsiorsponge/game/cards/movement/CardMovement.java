@@ -43,7 +43,7 @@ public abstract class CardMovement {
     public void clearCurrentlyHighlighted(){
         Player player = PlayerUtils.getPlayer(owner.getOwner()).get();
         for(Cell cell: getFilteredCells()){
-            cell.eraseClient(player);
+            cell.resetClientView(player);
         }
 
         filter.clear();

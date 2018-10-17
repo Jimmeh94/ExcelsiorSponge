@@ -7,7 +7,6 @@ import com.excelsiormc.excelsiorsponge.game.match.Team;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.CellTerrains;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.TerrainTemplate;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -62,25 +61,20 @@ public abstract class Grid {
         terrainTemplate.generateTerrain();
     }
 
-    public Optional<Cell> getCellInDirection(Cell current, Vector3d distanceInCells, boolean useNearestIfEmpty){
-        double xDistance = cellDim * distanceInCells.getX();
-        xDistance += 1 * distanceInCells.getX();
+    public Optional<Cell> getCellInDirection(Cell current, Vector3i direction){
+        double xDistance = cellDim * direction.getX();
+        if(xDistance != 0) {
+            xDistance += 1 * direction.getX();
+        }
 
-        double zDistance = cellDim * distanceInCells.getZ();
-        zDistance += 1 * distanceInCells.getZ();
+        double zDistance = cellDim * direction.getZ();
+        if(zDistance != 0) {
+            zDistance += 1 * direction.getZ();
+        }
 
         Vector3d target = current.getCenter().clone().add(new Vector3d(xDistance, 0, zDistance));
         if(isCell(target)){
             return Optional.of(getCell(target).get());
-        } else if(useNearestIfEmpty){
-            //This will get the cell nearest to the target
-            EditableVector temp = new EditableVector(target);
-            int x = xDistance < 0 ? 1 : -1;
-            int z = zDistance < 0 ? 1 : -1;
-            while(!isCell(temp.toVector3d())){
-                temp.add(x, 0, z);
-            }
-            return Optional.of(getCell(temp.toVector3d()).get());
         }
         return Optional.empty();
     }
@@ -139,11 +133,11 @@ public abstract class Grid {
         return cells;
     }
 
-    public Row getRowInDirectionForLength(Cell start, int length, Vector3i direction){
+    public Row getRowInDirectionForLength(Cell start, int lengthInCells, Vector3i direction){
         Row row = new Row();
         row.addCell(start);
-        for(int i = 0; i < length; i++){
-            Optional<Cell> cell = getCellInDirection(start, direction.toDouble(), false);
+        for(int i = 0; i < lengthInCells; i++){
+            Optional<Cell> cell = getCellInDirection(start, direction);
             if(cell.isPresent()){
                 row.addCell(cell.get());
                 start = cell.get();
@@ -160,64 +154,49 @@ public abstract class Grid {
 
     public Row getRowBetweenCells(Cell start, Cell end){
         Vector3i direction = LocationUtils.getDirection(start.getCenter(), end.getCenter());
-        Cell current = start;
+
+        Optional<Cell> current = Optional.of(start);
         Row row = new Row();
 
-        while(current != end){
-            row.addCell(current);
-            current = getCellInDirection(current, direction.toDouble(), false).get();
+        while(current.isPresent() && current.get() != end){
+            row.addCell(current.get());
+            current = getCellInDirection(current.get(), direction);
         }
-        if(!row.getCells().contains(current)){
-            row.addCell(current);
+        if(current.isPresent() && !row.getCells().contains(current.get())){
+            row.addCell(current.get());
         }
         return row;
     }
 
     public List<Cell> getCellsCross(Cell current, int plusXDistanceInCells, int minusXDistanceInCells, int plusZDistanceInCels,
                                     int minusZDistanceInCells){
-        Vector3d center = current.getCenter();
-        List<Cell> give = new ArrayList<>();
+        List<Cell> give = new CopyOnWriteArrayList<>();
 
-        //get cell in +x, -x, +z, -z
-        EditableVector start = new EditableVector(center.clone());
-        EditableVector use = start.clone();
-
-        //+ x
-        for(int i = 1; i <= plusXDistanceInCells; i++){
-            use.setX(use.getX() + (cellDim) + 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
+        Row row = getRowInDirectionForLength(current, plusXDistanceInCells, new Vector3i(1, 0, 0));
+        for(Cell cell: row.getCells()){
+            if(!give.contains(cell)){
+                give.add(cell);
             }
         }
 
-        //- x
-        use = start.clone();
-        for(int i = 1; i <= minusXDistanceInCells; i++){
-            use.setX(use.getX() - (cellDim) - 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
+        row = getRowInDirectionForLength(current, minusXDistanceInCells, new Vector3i(-1, 0, 0));
+        for(Cell cell: row.getCells()){
+            if(!give.contains(cell)){
+                give.add(cell);
             }
         }
 
-        //+ z
-        use = start.clone();
-        for(int i = 1; i <= plusZDistanceInCels; i++){
-            use.setZ(use.getZ() + (cellDim) + 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
+        row = getRowInDirectionForLength(current, plusZDistanceInCels, new Vector3i(0, 0, 1));
+        for(Cell cell: row.getCells()){
+            if(!give.contains(cell)){
+                give.add(cell);
             }
         }
 
-        //- z
-        use = start.clone();
-        for(int i = 1; i <= minusZDistanceInCells; i++){
-            use.setZ(use.getZ() - (cellDim) - 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
+        row = getRowInDirectionForLength(current, minusZDistanceInCells, new Vector3i(0, 0, -1));
+        for(Cell cell: row.getCells()){
+            if(!give.contains(cell)){
+                give.add(cell);
             }
         }
 
@@ -225,44 +204,7 @@ public abstract class Grid {
     }
 
     public List<Cell> getCellsEqualLengthCross(Cell current, int distanceInCells){
-        Vector3d center = current.getCenter();
-        List<Cell> give = new CopyOnWriteArrayList<>();
-        give.add(current);
-
-        //get cell in +x, -x, +z, -z
-        EditableVector start = new EditableVector(center.clone());
-        EditableVector use = start.clone();
-
-        for(int i = 1; i <= distanceInCells; i++){
-            use.setX(use.getX() + (cellDim * i) + 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
-            }
-
-            use = start.clone();
-            use.setX(use.getX() - (cellDim * i) - 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
-            }
-
-            use = start.clone();
-            use.setZ(use.getZ() - (cellDim * i) - 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
-            }
-
-            use = start.clone();
-            use.setZ(use.getZ() + (cellDim * i) + 1);
-            if(isCell(use.toVector3d())){
-                Cell target = getCell(use.toVector3d()).get();
-                give.add(target);
-            }
-        }
-
-        return give;
+        return getCellsCross(current, distanceInCells, distanceInCells, distanceInCells, distanceInCells);
     }
 
     public Row getRowFirst(){
@@ -381,7 +323,7 @@ public abstract class Grid {
     }
 
     public List<CardBase> getActiveCardsOnFieldForTeam(Team team){
-        List<CardBase> give = new ArrayList<>();
+        List<CardBase> give = new CopyOnWriteArrayList<>();
 
         for(Row row: rows){
             for(Cell cell: row.getCells()){
@@ -397,7 +339,7 @@ public abstract class Grid {
     }
 
     public List<CardBase> getActiveCardsOnField(){
-        List<CardBase> give = new ArrayList<>();
+        List<CardBase> give = new CopyOnWriteArrayList<>();
 
         for(Row row: rows) {
             for (Cell cell : row.getCells()) {
@@ -450,17 +392,17 @@ public abstract class Grid {
     public void redrawGridForPlayer(Player player) {
         for(Cell cell: getAllCells()){
             if(cell.isAvailable()){
-                cell.eraseClient(player);
+                cell.resetClientView(player);
             } else {
                 Team team = DuelUtils.getTeam(player.getUniqueId());
                 if(team.isCombatant(cell.getOccupyingCard().getOwner())){
                     if(cell.getOccupyingCard().isOwner(player.getUniqueId())){
-                        cell.drawCustom(player, BlockStateColors.OWNER);
+                        cell.drawCustomOwner(player);
                     } else {
-                        cell.drawCustom(player, BlockStateColors.TEAMMATE);
+                        cell.drawCustomTeammate(player);
                     }
                 } else {
-                    cell.drawCustom(player, BlockStateColors.ENEMY_NO_CURRENT_THREAT);
+                    cell.drawCustomEnemyNoCurrentThreat(player);
                 }
             }
         }

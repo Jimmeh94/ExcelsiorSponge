@@ -1,5 +1,6 @@
 package com.excelsiormc.excelsiorsponge.game.cards.movement.filters;
 
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.BattleResult;
@@ -8,7 +9,6 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Row;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -41,6 +41,14 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
 
             if(index != -1) {
                 if (!row.getCells().subList(0, index + 1).contains(cell)) {
+                    applicableCells.remove(cell);
+                }
+            }
+        }
+
+        for(Cell cell: applicableCells){
+            if(DuelUtils.isCellEnemyOccupied(cell, arena.getGamemode().getTeamWithCombatant(owner.getOwner()))){
+                if(cell.getOccupyingCard().hasKey(CardBase.CardKeys.DONT_DRAW_CELL_FOR_ENEMY)){
                     applicableCells.remove(cell);
                 }
             }
@@ -96,9 +104,9 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
     public void drawCells(Player player) {
         for(Cell cell: getApplicableCells()){
             if(cell.isAvailable()){
-                cell.drawCustom(player, BlockStateColors.EMPTY);
+                cell.drawCustomEmpty(player);
             } else {
-                cell.drawCustom(player, BlockStateColors.ENEMY_THREAT);
+                cell.drawCustomEnemyCurrentThreat(player);
             }
         }
     }

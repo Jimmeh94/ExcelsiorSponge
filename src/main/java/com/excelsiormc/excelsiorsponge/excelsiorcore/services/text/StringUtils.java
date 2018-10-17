@@ -76,14 +76,14 @@ public class StringUtils {
 
         String string = text.toPlain();
 
-        if(string.length() > 36){
+        if(string.length() > 35){
             String temp;
-            int limit = (string.length() / 36) + (string.length() % 36 > 0 ? 1 : 0);
+            int limit = (string.length() / 35) + (string.length() % 35 > 0 ? 1 : 0);
             for(int i = 0; i < limit; i++){
                 if(i < limit - 1) {
-                    temp = string.substring(0 + (36 * i), 36 * (i + 1));
+                    temp = string.substring(0 + (35 * i), 35 * (i + 1));
                 } else {
-                    temp = string.substring(0 + (36 * i));
+                    temp = string.substring(0 + (35 * i));
                 }
                 if(color.isPresent()){
                     give.add(Text.of(color.get(), temp));
@@ -91,6 +91,8 @@ public class StringUtils {
                     give.add(Text.of(text.getColor(), temp));
                 }
             }
+        } else {
+            give.add(text);
         }
 
         return give;

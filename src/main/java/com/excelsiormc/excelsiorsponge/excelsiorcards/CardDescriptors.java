@@ -32,9 +32,9 @@ public enum CardDescriptors {
             CardDescriptor.CardType.DRAGON, "Square, 2 Cells","8 Energy", 2500, 3000,
             CardDescriptor.CardRarity.ULTRA_RARE, ItemTypes.DIAMOND, 100)),
 
-    CHANGE_SLIME(new CardDescriptor("Change Slime", "Effect: A slime that can adopt the shape and stats" +
-            " of any other monster in play (chooses at random)",
-            CardDescriptor.CardType.DRAGON, "Cross, 1 Cell","1 Energy", 300, 400,
+    CHANGE_SLIME(new CardDescriptor("Change Slime", "Effect: A slime that morphs into " +
+            " any monster in play (chooses at random, doesn't trigger a 2nd effect)",
+            CardDescriptor.CardType.AQUA, "Cross, 1 Cell","1 Energy", 300, 400,
             CardDescriptor.CardRarity.COMMON, ItemTypes.SLIME_BALL, 100)),
 
     CHARUBIN_THE_FIRE_KNIGHT(new CardDescriptor("Charubin the Fire Knight", "A fearless knight of ancient flames",

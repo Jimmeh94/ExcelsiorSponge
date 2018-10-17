@@ -5,14 +5,13 @@ import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel.HotbarHand;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Team {
@@ -21,14 +20,17 @@ public class Team {
     private Vector3d spawn;
     private boolean alive = true;
     private Cell spawnCell;
+    private List<UUID> votesToEndTurn;
 
     public Team() {
         combatants = new CopyOnWriteArrayList<>();
+        votesToEndTurn = new ArrayList<>();
     }
 
     public Team(CombatantProfile... combatants){
         this.combatants = new CopyOnWriteArrayList<>();
         this.combatants.addAll(Arrays.asList(combatants));
+        votesToEndTurn = new ArrayList<>();
     }
 
     public void addCombatant(CombatantProfile profile){
@@ -138,5 +140,24 @@ public class Team {
 
     private void setSpawn(Vector3d spawn){
         this.spawn = spawn;
+    }
+
+    public boolean voteToEndTurn(UUID uniqueId) {
+        for(UUID uuid: votesToEndTurn){
+            if(uuid.compareTo(uniqueId) == 0){
+                Optional<Player> player = PlayerUtils.getPlayer(uniqueId);
+                if(player.isPresent()){
+                    Messager.sendMessage(player.get(), Text.of(TextColors.RED, "You've already voted to end your turn"), Messager.Prefix.DUEL);
+                    return votesToEndTurn.size() == combatants.size();
+                }
+            }
+        }
+
+        votesToEndTurn.add(uniqueId);
+        return votesToEndTurn.size() == combatants.size();
+    }
+
+    public void clearVotes() {
+        votesToEndTurn.clear();
     }
 }

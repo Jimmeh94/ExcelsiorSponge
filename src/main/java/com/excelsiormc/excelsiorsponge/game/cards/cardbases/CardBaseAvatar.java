@@ -11,7 +11,6 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfile;
 import com.excelsiormc.excelsiorsponge.timers.DelayedOneUseTimer;
-import com.excelsiormc.excelsiorsponge.utils.BlockStateColors;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
@@ -52,7 +51,7 @@ public class CardBaseAvatar extends CardBase {
             if(!cell.isAvailable()){
                 placeableCells.remove(cell);
             } else {
-                cell.drawCustom(player, BlockStateColors.EMPTY);
+                cell.drawCustomEmpty(player);
             }
         }
     }
@@ -63,7 +62,7 @@ public class CardBaseAvatar extends CardBase {
 
     public void removePlaceableCells(Player player){
         for(Cell cell: placeableCells){
-            cell.eraseClient(player);
+            cell.resetClientView(player);
         }
         placeableCells.clear();
     }

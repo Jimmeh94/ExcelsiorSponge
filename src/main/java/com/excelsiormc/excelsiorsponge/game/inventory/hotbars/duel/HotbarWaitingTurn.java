@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
+import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
@@ -20,15 +21,6 @@ public class HotbarWaitingTurn extends Hotbar {
     protected void setupItems() {
         Pair<ItemStack, Callback> action;
 
-        /**
-         * Need a free-cam mode to look around field, look at hand, look at discard pile
-         * 0 = use ability
-         * 2 = move card
-         * 3 = change card position
-         * 4 = look at hand
-         * 6 = discard pile
-         * 8 = options menu (skip turn, leave game)
-         */
         ItemStack item = ItemStack.builder().itemType(ItemTypes.BLAZE_POWDER).build();
         item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.LIGHT_PURPLE, "View Abilities"));
 
@@ -44,7 +36,7 @@ public class HotbarWaitingTurn extends Hotbar {
             }
 
             private void displayAbilityBar(){
-                //bring up ability hotbar
+
             }
         });
         addPair(0, action);
@@ -104,7 +96,7 @@ public class HotbarWaitingTurn extends Hotbar {
             }
 
             private void loadOptions(Player player){
-                //TODO load options hotbar
+                Hotbars.HOTBAR_DUEL_OPTIONS_WAITING_TURN.setHotbar(player);
             }
         });
         addPair(8, action);

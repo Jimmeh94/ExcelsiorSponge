@@ -92,4 +92,8 @@ public class DuelUtils {
     public static List<CardBase> getAllActiveCards(UUID owner){
         return getArena(owner).get().getGrid().getActiveCardsOnField();
     }
+
+    public static boolean isActiveTurn(Player player) {
+        return getArena(player.getUniqueId()).get().getGamemode().isPlayersTurn(player);
+    }
 }

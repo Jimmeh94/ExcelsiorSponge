@@ -82,7 +82,7 @@ public class TerrainTemplate {
     }
 
     private List<CellTerrain> getPriority(CellTerrain.GenerationPriority priority){
-        List<CellTerrain> give = new ArrayList<>();
+        List<CellTerrain> give = new CopyOnWriteArrayList<>();
 
         for(CellTerrain c: types){
             if(c.getPriority() == priority){
