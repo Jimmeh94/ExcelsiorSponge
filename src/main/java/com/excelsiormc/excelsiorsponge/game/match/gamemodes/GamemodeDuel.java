@@ -2,7 +2,6 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
-import com.excelsiormc.excelsiorsponge.excelsiorcore.services.LocationUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
@@ -11,7 +10,6 @@ import com.excelsiormc.excelsiorsponge.game.match.field.Grid;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
-import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -48,22 +46,6 @@ public class GamemodeDuel extends Gamemode {
 
         teams.get(0).setSpawn(firstSpawn);
         teams.get(1).setSpawn(secondSpawn);
-
-        Cell gridCenter = grid.getCenterCell();
-        Vector3i direction;
-
-        direction = LocationUtils.getDirection(firstSpawn.getCenter(), gridCenter.getCenter());
-        teams.get(0).addPlaceableRow(grid.getHorizontalRow(firstSpawn).get());
-
-        firstSpawn = grid.getCellInDirection(firstSpawn, direction.toDouble(), false).get();
-        teams.get(0).addPlaceableRow(grid.getHorizontalRow(firstSpawn).get());
-
-
-        direction = LocationUtils.getDirection(secondSpawn.getCenter(), gridCenter.getCenter());
-        teams.get(1).addPlaceableRow(grid.getHorizontalRow(secondSpawn).get());
-
-        secondSpawn = grid.getCellInDirection(secondSpawn, direction.toDouble(), false).get();
-        teams.get(1).addPlaceableRow(grid.getHorizontalRow(secondSpawn).get());
 
     }
 

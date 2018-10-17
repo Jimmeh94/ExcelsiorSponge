@@ -14,6 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ArenaDefaultPreset extends ScoreboardPreset {
 
@@ -71,7 +72,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
 
                     strings.add(Text.of(TextColors.RED, TextColors.GREEN, TextColors.BLUE));
                     if(card.getDescriptor().description.toPlain().contains("Effect:")){
-                        strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription()));
+                        strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription(), Optional.of(TextColors.GRAY)));
                     }
                 } else {
                     if(card.getCardFacePosition() == CardBase.CardFacePosition.FACE_UP) {
@@ -87,7 +88,7 @@ public class ArenaDefaultPreset extends ScoreboardPreset {
 
                         strings.add(Text.of(TextColors.RED, TextColors.YELLOW, TextColors.BLUE));
                         if(card.getDescriptor().description.toPlain().contains("Effect:")){
-                            strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription()));
+                            strings.addAll(StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription(), Optional.of(TextColors.GRAY)));
                         }
                     }
                 }

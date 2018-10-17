@@ -14,6 +14,7 @@ import com.excelsiormc.excelsiorsponge.game.match.matchmaking.MatchMaker;
 import com.excelsiormc.excelsiorsponge.timers.ArenaTimer;
 import com.excelsiormc.excelsiorsponge.timers.CardParticlesTimer;
 import com.excelsiormc.excelsiorsponge.timers.DirectionalAimArenaTimer;
+import com.excelsiormc.excelsiorsponge.timers.HandViewingTimer;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class ExcelsiorSponge {
     private ArenaTimer arenaTimer;
     private DirectionalAimArenaTimer directionalAimArenaTimer;
     private CardParticlesTimer cardParticlesTimer;
+    private HandViewingTimer handViewingTimer;
 
     @Listener
     public void onGameInit(GameInitializationEvent event){
@@ -105,6 +107,9 @@ public class ExcelsiorSponge {
 
         cardParticlesTimer = new CardParticlesTimer(10L);
         cardParticlesTimer.start();
+
+        handViewingTimer = new HandViewingTimer(2L);
+        handViewingTimer.start();
     }
 
     private void registerListeners() {
@@ -143,5 +148,9 @@ public class ExcelsiorSponge {
 
     public CardParticlesTimer getCardParticlesTimer() {
         return cardParticlesTimer;
+    }
+
+    public HandViewingTimer getHandViewingTimer() {
+        return handViewingTimer;
     }
 }

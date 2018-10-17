@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.utils.ClickTypes;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -33,6 +34,8 @@ public abstract class Hotbar {
     protected abstract void setupItems();
     public abstract void handleEmptyRightClick(Player player);
     public abstract void handleEmptyLeftClick(Player player);
+
+    protected void removedAsCurrentHotbar(PlayerBase playerBase){}
 
     protected void addItem(int index, ItemStack item){
         items.put(index, new Pair<>(item, null));
@@ -65,7 +68,12 @@ public abstract class Hotbar {
             i++;
         }
 
-        ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get().setCurrentHotbar(this);
+        PlayerBase playerBase = ExcelsiorCore.INSTANCE.getPlayerBaseManager().getPlayerBase(player.getUniqueId()).get();
+
+        if(playerBase.getCurrentHotbar() != null){
+            playerBase.getCurrentHotbar().removedAsCurrentHotbar(playerBase);
+        }
+        playerBase.setCurrentHotbar(this);
     }
 
     public void handle(Player player, HandType handClick, ClickTypes clickType) {

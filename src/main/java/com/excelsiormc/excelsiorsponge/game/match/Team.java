@@ -20,6 +20,7 @@ public class Team {
     private List<CombatantProfile> combatants;
     private Vector3d spawn;
     private boolean alive = true;
+    private Cell spawnCell;
 
     public Team() {
         combatants = new CopyOnWriteArrayList<>();
@@ -40,6 +41,10 @@ public class Team {
                 Messager.sendTitleMessage(c.getPlayer(), Text.of(TextColors.GRAY, "Your Turn"));
             }
         }
+    }
+
+    public Cell getSpawnCell() {
+        return spawnCell;
     }
 
     public void checkAlive(){
@@ -127,10 +132,11 @@ public class Team {
     }
 
     public void setSpawn(Cell spawn) {
+        this.spawnCell = spawn;
         setSpawn(spawn.getCenterCeiling().clone().add(0, 10, 0));
     }
 
-    public void setSpawn(Vector3d spawn){
+    private void setSpawn(Vector3d spawn){
         this.spawn = spawn;
     }
 }

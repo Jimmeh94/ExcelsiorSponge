@@ -1,16 +1,19 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.match.Arena;
 import com.excelsiormc.excelsiorsponge.game.match.profiles.CombatantProfilePlayer;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
+import com.excelsiormc.excelsiorsponge.utils.PlayerUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -32,6 +35,13 @@ public class HotbarHandDummy extends Hotbar {
         setupItems();
 
         super.setHotbar(player);
+
+        ExcelsiorSponge.INSTANCE.getHandViewingTimer().addViewer(PlayerUtils.getUserPlayer(player.getUniqueId()).get());
+    }
+
+    @Override
+    protected void removedAsCurrentHotbar(PlayerBase playerBase) {
+        ExcelsiorSponge.INSTANCE.getHandViewingTimer().remove(PlayerUtils.getUserPlayer(playerBase.getOwner()).get());
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.excelsiormc.excelsiorsponge.excelsiorcore.services.text;
 
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class StringUtils {
 
@@ -69,21 +71,25 @@ public class StringUtils {
         return give;
     }
 
-    public static List<Text> getLongTextAsShortScoreboard(Text text) {
+    public static List<Text> getLongTextAsShortScoreboard(Text text, Optional<TextColor> color) {
         List<Text> give = new ArrayList<>();
 
         String string = text.toPlain();
 
-        if(string.length() > 40){
+        if(string.length() > 36){
             String temp;
-            int limit = (string.length() / 40) + (string.length() % 40 > 0 ? 1 : 0);
+            int limit = (string.length() / 36) + (string.length() % 36 > 0 ? 1 : 0);
             for(int i = 0; i < limit; i++){
                 if(i < limit - 1) {
-                    temp = string.substring(0 + (40 * i), 40 * (i + 1));
+                    temp = string.substring(0 + (36 * i), 36 * (i + 1));
                 } else {
-                    temp = string.substring(0 + (40 * i));
+                    temp = string.substring(0 + (36 * i));
                 }
-                give.add(Text.of(text.getColor(), temp));
+                if(color.isPresent()){
+                    give.add(Text.of(color.get(), temp));
+                } else {
+                    give.add(Text.of(text.getColor(), temp));
+                }
             }
         }
 

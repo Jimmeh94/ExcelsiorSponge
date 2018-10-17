@@ -1,10 +1,12 @@
 package com.excelsiormc.excelsiorsponge.game.inventory.hotbars.duel;
 
+import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.InventoryUtils;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.Pair;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.inventory.Hotbar;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.user.PlayerBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
@@ -35,6 +37,13 @@ public class HotbarHand extends Hotbar {
         setupItems();
 
         super.setHotbar(player);
+
+        ExcelsiorSponge.INSTANCE.getHandViewingTimer().addViewer(PlayerUtils.getUserPlayer(player.getUniqueId()).get());
+    }
+
+    @Override
+    protected void removedAsCurrentHotbar(PlayerBase playerBase) {
+        ExcelsiorSponge.INSTANCE.getHandViewingTimer().remove(PlayerUtils.getUserPlayer(playerBase.getOwner()).get());
     }
 
     @Override
