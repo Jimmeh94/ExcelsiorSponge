@@ -28,7 +28,7 @@ public abstract class CombatantProfile {
         graveyard = new DeckGraveyard(owner);
 
         hand = new Hand(owner);
-        card = new CardBaseAvatar(owner, this, new StatHealth(1000, 1000), new CardMovementSquare(1, new FilterIncludeEmptyCell()));
+        card = new CardBaseAvatar(owner, this, new StatHealth(8000), new CardMovementSquare(1, new FilterIncludeEmptyCell()));
 
         summonEnergy = 1;
     }

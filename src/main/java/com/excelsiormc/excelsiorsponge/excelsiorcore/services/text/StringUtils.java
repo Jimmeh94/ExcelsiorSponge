@@ -3,9 +3,9 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services.text;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StringUtils {
 
@@ -51,7 +51,7 @@ public class StringUtils {
     }
 
     public static List<Text> getLongTextAsShort(Text text) {
-        List<Text> give = new ArrayList<>();
+        List<Text> give = new CopyOnWriteArrayList<>();
 
         String string = text.toPlain();
 
@@ -72,7 +72,7 @@ public class StringUtils {
     }
 
     public static List<Text> getLongTextAsShortScoreboard(Text text, Optional<TextColor> color) {
-        List<Text> give = new ArrayList<>();
+        List<Text> give = new CopyOnWriteArrayList<>();
 
         String string = text.toPlain();
 

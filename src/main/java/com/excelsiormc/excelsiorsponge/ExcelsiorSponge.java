@@ -11,10 +11,7 @@ import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelAuction;
 import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
 import com.excelsiormc.excelsiorsponge.game.match.matchmaking.MatchMaker;
-import com.excelsiormc.excelsiorsponge.timers.ArenaTimer;
-import com.excelsiormc.excelsiorsponge.timers.CardParticlesTimer;
-import com.excelsiormc.excelsiorsponge.timers.DirectionalAimArenaTimer;
-import com.excelsiormc.excelsiorsponge.timers.HandViewingTimer;
+import com.excelsiormc.excelsiorsponge.timers.*;
 import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -53,6 +50,7 @@ public class ExcelsiorSponge {
     private DirectionalAimArenaTimer directionalAimArenaTimer;
     private CardParticlesTimer cardParticlesTimer;
     private HandViewingTimer handViewingTimer;
+    private WorldTimer worldTimer = null;
 
     @Listener
     public void onGameInit(GameInitializationEvent event){
@@ -87,9 +85,7 @@ public class ExcelsiorSponge {
     public void clearAllEntities(){
         for(World w: Sponge.getServer().getWorlds()){
             for(Entity e: w.getEntities()){
-                //if(e instanceof ArmorStand || e instanceof Human){
-                    e.remove();
-                //}
+                e.remove();
             }
         }
     }
@@ -110,6 +106,10 @@ public class ExcelsiorSponge {
 
         handViewingTimer = new HandViewingTimer(2L);
         handViewingTimer.start();
+
+        worldTimer = new WorldTimer();
+        worldTimer.addWorld(Sponge.getServer().getWorld("world").get(), WorldTimer.TimeOfDay.NOON);
+        worldTimer.start();
     }
 
     private void registerListeners() {
@@ -152,5 +152,9 @@ public class ExcelsiorSponge {
 
     public HandViewingTimer getHandViewingTimer() {
         return handViewingTimer;
+    }
+
+    public WorldTimer getWorldTimer() {
+        return worldTimer;
     }
 }

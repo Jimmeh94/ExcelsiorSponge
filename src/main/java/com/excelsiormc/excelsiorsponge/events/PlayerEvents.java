@@ -88,15 +88,6 @@ public class PlayerEvents {
         }
     }
 
-    @Listener
-    public void onModeChange(PlayerModeChangeEvent event){
-        if(event.getChangeTo() != UserPlayer.PlayerMode.NORMAL) {
-            if (ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().findArenaWithPlayer(event.getPlayer()).isPresent()) {
-
-            }
-        }
-    }
-
     public static class PlayerModeChangeEvent extends CustomEvent {
 
         private UserPlayer.PlayerMode changeFrom, changeTo;

@@ -103,7 +103,7 @@ public abstract class Grid {
         return first.getX() == second.getX() || first.getZ() == second.getZ();
     }
 
-    public List<Cell> getSquareGroupofCells(Cell start, int radiusInCells) {
+    public List<Cell> getSquareGroupofCells(Cell start, final int radiusInCells) {
         List<Cell> cells = new CopyOnWriteArrayList<>();
 
         EditableVector ev = new EditableVector(start.getCenter());

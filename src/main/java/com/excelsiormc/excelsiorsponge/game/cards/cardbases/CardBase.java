@@ -300,9 +300,19 @@ public abstract class CardBase {
     public void changePosition(CardPosition cardPosition){
         this.cardPosition = cardPosition;
         position.offer(Keys.DISPLAY_NAME, cardPosition.getText());
+        if(isOwnerPlayer()){
+            Messager.sendMessage(PlayerUtils.getPlayer(owner).get(), Text.builder().append(getName())
+                    .append(Text.of(TextColors.GRAY, " has been switched to the "
+                            + StringUtils.enumToString(cardPosition, true) + " position!")).build(),
+                    Messager.Prefix.DUEL);
+        }
     }
 
     public void move(Vector3d destination, Cell old){
+        if(cardPosition == CardPosition.DEFENSE){
+            changePosition(CardPosition.ATTACK);
+        }
+
         stand.setLocation(new Location<World>(stand.getWorld(), destination.getX(), destination.getY(), destination.getZ()));
 
         new DelayedOneUseTimer(10L) {

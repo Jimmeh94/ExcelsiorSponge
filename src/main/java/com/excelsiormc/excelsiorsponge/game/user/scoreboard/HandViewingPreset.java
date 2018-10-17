@@ -83,6 +83,11 @@ public class HandViewingPreset extends ScoreboardPreset {
                 temp = StringUtils.getLongTextAsShortScoreboard(card.getDescriptor().getDescription(), Optional.of(TextColors.GRAY));
                 temp.set(0, Text.builder().append(Text.of(TextColors.GOLD, "Effect: "))
                         .append(Text.of(TextColors.GRAY, temp.get(0).toPlain().split("Effect:")[1])).build());
+                for(Text t: temp){
+                    if(t.toPlain().length() == 0 || t.toPlain().isEmpty()){
+                        temp.remove(t);
+                    }
+                }
                 strings.addAll(temp);
             }
         }

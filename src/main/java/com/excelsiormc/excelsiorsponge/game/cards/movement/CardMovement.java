@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.cards.movement;
 
 import com.excelsiormc.excelsiorsponge.game.cards.Deck;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBase;
+import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseAvatar;
 import com.excelsiormc.excelsiorsponge.game.cards.movement.filters.MovementFilter;
 import com.excelsiormc.excelsiorsponge.game.match.field.cells.Cell;
 import com.excelsiormc.excelsiorsponge.utils.DuelUtils;
@@ -66,13 +67,16 @@ public abstract class CardMovement {
     }
 
     public boolean generateSpots() {
-        Deck deck = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get().getDeck();
-        if(deck.isHinderingTerrain(owner.getCurrentCell().getCellType())){
-            distanceInCells = 1;
-        } else if(deck.isAdvantageousTerrain(owner.getCurrentCell().getCellType())){
-            distanceInCells = originalDistance + 1;
-        } else {
-            distanceInCells = originalDistance;
+
+        if(!(owner instanceof CardBaseAvatar)) {
+            Deck deck = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get().getDeck();
+            if (deck.isHinderingTerrain(owner.getCurrentCell().getCellType())) {
+                distanceInCells = 1;
+            } else if (deck.isAdvantageousTerrain(owner.getCurrentCell().getCellType())) {
+                distanceInCells = originalDistance + 1;
+            } else {
+                distanceInCells = originalDistance;
+            }
         }
 
         List<Cell> cells = getAvailableSpaces();
