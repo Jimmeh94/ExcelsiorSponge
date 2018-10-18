@@ -3,6 +3,7 @@ package com.excelsiormc.excelsiorsponge.excelsiorcore.services;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 
@@ -18,6 +19,10 @@ public class LocationUtils {
     public static Location getMiddleLocation(Location firstCorner, Location secondCorner){
         Vector3d temp = getMiddleLocation(firstCorner.getPosition(), secondCorner.getPosition());
         return new Location(firstCorner.getExtent(), temp.getX(), temp.getY(), temp.getZ());
+    }
+
+    public static Vector3d getEyeHeight(Entity entity){
+        return entity.getLocation().getPosition().clone().add(0, 1.5, 0);
     }
 
     public static Vector3d getMiddleLocation(Vector3d firstCorner, Vector3d secondCorner){
