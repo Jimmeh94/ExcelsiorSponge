@@ -393,6 +393,10 @@ public abstract class CardBase {
         return summonType;
     }
 
+    public void entityFace(Vector3d location) {
+        stand.lookAt(location);
+    }
+
     public enum CardRarity {
         ULTRA_RARE(TextColors.GOLD),
         SUPER_RARE(TextColors.LIGHT_PURPLE),

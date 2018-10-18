@@ -63,6 +63,9 @@ public class GamemodeDuel extends Gamemode {
     public BattleResult battle(Cell attacker, Cell defender) {
         CardBase one = attacker.getOccupyingCard(), two = defender.getOccupyingCard();
 
+        one.entityFace(defender.getCenter());
+        two.entityFace(attacker.getCenter());
+
         BattleResult.BattleResultBuilder result = BattleResult.builder();
 
         Sponge.getEventManager().post(new DuelEvent.BattleBeginning(ExcelsiorSponge.getServerCause(), one, two));

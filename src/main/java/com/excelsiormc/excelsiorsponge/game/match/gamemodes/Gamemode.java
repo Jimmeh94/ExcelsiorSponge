@@ -2,6 +2,7 @@ package com.excelsiormc.excelsiorsponge.game.match.gamemodes;
 
 import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.events.custom.DuelEvent;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.EditableVector;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.TimeFormatter;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.cards.cardbases.CardBaseMonster;
@@ -88,12 +89,15 @@ public abstract class Gamemode {
 
     public void start(){
         generateSpawnPoints();
+        EditableVector temp = new EditableVector(arena.getGrid().getCenterCell().getCenterCeiling().clone());
         for(Team team: teams){
             for(CombatantProfile p: team.getCombatants()){
                 if(p.isPlayer()){
                     PlayerUtils.getUserPlayer(p.getPlayer()).get().setPlayerMode(UserPlayer.PlayerMode.ARENA_DUEL_DEFAULT);
                     Player player = p.getPlayer();
                     player.setLocation(new Location<World>(player.getWorld(), team.getSpawn()));
+                    temp.setY(player.getLocation().getPosition().getY());
+                    player.lookAt(temp.toVector3d());
                     team.getSpawnCell().setOccupyingCard(p.getCard(), true);
 
                     UserPlayer user = PlayerUtils.getUserPlayer(p.getUUID()).get();
