@@ -109,7 +109,7 @@ public class Cell {
             }
         }
 
-        if(cellType != null){
+        if(cellType != null && cellType.getCellType().getBuild() != null){
             cellType.getCellType().getBuild().draw(this, getVector3ds().get(0).clone().add(0, 1, 0));
         }
 
@@ -214,7 +214,9 @@ public class Cell {
     }
 
     public void eraseBuild() {
-        this.build.destroy(locations.get(0));
+        if(build != null) {
+            this.build.destroy(locations.get(0));
+        }
     }
 
     public void eraseAll(){

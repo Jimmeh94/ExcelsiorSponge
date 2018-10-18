@@ -4,6 +4,8 @@ import com.excelsiormc.excelsiorsponge.ExcelsiorSponge;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.ExcelsiorCore;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.event.custom.CustomEvent;
 import com.excelsiormc.excelsiorsponge.excelsiorcore.services.chat.ChatChannelManager;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Message;
+import com.excelsiormc.excelsiorsponge.excelsiorcore.services.text.Messager;
 import com.excelsiormc.excelsiorsponge.game.inventory.hotbars.Hotbars;
 import com.excelsiormc.excelsiorsponge.game.user.UserPlayer;
 import com.excelsiormc.excelsiorsponge.utils.ClickTypes;
@@ -19,6 +21,8 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerEvents {
 
@@ -30,6 +34,31 @@ public class PlayerEvents {
         ExcelsiorCore.INSTANCE.getPlayerBaseManager().add(userPlayer);
         ChatChannelManager.GLOBAL.addMember(userPlayer);
         Hotbars.HOTBAR_DEFAULT.setHotbar(userPlayer.getPlayer());
+
+        Message message = Message.builder().addReceiver(event.getTargetEntity())
+                .addMessage(Text.of(TextColors.GOLD, "How to use this plugin:"))
+                .addAsChild(Text.of(TextColors.GRAY, "Use the first item to generate an arena"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "Use the center item to join a queue"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "When there are 2 people in the queue, it'll begin"), TextColors.GOLD)
+                .build();
+
+        Messager.sendMessage(message);
+        Messager.sendBlankLine(event.getTargetEntity());
+
+        message = Message.builder().addReceiver(event.getTargetEntity())
+                .addMessage(Text.of(TextColors.GOLD, "How to play the game:"))
+                .addAsChild(Text.of(TextColors.GRAY, "Objective: bring enemy's avatar life to 0"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "You can place cards around your avatar"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "You can place a card face up or face down"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "(You can use this to hide the card's identity from your opponent)"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "You can place cards in attack or defense mode"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "In attack, the Power stat will be used in fights"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "In defense, the Health stat will be used in fights"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "Once a card is placed, you can move it by 'Use Card' on the active turn hotbar"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "Think of this like a cross between chess and a traditional card game"), TextColors.GOLD)
+                .addAsChild(Text.of(TextColors.GRAY, "Enjoy!"), TextColors.GOLD)
+                .build();
+        Messager.sendMessage(message);
     }
 
     @Listener

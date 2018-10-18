@@ -394,7 +394,7 @@ public abstract class CardBase {
     }
 
     public void entityFace(Vector3d location) {
-        stand.lookAt(location);
+        //stand.lookAt(location);
     }
 
     public enum CardRarity {

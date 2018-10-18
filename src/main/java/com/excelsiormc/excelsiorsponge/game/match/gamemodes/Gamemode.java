@@ -97,7 +97,7 @@ public abstract class Gamemode {
                     Player player = p.getPlayer();
                     player.setLocation(new Location<World>(player.getWorld(), team.getSpawn()));
                     temp.setY(player.getLocation().getPosition().getY());
-                    player.lookAt(temp.toVector3d());
+                    //player.lookAt(temp.toVector3d());
                     team.getSpawnCell().setOccupyingCard(p.getCard(), true);
 
                     UserPlayer user = PlayerUtils.getUserPlayer(p.getUUID()).get();
@@ -122,6 +122,7 @@ public abstract class Gamemode {
                     gameTime.removePlayer(player);
                     turnTime.removePlayer(player);
                     PlayerUtils.getUserPlayer(player).get().setPlayerMode(UserPlayer.PlayerMode.NORMAL);
+                    Hotbars.HOTBAR_DEFAULT.setHotbar(player);
                 }
             }
         }

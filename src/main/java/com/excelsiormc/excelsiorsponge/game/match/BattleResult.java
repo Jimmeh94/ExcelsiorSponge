@@ -15,13 +15,20 @@ public class BattleResult {
 
     private boolean defenderDestroyed = false;
 
+    private boolean draw;
+
     protected BattleResult(Optional<CombatantProfile> victor, Optional<CombatantProfile> loser,
-                           Optional<CardBase> victorCard, Optional<CardBase> loserCard, boolean defenderDestroyed) {
+                           Optional<CardBase> victorCard, Optional<CardBase> loserCard, boolean defenderDestroyed, boolean draw) {
         this.victor = victor;
         this.loser = loser;
         this.victorCard = victorCard;
         this.loserCard = loserCard;
         this.defenderDestroyed = defenderDestroyed;
+        this.draw = draw;
+    }
+
+    public boolean isDraw() {
+        return draw;
     }
 
     public boolean isDefenderDestroyed() {
@@ -52,9 +59,16 @@ public class BattleResult {
 
         private boolean defenderDestroyed = false;
 
+        private boolean draw = false;
+
         public BattleResultBuilder setVictor(CombatantProfile cp, CardBase card){
             this.victor = Optional.of(cp);
             this.victorCard = Optional.of(card);
+            return this;
+        }
+
+        public BattleResultBuilder setDraw(){
+            draw = true;
             return this;
         }
 
@@ -70,7 +84,7 @@ public class BattleResult {
         }
 
         public BattleResult build(){
-            return new BattleResult(victor, loser, victorCard, loserCard, defenderDestroyed);
+            return new BattleResult(victor, loser, victorCard, loserCard, defenderDestroyed, draw);
         }
     }
 }

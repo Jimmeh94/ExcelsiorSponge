@@ -58,7 +58,7 @@ public class CardBaseAvatar extends CardBase {
 
     @Override
     public void entityFace(Vector3d location) {
-        human.lookAt(location);
+        //human.lookAt(location);
     }
 
     public boolean isPlaceable(Cell target){

@@ -61,10 +61,80 @@ public class GamemodeDuel extends Gamemode {
 
     @Override
     public BattleResult battle(Cell attacker, Cell defender) {
+
+        if(defender.getOccupyingCard() instanceof CardBaseAvatar){
+            return battleAvatar(attacker, defender);
+        } else {
+            return battleNormalCards(attacker, defender);
+        }
+    }
+
+    private BattleResult battleAvatar(Cell attacker, Cell defender){
+        CardBase one = attacker.getOccupyingCard(), two = defender.getOccupyingCard();
+        BattleResult.BattleResultBuilder result = BattleResult.builder();
+
+        Sponge.getEventManager().post(new DuelEvent.BattleBeginning(ExcelsiorSponge.getServerCause(), one, two));
+
+        CombatantProfilePlayer cppOne = DuelUtils.getCombatProfilePlayer(one.getOwner()).get();
+        CombatantProfilePlayer cppTwo = DuelUtils.getCombatProfilePlayer(two.getOwner()).get();
+
+        double statOne = one.getPower().getCurrent();
+
+        if(one.getCardFacePosition() == CardBase.CardFacePosition.FACE_DOWN){
+            one.flipCard();
+        }
+
+        /**
+         * ===== Pre damage events and dealing damage =====
+         */
+
+        DuelEvent.CombatantDealDamage.Pre deal = new DuelEvent.CombatantDealDamage.Pre(ExcelsiorSponge.getServerCause(),
+                cppOne, cppTwo);
+
+        DuelEvent.CombatantDealtDamage.Pre dealt = new DuelEvent.CombatantDealtDamage.Pre(ExcelsiorSponge.getServerCause(),
+                cppOne, cppTwo);
+
+        Sponge.getEventManager().post(deal);
+        Sponge.getEventManager().post(dealt);
+
+        if(!deal.isCancelled() && !dealt.isCancelled()){
+            result.setVictor(cppOne, one);
+            result.setLoser(cppTwo, two);
+        }
+
+        /**
+         * ===== Post damage events and destroy card =====
+         */
+
+        DuelEvent.CombatantDealDamage.Post dealP = new DuelEvent.CombatantDealDamage.Post(ExcelsiorSponge.getServerCause(),
+                cppOne, cppTwo);
+
+        DuelEvent.CombatantDealtDamage.Post dealtP = new DuelEvent.CombatantDealtDamage.Post(ExcelsiorSponge.getServerCause(),
+                cppOne, cppTwo);
+
+        Sponge.getEventManager().post(dealP);
+        Sponge.getEventManager().post(dealtP);
+
+        if(!dealP.isCancelled() && !dealtP.isCancelled()){
+            two.subtractHealth(statOne);
+        }
+
+        BattleResult r = result.build();
+
+        Sponge.getEventManager().post(new DuelEvent.BattleEnd(ExcelsiorSponge.getServerCause(), r));
+
+        return r;
+    }
+
+    private BattleResult battleNormalCards(Cell attacker, Cell defender){
         CardBase one = attacker.getOccupyingCard(), two = defender.getOccupyingCard();
 
         one.entityFace(defender.getCenter());
         two.entityFace(attacker.getCenter());
+
+        if(defender.getOccupyingCard() instanceof CardBaseAvatar){
+            battleAvatar(attacker, defender);
+        }
 
         BattleResult.BattleResultBuilder result = BattleResult.builder();
 
@@ -117,19 +187,15 @@ public class GamemodeDuel extends Gamemode {
 
             if(!dealP.isCancelled() && !dealtP.isCancelled()){
 
-                if(!(two instanceof CardBaseAvatar)){
-                    double difference = statOne - statTwo;
+                double difference = statOne - statTwo;
 
-                    cppTwo.getCard().subtractHealth(difference);
-                    Messager.sendMessage(cppOne.getPlayer(),
-                            Text.of(TextColors.GREEN, "Dealt " + difference + " damage to enemy avatar"), Messager.Prefix.DUEL);
+                cppTwo.getCard().subtractHealth(difference);
+                Messager.sendMessage(cppOne.getPlayer(),
+                        Text.of(TextColors.GREEN, "Dealt " + difference + " damage to enemy avatar"), Messager.Prefix.DUEL);
 
-                    if(two.getCardPosition() == CardBase.CardPosition.ATTACK) {
-                        two.cardEliminated();
-                        result.setDefenderDestroyed(true);
-                    }
-                } else {
-                    two.subtractHealth(statOne);
+                if(two.getCardPosition() == CardBase.CardPosition.ATTACK) {
+                    two.cardEliminated();
+                    result.setDefenderDestroyed(true);
                 }
             }
 
@@ -176,6 +242,44 @@ public class GamemodeDuel extends Gamemode {
 
                 if(two.getCardPosition() == CardBase.CardPosition.ATTACK){
                     one.cardEliminated();
+                }
+            }
+        } else {
+            /**
+             * ===== Pre damage events and dealing damage =====
+             */
+
+            DuelEvent.CombatantDealDamage.Pre deal = new DuelEvent.CombatantDealDamage.Pre(ExcelsiorSponge.getServerCause(),
+                    cppTwo, cppOne);
+
+            DuelEvent.CombatantDealtDamage.Pre dealt = new DuelEvent.CombatantDealtDamage.Pre(ExcelsiorSponge.getServerCause(),
+                    cppTwo, cppOne);
+
+            Sponge.getEventManager().post(deal);
+            Sponge.getEventManager().post(dealt);
+
+            if(!deal.isCancelled() && !dealt.isCancelled()){
+                result.setDraw();
+            }
+
+            /**
+             * ===== Post damage events and destroy card =====
+             */
+
+            DuelEvent.CombatantDealDamage.Post dealP = new DuelEvent.CombatantDealDamage.Post(ExcelsiorSponge.getServerCause(),
+                    cppTwo, cppOne);
+
+            DuelEvent.CombatantDealtDamage.Post dealtP = new DuelEvent.CombatantDealtDamage.Post(ExcelsiorSponge.getServerCause(),
+                    cppTwo, cppOne);
+
+            Sponge.getEventManager().post(dealP);
+            Sponge.getEventManager().post(dealtP);
+
+            if(!dealP.isCancelled() && !dealtP.isCancelled()){
+
+                if(two.getCardPosition() == CardBase.CardPosition.ATTACK){
+                    one.cardEliminated();
+                    two.cardEliminated();
                 }
             }
         }

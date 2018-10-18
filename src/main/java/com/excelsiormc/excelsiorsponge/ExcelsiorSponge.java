@@ -12,7 +12,6 @@ import com.excelsiormc.excelsiorsponge.game.chatchannels.ChatChannelStaff;
 import com.excelsiormc.excelsiorsponge.game.economy.currencies.Currencies;
 import com.excelsiormc.excelsiorsponge.game.match.matchmaking.MatchMaker;
 import com.excelsiormc.excelsiorsponge.timers.*;
-import com.excelsiormc.excelsiorsponge.utils.database.MongoUtils;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -44,7 +43,6 @@ public class ExcelsiorSponge {
     public static PluginContainer PLUGIN_CONTAINER;
 
     private MatchMaker matchMaker;
-    private MongoUtils mongoUtils;
 
     private ArenaTimer arenaTimer;
     private DirectionalAimArenaTimer directionalAimArenaTimer;
@@ -57,9 +55,6 @@ public class ExcelsiorSponge {
         new ExcelsiorCore();
         INSTANCE = this;
         PLUGIN_CONTAINER = Sponge.getPluginManager().fromInstance(this).get();
-
-        mongoUtils = new MongoUtils("Admin", "admin1234", "@ds149742.mlab.com:49742/excelsior", "excelsior");
-        mongoUtils.openConnection();
     }
 
     @Listener
@@ -77,7 +72,7 @@ public class ExcelsiorSponge {
         ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelAuction());
         ExcelsiorCore.INSTANCE.getChannelManager().add(new ChatChannelStaff());
 
-        mongoUtils.load();
+        //mongoUtils.load();
 
         clearAllEntities();
     }
@@ -125,8 +120,7 @@ public class ExcelsiorSponge {
 
     @Listener
     public void onServerStopping(GameStoppingEvent event){
-        //getMatchMaker().getArenaManager().clean();
-        mongoUtils.close();
+       // mongoUtils.close();
     }
 
     public MatchMaker getMatchMaker() {

@@ -92,7 +92,7 @@ public class FilterIncludeEnemyEmptyCell extends FilterIncludeEmptyCell {
 
         if(battleResult.getVictorCard().isPresent()){
             if(battleResult.getVictorCard().get() == owner && !(battleResult.getLoserCard().get() instanceof CardBaseAvatar)
-                && battleResult.isDefenderDestroyed()){
+                && battleResult.isDefenderDestroyed() && !battleResult.isDraw()){
                 CombatantProfilePlayer cpp = DuelUtils.getCombatProfilePlayer(owner.getOwner()).get();
                 cpp.setCurrentlyMovingCard(owner);
                 DuelUtils.moveCardToCell(target, player);

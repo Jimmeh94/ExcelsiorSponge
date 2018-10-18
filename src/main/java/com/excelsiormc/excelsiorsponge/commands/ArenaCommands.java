@@ -63,7 +63,8 @@ public class ArenaCommands implements CommandExecutor {
                 Vector3d start = player.getLocation().getPosition();
                 String world = player.getLocation().getExtent().getName();
 
-                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager().add(new Arena(new GridNormal(start, world, rowCount, rowLength, cellDem, false), world));
+                ExcelsiorSponge.INSTANCE.getMatchMaker().getArenaManager()
+                        .add(new Arena(new GridNormal(start, world, rowCount, rowLength, cellDem, false), world));
 
             } catch (NullPointerException e){
                 Messager.sendMessage(player, Text.of(TextColors.RED, "use /arena <grid x> <grid z> <cell x> <cell z>"), Messager.Prefix.ERROR);
